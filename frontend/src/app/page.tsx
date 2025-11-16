@@ -1,8 +1,9 @@
 import { API_BASE } from '../lib/config';
 
 async function fetchMarketplace() {
+  const API_BASE_URL = API_BASE ?? 'http://localhost:4000';
   try {
-    const res = await fetch(`${API_BASE}/api/public/domains`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_BASE_URL}/api/public/domains`, { cache: 'no-store' });
     if (!res.ok) return [];
     return res.json();
   } catch (err) {
