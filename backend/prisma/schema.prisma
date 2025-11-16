@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PUBLISHER
+  AICLIENT
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  role         Role
+  createdAt    DateTime  @default(now())
+  publisher    Publisher?
+  aiClient     AIClient?
+}
+
+model Publisher {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  domains   Domain[]
+  createdAt DateTime @default(now())
+}
+
+model AIClient {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  name      String
+  user      User      @relation(fields: [userId], references: [id])
+  apiKeys   APIKey[]
+  requests  RequestLog[]
+  usages    UsageAggregate[]
+  createdAt DateTime  @default(now())
+}
+
+model Domain {
+  id          Int        @id @default(autoincrement())
+  publisherId Int
+  name        String     @unique
+  verified    Boolean    @default(false)
+  verifyToken String     @default(uuid())
+  publisher   Publisher  @relation(fields: [publisherId], references: [id])
+  policies    AIPolicy[]
+  requests    RequestLog[]
+  usages      UsageAggregate[]
+  createdAt   DateTime   @default(now())
+}
+
+model AIPolicy {
+  id          Int      @id @default(autoincrement())
+  domainId    Int
+  pathPattern String
+  allowAI     Boolean
+  pricePer1k  Int
+  maxRps      Int?
+  updatedAt   DateTime @updatedAt
+  domain      Domain   @relation(fields: [domainId], references: [id])
+}
+
+model APIKey {
+  id         Int       @id @default(autoincrement())
+  aiClientId Int
+  keyHash    String    @unique
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+  aiClient   AIClient  @relation(fields: [aiClientId], references: [id])
+  requests   RequestLog[]
+  usages     UsageAggregate[]
+}
+
+model RequestLog {
+  id         Int       @id @default(autoincrement())
+  timestamp  DateTime  @default(now())
+  domainId   Int
+  aiClientId Int
+  apiKeyId   Int?
+  path       String
+  bytesSent  Int
+  statusCode Int
+  domain     Domain    @relation(fields: [domainId], references: [id])
+  aiClient   AIClient  @relation(fields: [aiClientId], references: [id])
+  apiKey     APIKey?   @relation(fields: [apiKeyId], references: [id])
+}
+
+model UsageAggregate {
+  id          Int       @id @default(autoincrement())
+  periodStart DateTime
+  periodEnd   DateTime
+  domainId    Int
+  aiClientId  Int
+  apiKeyId    Int?
+  requests    Int
+  bytes       Int
+  chargeCents Int
+  domain      Domain    @relation(fields: [domainId], references: [id])
+  aiClient    AIClient  @relation(fields: [aiClientId], references: [id])
+  apiKey      APIKey?   @relation(fields: [apiKeyId], references: [id])
+}
