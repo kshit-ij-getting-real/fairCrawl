@@ -60,12 +60,25 @@ export default function AIClientDashboard() {
         </button>
       </div>
 
+      <div className="bg-slate-50 border border-slate-200 rounded p-4 text-sm text-slate-700 space-y-1">
+        <p className="font-semibold">This is your AI Client dashboard.</p>
+        <p>Here you generate API keys and see how many requests you&apos;ve made through the Fair Crawl gateway.</p>
+      </div>
+
       <section className="bg-white rounded shadow p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">API keys</h2>
           <button className="px-4 py-2 bg-indigo-600 text-white rounded" onClick={generateKey}>
             Generate new key
           </button>
+        </div>
+        <div className="text-sm text-slate-700 space-y-1">
+          <p className="font-semibold">Your API key is a secret token that identifies your AI system to Fair Crawl.</p>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Keep it private and never share it in client-side code or public repos.</li>
+            <li>You can revoke a key at any time if it is leaked.</li>
+            <li>Use this key in the X-API-Key header when calling the gateway.</li>
+          </ul>
         </div>
         {newKey && (
           <div className="bg-yellow-50 border border-yellow-200 p-3 rounded text-sm">
@@ -104,6 +117,7 @@ export default function AIClientDashboard() {
 
       <section className="bg-white rounded shadow p-6 space-y-4">
         <h2 className="text-xl font-semibold">Usage</h2>
+        <p className="text-sm text-slate-600">Usage shows how many gateway requests your keys have made and the estimated spend.</p>
         <p className="text-sm text-slate-600">Total requests: {usage.totalRequests}</p>
         <div className="space-y-2">
           {usage.usageByDomain.length === 0 ? (
@@ -121,11 +135,19 @@ export default function AIClientDashboard() {
 
       <section className="bg-white rounded shadow p-6 space-y-3 text-sm">
         <h2 className="text-xl font-semibold">Call the Fair Crawl gateway</h2>
-        <p>Use your API key to fetch URLs that respect publisher policies.</p>
-        <pre className="bg-slate-900 text-white p-4 rounded text-xs overflow-x-auto">
+        <p className="text-slate-700">Use your API key to fetch URLs that respect publisher policies.</p>
+        <div className="space-y-2">
+          <p className="font-semibold">Example: fetch a single URL through the Fair Crawl gateway</p>
+          <pre className="bg-slate-900 text-white p-4 rounded text-xs overflow-x-auto">
 curl "${API_BASE}/api/gateway/fetch?url=https://example.com/premium/article" \
   -H "X-API-Key: YOUR_KEY"
-        </pre>
+          </pre>
+          <ul className="list-disc list-inside space-y-1 text-slate-700">
+            <li>Replace ${'{'}API_BASE{'}'} with the deployed base URL of your Fair Crawl instance.</li>
+            <li>Replace YOUR_KEY with the API key shown above.</li>
+            <li>Replace the url parameter with the page you want to fetch.</li>
+          </ul>
+        </div>
       </section>
     </div>
   );

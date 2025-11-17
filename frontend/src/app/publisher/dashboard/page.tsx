@@ -107,6 +107,15 @@ export default function PublisherDashboard() {
         </button>
       </div>
 
+      <div className="bg-slate-50 border border-slate-200 rounded p-4 space-y-2 text-sm text-slate-700">
+        <p className="font-semibold">This is your Publisher dashboard.</p>
+        <ol className="list-decimal list-inside space-y-1">
+          <li>Add a domain you control (for example: https://angelsintheabstract.substack.com).</li>
+          <li>Verify that you control it by serving a small text file at a special path.</li>
+          <li>Set crawl policies that control which AI clients can access which URLs, and at what rate.</li>
+        </ol>
+      </div>
+
       <section className="bg-white rounded shadow p-6 space-y-4">
         <h2 className="text-xl font-semibold">Your domains</h2>
         <table className="w-full text-left text-sm">
@@ -151,6 +160,15 @@ export default function PublisherDashboard() {
         <section className="grid md:grid-cols-2 gap-6">
           <div className="bg-white rounded shadow p-6 space-y-4">
             <h3 className="text-lg font-semibold">Policies</h3>
+            <p className="text-sm text-slate-600">
+              Policies define which URLs an AI client may fetch and at what rate.
+              <br />
+              • Path pattern: which URLs the rule applies to (for example: /* for everything).
+              <br />
+              • Max RPS: maximum requests per second allowed from the gateway.
+              <br />
+              • “Allow AI access” toggles whether this rule is open to any AI client that pays via Fair Crawl.
+            </p>
             <ul className="space-y-2 text-sm">
               {domains
                 .find((d) => d.id === selectedDomain)
@@ -197,9 +215,22 @@ export default function PublisherDashboard() {
           </div>
           <div className="bg-white rounded shadow p-6 space-y-4">
             <h3 className="text-lg font-semibold">Verification</h3>
-            <p className="text-sm text-slate-600">
-              Place the token below into <code>/.well-known/faircrawl-verification.txt</code> on your domain.
-            </p>
+            <div className="text-sm text-slate-700 space-y-1">
+              <p className="font-semibold">How to verify your domain:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Click “Fetch verification token” to generate a unique token.</li>
+                <li>
+                  On your site, serve a plain text file at:
+                  <div className="font-mono bg-slate-100 rounded px-2 py-1 mt-1">/.well-known/faircrawl-verification.txt</div>
+                  The file should contain exactly this token and nothing else.
+                </li>
+                <li>Once the file is live, click “Verify domain” here.</li>
+                <li>
+                  When verification succeeds, the “Verified” column will show “Yes” and AI clients will be allowed to fetch URLs
+                  from this domain according to your policies.
+                </li>
+              </ol>
+            </div>
             <button onClick={fetchToken} className="text-indigo-600 text-sm underline">
               Fetch verification token
             </button>
