@@ -36,6 +36,8 @@ export default function PublisherDashboard() {
       if (result.length > 0) {
         setSelectedDomain(result[0].id);
         loadAnalytics(result[0].id);
+      } else {
+        setSelectedDomain(null);
       }
     } catch (err: any) {
       console.error(err);
@@ -88,71 +90,101 @@ export default function PublisherDashboard() {
       setMessage('Domain verified!');
       loadDomains();
     } catch (err: any) {
-      setMessage(err.message);
+      const text = err?.message || '';
+      if (text.includes('.well-known') || text.includes('verification')) {
+        setMessage(
+          "We couldn’t read '/.well-known/faircrawl-verification.txt' on this domain. Check that the file exists and contains the token shown above."
+        );
+      } else {
+        setMessage(text || 'Verification failed.');
+      }
     }
   };
 
   return (
-    <div className="space-y-10">
-      <section className="bg-white rounded-xl shadow-sm p-6 flex items-start justify-between">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold">Your creator dashboard</h1>
-          <p className="text-sm text-slate-500">
-            💭 Helper: Use this page to add your site, prove it&apos;s yours, and set rules for how AI agents can read your content.
-          </p>
+    <div className="space-y-8">
+      <section className="rounded-2xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-faircrawl-textMain p-8 shadow-lg">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-faircrawl-textMuted">Publisher control</p>
+            <h1 className="text-3xl font-semibold">How this dashboard works</h1>
+            <p className="text-sm leading-relaxed text-faircrawl-textMuted">
+              You register your sites here, prove you own them once, and then set AI access rules per path. FairCrawl enforces these rules on every request from AI clients.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              clearSession();
+              router.replace('/');
+            }}
+            className="self-start rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-faircrawl-textMain hover:bg-white/10 transition"
+          >
+            Log out
+          </button>
         </div>
-        <button
-          onClick={() => {
-            clearSession();
-            router.replace('/');
-          }}
-          className="text-sm text-blue-600 hover:text-blue-700"
-        >
-          Log out
-        </button>
       </section>
 
-      <section className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+      <section className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
         <div className="space-y-1">
           <h2 className="text-xl font-semibold">Your sites</h2>
-          <p className="text-sm text-slate-500">
-            💭 Helper: Each row here is one site where you publish content. Add your Substack, blog, or docs site so AI agents can
-            reach it through Fair Crawl.
-          </p>
+          <p className="text-sm text-slate-500">Add a domain you control and manage how AI agents can reach it.</p>
         </div>
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="text-slate-500">
-              <th className="py-2">Domain</th>
-              <th>Verified</th>
-              <th>Total requests</th>
-            </tr>
-          </thead>
-          <tbody>
-            {domains.map((domain) => (
-              <tr
-                key={domain.id}
-                className={`cursor-pointer ${selectedDomain === domain.id ? 'bg-indigo-50' : ''}`}
-                onClick={() => {
-                  setSelectedDomain(domain.id);
-                  loadAnalytics(domain.id);
-                }}
-              >
-                <td className="py-2 font-medium">{domain.name}</td>
-                <td>{domain.verified ? 'Yes' : 'No'}</td>
-                <td>{analytics[domain.id]?.totalRequests ?? '—'}</td>
+        <div className="overflow-hidden rounded-xl border border-slate-200">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-slate-600">
+              <tr>
+                <th className="px-4 py-3">Domain</th>
+                <th className="px-4">Verified</th>
+                <th className="px-4">Total requests</th>
+                <th className="px-4">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <form onSubmit={addDomain} className="flex gap-2">
+            </thead>
+            <tbody>
+              {domains.length === 0 ? (
+                <tr>
+                  <td className="px-4 py-4 text-slate-600" colSpan={4}>
+                    No sites yet. Add a domain you control to start setting AI rules.
+                  </td>
+                </tr>
+              ) : (
+                domains.map((domain) => (
+                  <tr
+                    key={domain.id}
+                    className={`border-t border-slate-100 ${selectedDomain === domain.id ? 'bg-indigo-50/70' : 'bg-white'}`}
+                    onClick={() => {
+                      setSelectedDomain(domain.id);
+                      loadAnalytics(domain.id);
+                    }}
+                  >
+                    <td className="px-4 py-3 font-medium text-slate-900">{domain.name}</td>
+                    <td className="px-4">{domain.verified ? 'Yes' : 'No'}</td>
+                    <td className="px-4">{analytics[domain.id]?.totalRequests ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedDomain(domain.id);
+                          loadAnalytics(domain.id);
+                        }}
+                      >
+                        Manage AI rules
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <form onSubmit={addDomain} className="flex flex-col md:flex-row gap-2">
           <input
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-faircrawl-accent"
             placeholder="example.com"
             value={domainName}
             onChange={(e) => setDomainName(e.target.value)}
           />
-          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition" type="submit">
+          <button className="px-4 py-2 bg-faircrawl-accent text-white rounded-full font-semibold hover:bg-faircrawl-accentSoft transition" type="submit">
             Add domain
           </button>
         </form>
@@ -160,82 +192,101 @@ export default function PublisherDashboard() {
 
       {selectedDomain && (
         <section className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">AI access rules</h3>
-              <p className="text-sm text-slate-500">
-                💭 Helper: These rules say which pages AI agents can read, how fast they can read them, and whether that path is
-                free or paid.
-              </p>
+              <p className="text-sm text-slate-500">These settings control which pages AI agents can read and how fast they can read them.</p>
             </div>
             <ul className="space-y-2 text-sm">
               {domains
                 .find((d) => d.id === selectedDomain)
                 ?.policies.map((policy) => (
-                  <li key={policy.id} className="border rounded px-3 py-2">
+                  <li key={policy.id} className="border rounded-lg px-3 py-2">
                     <div className="font-semibold">{policy.pathPattern}</div>
-                    <div>{policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${policy.maxRps} rps max` : 'No cap'}</div>
+                    <div className="text-slate-600">
+                      {policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${policy.maxRps} rps max` : 'No cap'}
+                    </div>
                   </li>
                 ))}
             </ul>
-            <form onSubmit={addPolicy} className="space-y-3">
-              <input
-                className="w-full border rounded px-3 py-2"
-                placeholder="/premium/*"
-                value={policyForm.pathPattern}
-                onChange={(e) => setPolicyForm({ ...policyForm, pathPattern: e.target.value })}
-              />
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 text-sm">
+            <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm text-slate-700 space-y-1">
+              <p className="font-semibold">Example</p>
+              <p>
+                Rule 1: Path = /, Allow AI access = Yes, Max requests per second = 1 → AI can read public pages, one page per second.
+              </p>
+              <p>Rule 2: Path = /paywalled/*, Allow AI access = No → AI cannot read any paywalled pages.</p>
+            </div>
+            <form onSubmit={addPolicy} className="space-y-4 text-sm">
+              <div className="space-y-1">
+                <label className="font-semibold">Path</label>
+                <input
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-faircrawl-accent"
+                  placeholder="/, /blog/*, /docs/*"
+                  value={policyForm.pathPattern}
+                  onChange={(e) => setPolicyForm({ ...policyForm, pathPattern: e.target.value })}
+                />
+                <p className="text-xs text-slate-500">Which pages this rule applies to. * matches anything.</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <label className="font-semibold">Allow AI access</label>
+                <label className="flex items-center gap-2 text-sm text-slate-700" title="On = AI agents can read this path. Off = all AI requests to this path are blocked.">
                   <input
                     type="checkbox"
                     checked={policyForm.allowAI}
                     onChange={(e) => setPolicyForm({ ...policyForm, allowAI: e.target.checked })}
                   />
-                  Allow AI access
+                  <span>{policyForm.allowAI ? 'On' : 'Off'}</span>
                 </label>
+              </div>
+              <div className="space-y-1">
+                <label className="font-semibold">Max requests per second</label>
                 <input
-                  className="border rounded px-3 py-2 text-sm"
-                  placeholder="Price per 1k"
-                  value={policyForm.pricePer1k}
-                  onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
-                />
-                <input
-                  className="border rounded px-3 py-2 text-sm"
-                  placeholder="Max RPS"
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-faircrawl-accent"
+                  placeholder="e.g. 1"
                   value={policyForm.maxRps}
                   onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
                 />
+                <p className="text-xs text-slate-500">Speed limit for bots. 1 = one page per second, 5 = five pages per second, 0 = no limit.</p>
               </div>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" type="submit">
-                Save policy
+              <div className="space-y-1">
+                <label className="font-semibold">Price per 1k requests (¢)</label>
+                <input
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-faircrawl-accent"
+                  placeholder="0"
+                  value={policyForm.pricePer1k}
+                  onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
+                />
+              </div>
+              <button className="bg-faircrawl-accent text-white px-4 py-2 rounded-full font-semibold hover:bg-faircrawl-accentSoft transition" type="submit">
+                Save rule
               </button>
             </form>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">Verify that you own this site</h3>
               <p className="text-sm text-slate-500">
-                💭 Helper: We ask you to put a small text file on your site once. When we can read that file, we know this site
-                really belongs to you.
+                To prove you own this domain, put a one-line file on it once. When we can read that file, we mark the domain as verified.
               </p>
             </div>
             <div className="text-sm text-slate-700 space-y-2">
               <p className="font-semibold">Steps:</p>
               <ol className="list-decimal list-inside space-y-1">
-                <li>Click “Fetch verification token”.</li>
-                <li>Create a file at: <span className="font-mono">/.well-known/faircrawl-verification.txt</span></li>
-                <li>Put only the token in that file.</li>
-                <li>Click “Verify domain”.</li>
+                <li>Click 'Fetch verification token'.</li>
+                <li>
+                  On your site, create a file at <span className="font-mono">/.well-known/faircrawl-verification.txt</span>.
+                </li>
+                <li>Put only this token in that file.</li>
+                <li>Click 'Verify domain'.</li>
               </ol>
             </div>
-            <div className="flex items-center gap-3">
-              <button onClick={fetchToken} className="text-blue-600 text-sm underline">
+            <div className="flex flex-wrap items-center gap-3">
+              <button onClick={fetchToken} className="text-faircrawl-accent text-sm font-semibold hover:text-faircrawl-accentSoft">
                 Fetch verification token
               </button>
               {verificationToken && <p className="font-mono bg-slate-100 p-2 rounded break-all">{verificationToken}</p>}
             </div>
-            <button onClick={verifyDomain} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+            <button onClick={verifyDomain} className="px-4 py-2 bg-faircrawl-accent text-white rounded-full font-semibold hover:bg-faircrawl-accentSoft transition">
               Verify domain
             </button>
             {message && <p className="text-sm text-slate-600">{message}</p>}
