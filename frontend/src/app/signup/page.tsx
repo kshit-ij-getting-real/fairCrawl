@@ -43,63 +43,88 @@ function SignupContent() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow rounded p-8 space-y-4">
-      <h1 className="text-2xl font-semibold">Create your Fair Crawl account</h1>
-      {role === 'PUBLISHER' ? (
-        <div className="bg-slate-50 border border-slate-200 rounded p-3 text-sm text-slate-700 space-y-2">
-          <p className="font-semibold">You&apos;re signing up as a Publisher.</p>
-          <div>
-            <p className="font-medium">After you create an account, you&apos;ll:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Add a domain you control.</li>
-              <li>Prove you own it by serving a small verification file.</li>
-              <li>Set crawl policies and see which AI clients access your site.</li>
-            </ul>
+    <div className="min-h-screen bg-faircrawl-bgDark px-4 py-16">
+      <div className="mx-auto max-w-md space-y-6 rounded-3xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 p-8 shadow-xl">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold text-white">Create your FairCrawl account</h1>
+          <p className="text-sm text-white/70">FairCrawl keeps AI access transparent.</p>
+        </div>
+        {role === 'PUBLISHER' ? (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80 space-y-2">
+            <p className="font-semibold text-white">You&apos;re signing up as a Publisher.</p>
+            <div className="space-y-1">
+              <p className="font-medium">After you create an account, you&apos;ll:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Add a domain you control.</li>
+                <li>Prove you own it by serving a small verification file.</li>
+                <li>Set crawl policies and see which AI clients access your site.</li>
+              </ul>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="bg-slate-50 border border-slate-200 rounded p-3 text-sm text-slate-700 space-y-2">
-          <p className="font-semibold">You&apos;re signing up as an AI Client.</p>
-          <div>
-            <p className="font-medium">After you create an account, you&apos;ll:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Generate an API key.</li>
-              <li>Call the Fair Crawl gateway with your key and target URL.</li>
-              <li>See usage and estimated spend in your dashboard.</li>
-            </ul>
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80 space-y-2">
+            <p className="font-semibold text-white">You&apos;re signing up as an AI Client.</p>
+            <div className="space-y-1">
+              <p className="font-medium">After you create an account, you&apos;ll:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Generate an API key.</li>
+                <li>Call the FairCrawl gateway with your key and target URL.</li>
+                <li>See usage and estimated spend in your dashboard.</li>
+              </ul>
+            </div>
           </div>
-        </div>
-      )}
-      <form onSubmit={submit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input className="mt-1 w-full border rounded px-3 py-2" value={name} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input className="mt-1 w-full border rounded px-3 py-2" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Password</label>
-          <input
-            type="password"
-            className="mt-1 w-full border rounded px-3 py-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Role</label>
-          <select className="mt-1 w-full border rounded px-3 py-2" value={role} onChange={(e) => setRole(e.target.value as Role)}>
-            <option value="PUBLISHER">Publisher</option>
-            <option value="AICLIENT">AI Client</option>
-          </select>
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button type="submit" disabled={loading} className="w-full bg-indigo-600 text-white py-2 rounded font-semibold">
-          {loading ? 'Creating account…' : 'Sign up'}
-        </button>
-      </form>
+        )}
+        <form onSubmit={submit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-white">Name</label>
+            <input
+              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-white">Email</label>
+            <input
+              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-white">Password</label>
+            <input
+              type="password"
+              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-white">Role</label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white focus:border-faircrawl-accent focus:outline-none"
+              value={role}
+              onChange={(e) => setRole(e.target.value as Role)}
+            >
+              <option value="PUBLISHER" className="text-black">
+                Publisher
+              </option>
+              <option value="AICLIENT" className="text-black">
+                AI Client
+              </option>
+            </select>
+          </div>
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft disabled:opacity-70"
+          >
+            {loading ? 'Creating account…' : 'Sign up'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
