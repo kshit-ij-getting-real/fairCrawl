@@ -43,8 +43,33 @@ function SignupContent() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow rounded p-8">
-      <h1 className="text-2xl font-semibold mb-4">Create your Fair Crawl account</h1>
+    <div className="max-w-md mx-auto bg-white shadow rounded p-8 space-y-4">
+      <h1 className="text-2xl font-semibold">Create your Fair Crawl account</h1>
+      {role === 'PUBLISHER' ? (
+        <div className="bg-slate-50 border border-slate-200 rounded p-3 text-sm text-slate-700 space-y-2">
+          <p className="font-semibold">You&apos;re signing up as a Publisher.</p>
+          <div>
+            <p className="font-medium">After you create an account, you&apos;ll:</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Add a domain you control.</li>
+              <li>Prove you own it by serving a small verification file.</li>
+              <li>Set crawl policies and see which AI clients access your site.</li>
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-slate-50 border border-slate-200 rounded p-3 text-sm text-slate-700 space-y-2">
+          <p className="font-semibold">You&apos;re signing up as an AI Client.</p>
+          <div>
+            <p className="font-medium">After you create an account, you&apos;ll:</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Generate an API key.</li>
+              <li>Call the Fair Crawl gateway with your key and target URL.</li>
+              <li>See usage and estimated spend in your dashboard.</li>
+            </ul>
+          </div>
+        </div>
+      )}
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Name</label>
