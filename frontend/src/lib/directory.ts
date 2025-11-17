@@ -2,7 +2,13 @@ import { API_BASE } from './config';
 
 type PublicDomain = {
   name: string;
-  publisher?: string;
+  verified?: boolean;
+  publisher?:
+    | string
+    | {
+        name?: string;
+        user?: { email?: string };
+      };
   policies?: { pathPattern?: string; pricePer1k?: number; allowAI?: boolean }[];
 };
 
@@ -10,6 +16,7 @@ export type DirectoryEntry = {
   title?: string;
   domain?: string;
   description?: string;
+  subtitle?: string;
   tags?: string[];
   verified?: boolean;
   policyLink?: string;
@@ -18,35 +25,12 @@ export type DirectoryEntry = {
   publisher?: string;
 };
 
-const staticDirectoryEntries: DirectoryEntry[] = [
-  {
-    title: 'AI Essays Library',
-    domain: 'ai-essays-5yft.vercel.app',
-    description: 'Short essays drafted with AI, edited by humans. A testbed for transparent AI usage policies.',
-    tags: ['Demo', 'Policy: coming soon'],
-    link: 'https://ai-essays-5yft.vercel.app/',
-    policyLink: 'https://ai-essays-5yft.vercel.app/.well-known/faircrawl.json',
-    cta: 'Visit site',
-    verified: true,
-  },
-  {
-    title: 'Macro Notes',
-    domain: 'macro-notes-demo.vercel.app',
-    description: 'Plain-English notes on how macro cycles hit real life. Used to test path-level policies.',
-    tags: ['Demo', 'Policy: coming soon'],
-    link: 'https://macro-notes-demo.vercel.app/',
-    policyLink: 'https://macro-notes-demo.vercel.app/.well-known/faircrawl.json',
-    cta: 'Visit site',
-    verified: true,
-  },
-  {
-    title: 'Your site here',
-    description: 'Verify your own site and it will show up in the directory once we go live.',
-    tags: ['Coming soon'],
-    link: '/signup?role=publisher',
-    cta: 'Become a launch publisher',
-  },
-];
+const ctaDirectoryEntry: DirectoryEntry = {
+  title: 'Your site here',
+  description: 'Verify your own site and it will show up in the directory once we go live.',
+  link: '/signup?role=publisher',
+  cta: 'Become a launch publisher',
+};
 
 export async function fetchPublicDomains(): Promise<PublicDomain[]> {
   try {
@@ -60,21 +44,26 @@ export async function fetchPublicDomains(): Promise<PublicDomain[]> {
 }
 
 export function buildDirectoryEntries(domains: PublicDomain[]): DirectoryEntry[] {
-  return [
-    ...staticDirectoryEntries,
-    ...domains.map((domain) => ({
+  const verifiedDomains = domains.filter((domain) => domain.verified ?? true);
+
+  const directoryEntries = verifiedDomains.map((domain) => {
+    const publisherEmail = typeof domain.publisher === 'object' ? domain.publisher?.user?.email : undefined;
+    const publisherName =
+      typeof domain.publisher === 'string'
+        ? domain.publisher
+        : domain.publisher?.user?.email || domain.publisher?.name;
+
+    const subtitle = publisherEmail ? `Verified by ${publisherEmail}` : publisherName ? `Verified by ${publisherName}` : 'Verified.';
+
+    return {
       title: domain.name,
       domain: domain.name,
-      description: domain.publisher ? `Verified by ${domain.publisher}.` : 'Live on FairCrawl.',
-      tags:
-        domain.policies && domain.policies.length > 0
-          ? domain.policies.slice(0, 3).map((policy) => policy.pathPattern || 'Policy: coming soon')
-          : ['Policy: coming soon'],
-      policyLink: domain.name ? `https://${domain.name}/.well-known/faircrawl.json` : undefined,
-      cta: 'View site',
+      subtitle,
       link: domain.name ? `https://${domain.name}` : undefined,
+      cta: 'Visit site',
       verified: true,
-      publisher: domain.publisher,
-    })),
-  ];
+    } satisfies DirectoryEntry;
+  });
+
+  return [...directoryEntries, ctaDirectoryEntry];
 }

@@ -27,6 +27,7 @@ export default async function DirectoryPage() {
                 )}
               </div>
               {entry.domain && <p className="text-sm text-faircrawl-textMuted">{entry.domain}</p>}
+              {entry.subtitle && <p className="text-sm text-faircrawl-textMuted">{entry.subtitle}</p>}
               {entry.publisher && <p className="text-xs text-slate-200">Publisher: {entry.publisher}</p>}
               {entry.description && <p className="text-sm text-slate-200 leading-relaxed">{entry.description}</p>}
             </div>
