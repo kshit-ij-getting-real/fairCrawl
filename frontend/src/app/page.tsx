@@ -3,9 +3,8 @@ import { API_BASE } from '../lib/config';
 export const dynamic = 'force-dynamic';
 
 async function fetchMarketplace() {
-  const API_BASE_URL = API_BASE ?? 'http://localhost:4000';
   try {
-    const res = await fetch(`${API_BASE_URL}/api/public/domains`, { cache: 'no-store' });
+    const res = await fetch(`${API_BASE}/api/public/domains`, { cache: 'no-store' });
     if (!res.ok) return [];
     return res.json();
   } catch (err) {

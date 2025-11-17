@@ -48,12 +48,15 @@ npm run dev
 ```
 Open http://localhost:3000 to access the UI.
 
-### Example gateway call
+### Example gateway call (local development)
 ```bash
 curl "http://localhost:4000/api/gateway/fetch?url=https://example.com/path" \
   -H "X-API-Key: YOUR_FAIRCrawl_KEY"
 ```
 Replace the URL with an approved domain/path and provide a valid API key from the AI client dashboard.
+
+<!-- In production, replace localhost with your deployed backend URL, for example: -->
+<!-- https://faircrawl.onrender.com/api/gateway/fetch?url=... -->
 
 ## Repository structure
 ```
