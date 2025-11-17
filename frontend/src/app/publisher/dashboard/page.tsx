@@ -136,12 +136,29 @@ export default function PublisherDashboard() {
             <h2 className="text-xl font-semibold">Your sites</h2>
             <p className="text-sm text-white/70">Track the domains you control and jump into their AI rules.</p>
           </div>
+          <form onSubmit={addDomain} className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="flex-1 space-y-1 w-full">
+              <label className="text-xs font-medium uppercase tracking-wide text-white/60">Add a domain</label>
+              <input
+                className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                placeholder="example.com"
+                value={domainName}
+                onChange={(e) => setDomainName(e.target.value)}
+              />
+            </div>
+            <button
+              className="w-full md:w-auto rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+              type="submit"
+            >
+              Add domain
+            </button>
+          </form>
           {domains.length === 0 ? (
             <p className="text-sm text-white/70">No sites yet. Add a domain you control to start setting AI rules.</p>
           ) : (
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
               <table className="w-full text-left text-sm text-white">
-                <thead className="bg-white/[0.04] text-white/60">
+                <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
                   <tr>
                     <th className="py-2 px-3">Domain</th>
                     <th className="px-3">Verified</th>
@@ -149,7 +166,7 @@ export default function PublisherDashboard() {
                     <th className="px-3 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-white/5 text-sm">
                   {domains.map((domain) => (
                     <tr key={domain.id} className={selectedDomain === domain.id ? 'bg-white/5' : ''}>
                       <td className="py-3 px-3 font-medium">{domain.name}</td>
@@ -182,60 +199,48 @@ export default function PublisherDashboard() {
                 </tbody>
               </table>
             </div>
-          )}
-          <form onSubmit={addDomain} className="flex flex-col gap-3 sm:flex-row">
-            <div className="flex-1 space-y-1">
-              <label className="text-sm font-semibold text-white">Add a domain</label>
-              <input
-                className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-                placeholder="example.com"
-                value={domainName}
-                onChange={(e) => setDomainName(e.target.value)}
-              />
-            </div>
-            <button
-              className="self-start rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft"
-              type="submit"
-            >
-              Add domain
-            </button>
-          </form>
-        </DashboardCard>
-      </section>
+            )}
+          </DashboardCard>
+        </section>
 
       {selectedDomain && (
-        <section className="grid md:grid-cols-2 gap-6" id="ai-rules">
-          <DashboardCard className="space-y-4 text-white">
+        <section className="grid gap-8 lg:grid-cols-2" id="ai-rules">
+          <DashboardCard className="space-y-5 text-white">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">AI access rules</h3>
-              <p className="text-sm text-white/70">
-                These settings control which pages AI agents can read and how fast they can read them.
-              </p>
+              <p className="text-sm text-white/70">These settings control which pages AI agents can read and how fast they can read them.</p>
             </div>
-            <ul className="space-y-2 text-sm">
-              {domains
-                .find((d) => d.id === selectedDomain)
-                ?.policies.map((policy) => (
-                  <li key={policy.id} className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-white/80">
-                    <div className="font-semibold text-white">{policy.pathPattern}</div>
-                    <div className="text-white/70">
-                      {policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${policy.maxRps} rps max` : 'No cap'}
-                    </div>
-                  </li>
-                ))}
-            </ul>
-            <form onSubmit={addPolicy} className="space-y-3">
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase text-white/50">Current rules</p>
+              <ul className="space-y-2 text-sm">
+                {domains
+                  .find((d) => d.id === selectedDomain)
+                  ?.policies.map((policy) => (
+                    <li key={policy.id} className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-white/80">
+                      <div className="font-semibold text-white">{policy.pathPattern}</div>
+                      <div className="text-white/70">
+                        {policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${policy.maxRps} rps max` : 'No cap'}
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <form onSubmit={addPolicy} className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="space-y-1">
-                <label className="text-sm font-semibold text-white">Path</label>
+                <p className="text-xs font-medium uppercase text-white/50">Path</p>
+                <label className="text-sm font-semibold text-white" title="Pick the paths this rule covers. * matches anything in the path.">
+                  Path pattern
+                </label>
                 <input
                   className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
                   placeholder="/, /blog/*, /docs/*"
                   value={policyForm.pathPattern}
                   onChange={(e) => setPolicyForm({ ...policyForm, pathPattern: e.target.value })}
                 />
-                <p className="text-xs text-white/60">Which pages this rule applies to. * matches anything.</p>
+                <p className="text-xs text-white/60">Which pages this rule applies to.</p>
               </div>
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="space-y-3">
+                <p className="text-xs font-medium uppercase text-white/50">Access</p>
                 <label
                   className="flex items-center gap-2 text-sm font-semibold text-white"
                   title="On = AI agents can read this path. Off = all AI requests to this path are blocked."
@@ -247,78 +252,74 @@ export default function PublisherDashboard() {
                   />
                   Allow AI access
                 </label>
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold text-white">Price per 1k requests</label>
-                  <input
-                    className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-                    placeholder="Price in cents"
-                    value={policyForm.pricePer1k}
-                    onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
-                  />
-                </div>
               </div>
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-white">Max requests per second</label>
-                <input
-                  className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-                  placeholder="e.g. 1"
-                  value={policyForm.maxRps}
-                  onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
-                />
-                <p className="text-xs text-white/60">Speed limit for bots. 1 = one page per second, 5 = five pages per second, 0 = no limit.</p>
+              <div className="space-y-3">
+                <p className="text-xs font-medium uppercase text-white/50">Rate</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-white" title="Charge AI readers per 1k requests if you want metered access.">
+                      Price per 1k requests
+                    </label>
+                    <input
+                      className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                      placeholder="Price in cents"
+                      value={policyForm.pricePer1k}
+                      onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-white" title="Speed limit for bots hitting this path.">
+                      Max requests per second
+                    </label>
+                    <input
+                      className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                      placeholder="e.g. 1"
+                      value={policyForm.maxRps}
+                      onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-white/60">Set gentle speed limits and pricing for AI readers.</p>
+              </div>
+              <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.05] p-3 text-xs leading-relaxed text-white/70">
+                <p className="text-xs font-medium uppercase text-white/50">Examples</p>
+                <p className="text-white">Rule 1: Path = /, Allow AI access = Yes, Max requests per second = 1 → AI can read public pages slowly.</p>
+                <p className="text-white">Rule 2: Path = /paywalled/*, Allow AI access = No → AI cannot read any paywalled pages.</p>
               </div>
               <button className="rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft" type="submit">
                 Save rule
               </button>
             </form>
-            <div className="rounded-xl border border-white/10 bg-white/[0.05] p-3 text-xs leading-relaxed text-white/70">
-              <p className="font-semibold text-white">Example</p>
-              <p>
-                Rule 1: Path = /, Allow AI access = Yes, Max requests per second = 1 → AI can read public pages, one page per
-                second.
-              </p>
-              <p>
-                Rule 2: Path = /paywalled/*, Allow AI access = No → AI cannot read any paywalled pages.
-              </p>
-            </div>
           </DashboardCard>
-          <DashboardCard className="space-y-4 text-white">
+          <DashboardCard className="space-y-5 text-white">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">Verify that you own this site</h3>
               <p className="text-sm text-white/70">
                 To prove you own this domain, put a one-line file on it once. When we can read that file, we mark the domain as verified.
               </p>
             </div>
-            <div className="space-y-2 text-sm text-white/80">
-              <p className="font-semibold text-white">Steps:</p>
-              <ol className="list-decimal list-inside space-y-1">
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase text-white/50">Steps</p>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-white/80">
                 <li>Click 'Fetch verification token'.</li>
                 <li>On your site, create a file at '/.well-known/faircrawl-verification.txt'.</li>
                 <li>Put only this token in that file.</li>
                 <li>Click 'Verify domain'.</li>
               </ol>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <button onClick={fetchToken} className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft">
-                  Fetch verification token
-                </button>
-                {verificationToken && <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>}
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase text-white/50">Analytics</p>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80 space-y-2">
+                <div className="flex justify-between"><span>Total requests</span><span>{analytics[selectedDomain]?.totalRequests ?? 0}</span></div>
+                <div className="flex justify-between"><span>Estimated revenue</span><span>${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</span></div>
               </div>
-              <button onClick={verifyDomain} className="self-start rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft">
-                Verify domain
-              </button>
-              {message && <p className="text-sm text-white/70">{message}</p>}
             </div>
-            <div className="space-y-2 text-sm text-white/80">
-              <h4 className="font-semibold text-white">Analytics</h4>
-              <p>Total requests: {analytics[selectedDomain]?.totalRequests ?? 0}</p>
-              <p>Estimated revenue: ${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</p>
-              <div className="mt-2 space-y-1">
-                <div className="font-semibold text-white">Top AI clients</div>
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase text-white/50">Top AI clients</p>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80 space-y-2">
                 {analytics[selectedDomain]?.topClients?.length ? (
                   analytics[selectedDomain].topClients.map((client: any) => (
-                    <div key={client.aiClientId} className="flex justify-between text-white/80">
+                    <div key={client.aiClientId} className="flex justify-between">
                       <span>{client.name}</span>
                       <span>{client.requests} req</span>
                     </div>
@@ -326,6 +327,21 @@ export default function PublisherDashboard() {
                 ) : (
                   <p className="text-white/60">No data yet.</p>
                 )}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase text-white/50">Verify domain</p>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <button onClick={fetchToken} className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft">
+                    Fetch verification token
+                  </button>
+                  {verificationToken && <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>}
+                </div>
+                <button onClick={verifyDomain} className="self-start rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft">
+                  Verify domain
+                </button>
+                {message && <p className="text-sm text-white/70">{message}</p>}
               </div>
             </div>
           </DashboardCard>
