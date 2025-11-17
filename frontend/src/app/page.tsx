@@ -196,71 +196,57 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="directory" className="rounded-3xl bg-gradient-to-br from-slate-900 to-faircrawl-heroTo text-white shadow-xl p-10 space-y-8">
-        <div className="space-y-3 text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl font-semibold">Verified AI-ready sites</h2>
-          <p className="text-base text-faircrawl-textMuted">
-            These domains have verified ownership and published AI access rules through FairCrawl. They are safe defaults when you want high-quality, permissioned data.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {directoryEntries.map((entry, idx) => (
-            <div key={`${entry.title || entry.domain}-${idx}`} className="rounded-2xl bg-white/5 border border-white/10 p-6 shadow-md space-y-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-semibold text-white">{entry.title || entry.domain}</h3>
-                  {entry.verified && (
-                    <span className="rounded-full bg-faircrawl-accent/20 px-3 py-1 text-xs font-semibold text-faircrawl-accent">Verified</span>
-                  )}
+      <section id="directory" className="rounded-3xl bg-gradient-to-br from-slate-900 to-faircrawl-heroTo text-white shadow-xl p-10">
+        <div className="mx-auto max-w-4xl px-4 space-y-8">
+          <div className="space-y-3 text-center max-w-3xl mx-auto">
+            <h2 className="text-3xl font-semibold">Verified AI-ready sites</h2>
+            <p className="text-base text-faircrawl-textMuted">
+              These domains have verified ownership and published AI access rules through FairCrawl. They are safe defaults when you want high-quality, permissioned data.
+            </p>
+          </div>
+          <div className="space-y-4">
+            {directoryEntries.map((entry, idx) => {
+              const isExternalLink = entry.link?.startsWith('http');
+
+              return (
+                <div
+                  key={`${entry.title || entry.domain}-${idx}`}
+                  className="w-full rounded-3xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 p-6 md:p-8"
+                >
+                  <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-semibold text-white">{entry.title || entry.domain}</h3>
+                        {entry.verified && (
+                          <span className="rounded-full bg-faircrawl-accent/20 px-3 py-1 text-xs font-semibold text-faircrawl-accent">Verified</span>
+                        )}
+                      </div>
+                      {entry.subtitle && <p className="text-sm text-faircrawl-textMuted">{entry.subtitle}</p>}
+                      {entry.description && <p className="text-sm text-faircrawl-textMuted">{entry.description}</p>}
+                    </div>
+                    {entry.link && (
+                      <a
+                        href={entry.link}
+                        target={isExternalLink ? '_blank' : undefined}
+                        rel={isExternalLink ? 'noreferrer' : undefined}
+                        className="inline-flex w-full justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft md:w-auto"
+                      >
+                        {entry.cta || 'Visit site'}
+                      </a>
+                    )}
+                  </div>
                 </div>
-                {entry.domain && <p className="text-sm text-faircrawl-textMuted">{entry.domain}</p>}
-                {entry.publisher && <p className="text-xs text-slate-200">Publisher: {entry.publisher}</p>}
-                {entry.description && <p className="text-sm text-slate-200 leading-relaxed">{entry.description}</p>}
-              </div>
-              {entry.tags && entry.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {entry.tags.map((tag: string) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div className="flex flex-wrap items-center gap-3">
-                {entry.link ? (
-                  <a
-                    href={entry.link}
-                    className="inline-flex w-fit items-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white hover:bg-faircrawl-accentSoft transition"
-                  >
-                    {entry.cta || 'Visit site'}
-                  </a>
-                ) : (
-                  <span className="inline-flex w-fit items-center rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white">
-                    {entry.cta || 'Verified'}
-                  </span>
-                )}
-                {entry.policyLink && (
-                  <a
-                    href={entry.policyLink}
-                    className="inline-flex w-fit items-center rounded-full border border-white/30 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 transition"
-                  >
-                    View policy
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center">
-          <a
-            href="/directory"
-            className="inline-flex items-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100 transition"
-          >
-            Browse full directory
-          </a>
+              );
+            })}
+          </div>
+          <div className="flex justify-center">
+            <a
+              href="/directory"
+              className="inline-flex items-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+            >
+              Browse full directory
+            </a>
+          </div>
         </div>
       </section>
     </div>
