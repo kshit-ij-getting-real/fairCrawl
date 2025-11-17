@@ -94,30 +94,32 @@ export default function PublisherDashboard() {
 
   return (
     <div className="space-y-10">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold">Publisher dashboard</h1>
+      <section className="bg-white rounded-xl shadow-sm p-6 flex items-start justify-between">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-semibold">Your creator dashboard</h1>
+          <p className="text-sm text-slate-500">
+            💭 Helper: Use this page to add your site, prove it&apos;s yours, and set rules for how AI agents can read your content.
+          </p>
+        </div>
         <button
           onClick={() => {
             clearSession();
             router.replace('/');
           }}
-          className="text-sm text-slate-500"
+          className="text-sm text-blue-600 hover:text-blue-700"
         >
           Log out
         </button>
-      </div>
+      </section>
 
-      <div className="bg-slate-50 border border-slate-200 rounded p-4 space-y-2 text-sm text-slate-700">
-        <p className="font-semibold">This is your Publisher dashboard.</p>
-        <ol className="list-decimal list-inside space-y-1">
-          <li>Add a domain you control (for example: https://angelsintheabstract.substack.com).</li>
-          <li>Verify that you control it by serving a small text file at a special path.</li>
-          <li>Set crawl policies that control which AI clients can access which URLs, and at what rate.</li>
-        </ol>
-      </div>
-
-      <section className="bg-white rounded shadow p-6 space-y-4">
-        <h2 className="text-xl font-semibold">Your domains</h2>
+      <section className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold">Your sites</h2>
+          <p className="text-sm text-slate-500">
+            💭 Helper: Each row here is one site where you publish content. Add your Substack, blog, or docs site so AI agents can
+            reach it through Fair Crawl.
+          </p>
+        </div>
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="text-slate-500">
@@ -150,7 +152,7 @@ export default function PublisherDashboard() {
             value={domainName}
             onChange={(e) => setDomainName(e.target.value)}
           />
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded" type="submit">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition" type="submit">
             Add domain
           </button>
         </form>
@@ -158,17 +160,14 @@ export default function PublisherDashboard() {
 
       {selectedDomain && (
         <section className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded shadow p-6 space-y-4">
-            <h3 className="text-lg font-semibold">Policies</h3>
-            <p className="text-sm text-slate-600">
-              Policies define which URLs an AI client may fetch and at what rate.
-              <br />
-              • Path pattern: which URLs the rule applies to (for example: /* for everything).
-              <br />
-              • Max RPS: maximum requests per second allowed from the gateway.
-              <br />
-              • “Allow AI access” toggles whether this rule is open to any AI client that pays via Fair Crawl.
-            </p>
+          <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">AI access rules</h3>
+              <p className="text-sm text-slate-500">
+                💭 Helper: These rules say which pages AI agents can read, how fast they can read them, and whether that path is
+                free or paid.
+              </p>
+            </div>
             <ul className="space-y-2 text-sm">
               {domains
                 .find((d) => d.id === selectedDomain)
@@ -208,34 +207,35 @@ export default function PublisherDashboard() {
                   onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
                 />
               </div>
-              <button className="bg-indigo-600 text-white px-4 py-2 rounded" type="submit">
+              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" type="submit">
                 Save policy
               </button>
             </form>
           </div>
-          <div className="bg-white rounded shadow p-6 space-y-4">
-            <h3 className="text-lg font-semibold">Verification</h3>
-            <div className="text-sm text-slate-700 space-y-1">
-              <p className="font-semibold">How to verify your domain:</p>
+          <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">Verify that you own this site</h3>
+              <p className="text-sm text-slate-500">
+                💭 Helper: We ask you to put a small text file on your site once. When we can read that file, we know this site
+                really belongs to you.
+              </p>
+            </div>
+            <div className="text-sm text-slate-700 space-y-2">
+              <p className="font-semibold">Steps:</p>
               <ol className="list-decimal list-inside space-y-1">
-                <li>Click “Fetch verification token” to generate a unique token.</li>
-                <li>
-                  On your site, serve a plain text file at:
-                  <div className="font-mono bg-slate-100 rounded px-2 py-1 mt-1">/.well-known/faircrawl-verification.txt</div>
-                  The file should contain exactly this token and nothing else.
-                </li>
-                <li>Once the file is live, click “Verify domain” here.</li>
-                <li>
-                  When verification succeeds, the “Verified” column will show “Yes” and AI clients will be allowed to fetch URLs
-                  from this domain according to your policies.
-                </li>
+                <li>Click “Fetch verification token”.</li>
+                <li>Create a file at: <span className="font-mono">/.well-known/faircrawl-verification.txt</span></li>
+                <li>Put only the token in that file.</li>
+                <li>Click “Verify domain”.</li>
               </ol>
             </div>
-            <button onClick={fetchToken} className="text-indigo-600 text-sm underline">
-              Fetch verification token
-            </button>
-            {verificationToken && <p className="font-mono bg-slate-100 p-2 rounded break-all">{verificationToken}</p>}
-            <button onClick={verifyDomain} className="px-4 py-2 bg-green-600 text-white rounded">
+            <div className="flex items-center gap-3">
+              <button onClick={fetchToken} className="text-blue-600 text-sm underline">
+                Fetch verification token
+              </button>
+              {verificationToken && <p className="font-mono bg-slate-100 p-2 rounded break-all">{verificationToken}</p>}
+            </div>
+            <button onClick={verifyDomain} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
               Verify domain
             </button>
             {message && <p className="text-sm text-slate-600">{message}</p>}
