@@ -283,7 +283,7 @@ const Page = async () => {
           </div>
           <div className="space-y-4">
             {verifiedDomains.map((domain) => (
-              <MarketingCard key={domain.id}>
+              <MarketingCard key={domain.name}>
                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-white">{domain.name}</h3>
