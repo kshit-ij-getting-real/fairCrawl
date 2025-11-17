@@ -17,132 +17,144 @@ export default async function HomePage() {
   const domains = await fetchMarketplace();
   return (
     <div className="space-y-12">
-      <section className="bg-white rounded-xl shadow-sm p-10 space-y-8">
-        <div className="space-y-4 text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold text-slate-900">Give AI a proper front door to your content</h1>
-          <p className="text-lg text-slate-700 leading-relaxed space-y-2">
-            <span className="block">Today, crawlers hit your site in the dark. Some get blocked, some quietly scrape, nobody sees the full picture.</span>
-            <span className="block">FairCrawl turns that chaos into a simple story: AI asks for access, you set the rules, we enforce them on every request.</span>
-          </p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4">
-          <a
-            href="/signup"
-            className="px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-          >
-            Get early access
-          </a>
-          <a href="#how-it-works" className="px-6 py-3 rounded-lg border border-slate-200 text-slate-800 hover:bg-slate-50">
-            See how it works
-          </a>
-        </div>
-        <div className="grid md:grid-cols-4 gap-4 text-sm text-slate-700">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <p className="font-semibold text-slate-900">When the crawler hits a wall</p>
-            <p className="text-slate-600 mt-1">The bot is told to ask instead of scrape.</p>
+      <section className="rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-12 shadow-xl">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-faircrawl-textMain">
+              <span className="h-2 w-2 rounded-full bg-faircrawl-accent"></span>
+              Controlled AI crawling
+            </div>
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">Let AI in without losing control</h1>
+              <p className="text-lg text-faircrawl-textMuted leading-relaxed">
+                FairCrawl sits between AI crawlers and your site. AI clients ask us for pages, you set the rules, and we enforce
+                them on every request.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-4">
+              <a
+                href="/signup"
+                className="px-6 py-3 rounded-full bg-faircrawl-accent text-white font-semibold hover:bg-faircrawl-accentSoft transition shadow-lg shadow-blue-900/40"
+              >
+                Get early access
+              </a>
+              <a href="#how-it-works" className="text-faircrawl-textMain hover:text-white font-semibold">
+                See how FairCrawl works
+              </a>
+            </div>
           </div>
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <p className="font-semibold text-slate-900">When the requester asks</p>
-            <p className="text-slate-600 mt-1">AI teams register, grab an API key, and point traffic at FairCrawl.</p>
-          </div>
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <p className="font-semibold text-slate-900">When the publisher decides</p>
-            <p className="text-slate-600 mt-1">You verify your domain and set path-by-path rules.</p>
-          </div>
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-            <p className="font-semibold text-slate-900">When FairCrawl mediates</p>
-            <p className="text-slate-600 mt-1">Every request is checked, enforced, and logged so both sides stay in sync.</p>
+          <div className="rounded-2xl bg-white/5 p-6 border border-white/10 shadow-lg space-y-4">
+            <h2 className="text-lg font-semibold text-white">A clear path for AI traffic</h2>
+            <ul className="space-y-3 text-sm text-faircrawl-textMuted">
+              <li className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-faircrawl-accent"></span>
+                <span>AI crawlers route through FairCrawl instead of scraping in the dark.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-faircrawl-accent"></span>
+                <span>You choose which paths are open, throttled, or blocked for AI agents.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-faircrawl-accent"></span>
+                <span>Every request is logged so both sides see the same record.</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="bg-white rounded-xl shadow-sm p-10 space-y-6">
+      <section id="how-it-works" className="bg-white text-slate-900 rounded-3xl shadow-lg p-10 space-y-8">
         <div className="space-y-2 text-center">
-          <h2 className="text-2xl font-semibold text-slate-900">How FairCrawl works</h2>
-          <p className="text-sm text-slate-500">A narrative walkthrough of the handshake between crawlers, AI teams, and publishers.</p>
+          <h2 className="text-3xl font-semibold text-slate-900">How FairCrawl works</h2>
+          <p className="text-base text-slate-600">A simple handshake between your site and AI teams.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="border border-slate-200 bg-slate-50 rounded-xl p-5 space-y-2">
-            <p className="text-xs font-semibold text-blue-700">Step 1</p>
-            <h3 className="text-lg font-semibold text-slate-900">When the crawler hits a wall</h3>
-            <p className="text-sm text-slate-700">
-              An AI product tries to crawl your site. Instead of guessing your rules, it&apos;s told to ask through FairCrawl.
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-900">Crawler hits a wall</h3>
+            <p className="mt-2 text-sm text-slate-700 leading-relaxed">
+              An AI product tries to crawl your site. Instead of guessing your rules or scraping around blocks, it is told to go
+              through FairCrawl.
             </p>
-            <p className="text-xs text-slate-500">We replace scraping guesses with a formal request.</p>
           </div>
-          <div className="border border-slate-200 bg-slate-50 rounded-xl p-5 space-y-2">
-            <p className="text-xs font-semibold text-blue-700">Step 2</p>
-            <h3 className="text-lg font-semibold text-slate-900">When the requester asks nicely</h3>
-            <p className="text-sm text-slate-700">
-              The AI team signs up, gets an API key, and points their crawlers at FairCrawl instead of scrapers.
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-900">Request goes through FairCrawl</h3>
+            <p className="mt-2 text-sm text-slate-700 leading-relaxed">
+              The AI team signs up, gets an API key, and sends each URL to FairCrawl first. We know who they are and what they
+              want to do with your content.
             </p>
-            <p className="text-xs text-slate-500">FairCrawl becomes the gateway, not your firewall.</p>
           </div>
-          <div className="border border-slate-200 bg-slate-50 rounded-xl p-5 space-y-2">
-            <p className="text-xs font-semibold text-blue-700">Step 3</p>
-            <h3 className="text-lg font-semibold text-slate-900">When the publisher decides</h3>
-            <p className="text-sm text-slate-700">
-              You verify your domain, set path rules, and FairCrawl mediates every request according to those rules.
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-900">You set the rules</h3>
+            <p className="mt-2 text-sm text-slate-700 leading-relaxed">
+              You verify your domain, set simple rules per path, and choose how fast AIs can read. We apply those rules to every
+              request and keep a clear log of what was accessed.
             </p>
-            <p className="text-xs text-slate-500">Every fetch is enforced and logged so both sides see the same record.</p>
           </div>
         </div>
       </section>
 
-      <section className="bg-white rounded-xl shadow-sm p-10 space-y-6">
+      <section className="bg-white text-slate-900 rounded-3xl shadow-lg p-10 space-y-6">
         <div className="space-y-2 text-center">
-          <h2 className="text-2xl font-semibold text-slate-900">Who it&apos;s for</h2>
-          <p className="text-sm text-slate-500">Clear entry points for both sides of the handshake.</p>
+          <h2 className="text-3xl font-semibold">Who it&apos;s for</h2>
+          <p className="text-base text-slate-600">Two sides of the same handshake.</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="border border-slate-200 bg-slate-50 rounded-xl p-5 space-y-2">
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-3">
             <h3 className="text-xl font-semibold text-slate-900">For publishers</h3>
-            <p className="text-sm text-slate-700">Blogs, docs, knowledge bases, research archives.</p>
-            <p className="text-sm text-slate-600">Add your domain, prove you own it, and set per-path rules so AI traffic is predictable and paid.</p>
-            <a href="/signup?role=publisher" className="text-blue-700 text-sm font-semibold hover:underline">
+            <p className="text-sm text-slate-700 leading-relaxed">
+              Blogs, docs, knowledge bases, research archives. You want AI traffic, but on your terms.
+            </p>
+            <a
+              href="/signup?role=publisher"
+              className="inline-flex items-center text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
+            >
               Start as a publisher
             </a>
           </div>
-          <div className="border border-slate-200 bg-slate-50 rounded-xl p-5 space-y-2">
-            <h3 className="text-xl font-semibold text-slate-900">For AI platforms</h3>
-            <p className="text-sm text-slate-700">LLM apps, search copilots, retrieval pipelines, and agents.</p>
-            <p className="text-sm text-slate-600">Register, grab an API key, and route crawlers through FairCrawl so you can honor publisher rules without guesswork.</p>
-            <a href="/signup?role=aiclient" className="text-blue-700 text-sm font-semibold hover:underline">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-3">
+            <h3 className="text-xl font-semibold text-slate-900">For AI platforms &amp; agents</h3>
+            <p className="text-sm text-slate-700 leading-relaxed">
+              LLM providers, agent frameworks, AI search tools. You want a clean way to respect publisher rules.
+            </p>
+            <a
+              href="/signup?role=aiclient"
+              className="inline-flex items-center text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
+            >
               Start as an AI client
             </a>
           </div>
         </div>
       </section>
 
-      <section className="bg-white rounded-xl shadow-sm p-10 space-y-4">
+      <section className="bg-white text-slate-900 rounded-3xl shadow-lg p-10 space-y-6">
         <div className="space-y-2 text-center">
-          <h2 className="text-2xl font-semibold text-slate-900">What a verified domain looks like</h2>
-          <p className="text-sm text-slate-500">Publishers prove ownership, declare rules, and we use those rules to mediate every AI request.</p>
+          <h2 className="text-3xl font-semibold">What a verified domain looks like</h2>
+          <p className="text-base text-slate-600">A quick demo of what AI teams see and follow.</p>
         </div>
         <ul className="list-disc list-inside space-y-2 text-slate-700 max-w-4xl mx-auto">
-          <li>Each path pattern has allow/block decisions so AI teams know exactly what is permitted.</li>
-          <li>Prices are visible per 1k requests, and the gateway keeps the ledger of usage.</li>
-          <li>When a crawler calls FairCrawl, the rules here are enforced before anything touches your origin.</li>
+          <li>Each path pattern has an allow/block decision plus a speed limit for AI crawlers.</li>
+          <li>Prices are visible per 1k requests, and every request is recorded against that rule.</li>
+          <li>FairCrawl enforces these settings before any bot touches your origin.</li>
         </ul>
       </section>
 
-      <section className="bg-white rounded-xl shadow-sm p-10 space-y-4">
+      <section className="bg-white text-slate-900 rounded-3xl shadow-lg p-10 space-y-4">
         <div className="space-y-1">
-          <h2 className="text-2xl font-semibold text-slate-900">Featured verified domains</h2>
-          <p className="text-sm text-slate-500">Creators who verified ownership and published AI rules you can route against right now.</p>
+          <h2 className="text-2xl font-semibold">Featured verified domains</h2>
+          <p className="text-sm text-slate-600">Creators who verified ownership and published AI rules you can route against right now.</p>
         </div>
         {domains.length === 0 ? (
-          <p className="text-slate-600">No domains have been verified yet. Be the first to join Fair Crawl.</p>
+          <p className="text-slate-600">No domains have been verified yet. Be the first to join FairCrawl.</p>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
             {domains.map((domain: any) => (
-              <div key={domain.name} className="border border-slate-200 bg-slate-50 rounded-xl p-5 space-y-2">
+              <div key={domain.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-slate-900">{domain.name}</h3>
                     <p className="text-sm text-slate-500">by {domain.publisher}</p>
                   </div>
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Verified</span>
+                  <span className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full">Verified</span>
                 </div>
                 <ul className="mt-1 text-sm text-slate-700 space-y-1">
                   {domain.policies.map((policy: any, idx: number) => (
