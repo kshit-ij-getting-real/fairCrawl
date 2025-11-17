@@ -3,7 +3,7 @@ import { fetchPublicDomains } from '../lib/directory';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Page() {
+const Page = async () => {
   const domains = await fetchPublicDomains();
   const verifiedDomains = domains.filter((domain) => domain.verified);
 
@@ -27,10 +27,7 @@ export default async function Page() {
             </div>
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-4">
-                <a
-                  href="/signup"
-                  className="rounded-full bg-faircrawl-accent px-6 py-3 font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-faircrawl-accentSoft"
-                >
+                <a href="/signup" className="rounded-full bg-faircrawl-accent px-6 py-3 font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-faircrawl-accentSoft">
                   Get early access
                 </a>
                 <a href="#how-it-works" className="font-semibold text-faircrawl-textMain hover:text-white">
@@ -62,9 +59,7 @@ export default async function Page() {
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between text-sm text-white/80">
                   <span className="font-semibold">/blog/ai</span>
-                  <span className="rounded-full bg-faircrawl-accent/20 px-3 py-1 text-xs font-semibold text-faircrawl-accent">
-                    allowed
-                  </span>
+                  <span className="rounded-full bg-faircrawl-accent/20 px-3 py-1 text-xs font-semibold text-faircrawl-accent">allowed</span>
                 </div>
                 <p className="mt-2 text-xs text-white/60">Client: atlas-research.ai · Rate: 5 rps</p>
               </div>
@@ -187,7 +182,7 @@ export default async function Page() {
               <p className="text-sm font-semibold text-faircrawl-accent">API preview</p>
               <div className="space-y-2 text-sm text-white">
                 <p className="font-semibold">curl https://api.faircrawl.ai/check</p>
-                <p className="rounded-lg bg-white/5 px-4 py-3 font-mono text-xs text-white/90">{"url": "https://site.com/blog/ai"}</p>
+                <p className="rounded-lg bg-white/5 px-4 py-3 font-mono text-xs text-white/90">{'{"url": "https://site.com/blog/ai"}'}</p>
                 <p className="rounded-lg bg-white/5 px-4 py-3 font-mono text-xs text-white/90">→ allowed with 5 rps, log shared</p>
               </div>
             </div>
@@ -324,4 +319,6 @@ export default async function Page() {
       </section>
     </main>
   );
-}
+};
+
+export default Page;
