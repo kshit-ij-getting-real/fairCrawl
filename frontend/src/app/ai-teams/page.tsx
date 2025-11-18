@@ -14,12 +14,14 @@ const AiTeamsPage = () => {
   return (
     <main className="mx-auto max-w-6xl px-6 py-16 space-y-10">
       <section className="space-y-10 text-white">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For AI teams</p>
-          <h1 className="text-3xl font-semibold">FairCrawl for AI teams</h1>
-          <p className="text-base leading-relaxed text-white/80">
-            Get clean, permissioned data without fighting random blocks. FairCrawl makes crawler access predictable and transparent.
-          </p>
+        <div className="space-y-3 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For AI teams</p>
+            <h1 className="text-3xl font-semibold">FairCrawl for AI teams</h1>
+            <p className="text-base leading-relaxed text-white/80">
+              Get clean, permissioned data without fighting random blocks. FairCrawl makes crawler access predictable and transparent.
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
