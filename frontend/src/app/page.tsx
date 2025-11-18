@@ -13,7 +13,7 @@ const Page = () => {
                 <span className="h-2 w-2 rounded-full bg-blue-400" />
                 Controlled, paid AI crawling
               </div>
-              <h1 className="text-4xl font-bold leading-tight md:text-5xl">Let AI in without losing control</h1>
+              <h1 className="text-4xl font-bold leading-tight md:text-5xl">Let AI in, keep control, get paid</h1>
               <p className="text-lg leading-relaxed text-white/80">
                 FairCrawl sits between AI crawlers and your site, so you decide what they can read, how fast they can fetch it, and what they pay. Every request is enforced and logged instead of being free scraping.
               </p>
