@@ -16,6 +16,9 @@ function SignupContent() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const fieldClasses =
+    'w-full rounded-2xl bg-[#090f20] border border-white/15 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500';
+
   useEffect(() => {
     const roleParam = params.get('role');
     if (roleParam === 'aiclient') setRole('AICLIENT');
@@ -51,7 +54,7 @@ function SignupContent() {
           <p className="text-sm text-white/70">FairCrawl keeps AI access transparent.</p>
         </div>
         {role === 'PUBLISHER' ? (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80 space-y-2">
+          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
             <p className="font-semibold text-white">You&apos;re signing up as a Publisher.</p>
             <div className="space-y-1">
               <p className="font-medium">After you create an account, you&apos;ll:</p>
@@ -63,8 +66,8 @@ function SignupContent() {
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80 space-y-2">
-            <p className="font-semibold text-white">You&apos;re signing up as an AI Client.</p>
+          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
+            <p className="font-semibold text-white">You&apos;re signing up as an AI team.</p>
             <div className="space-y-1">
               <p className="font-medium">After you create an account, you&apos;ll:</p>
               <ul className="list-disc list-inside space-y-1">
@@ -76,42 +79,29 @@ function SignupContent() {
           </div>
         )}
         <form onSubmit={submit} className="space-y-4">
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label className="block text-sm font-medium text-white">Name</label>
-            <input
-              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <input className={fieldClasses} value={name} onChange={(e) => setName(e.target.value)} />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label className="block text-sm font-medium text-white">Email</label>
-            <input
-              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <input className={fieldClasses} value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label className="block text-sm font-medium text-white">Password</label>
-            <input
-              type="password"
-              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <input type="password" className={fieldClasses} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label className="block text-sm font-medium text-white">Role</label>
             <select
-              className="mt-1 block w-full rounded-xl border border-white/30 bg-[#050815] px-4 py-2.5 text-sm text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/60 disabled:opacity-60 appearance-none"
+              className={`${fieldClasses} appearance-none`}
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
             >
-              <option value="PUBLISHER" className="text-black">
+              <option value="PUBLISHER" className="bg-[#090f20] text-white">
                 Publisher
               </option>
-              <option value="AICLIENT" className="text-black">
+              <option value="AICLIENT" className="bg-[#090f20] text-white">
                 AI team
               </option>
             </select>

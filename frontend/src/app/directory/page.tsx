@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../../components/ui/MarketingCard';
+import { SectionActions } from '../../components/ui/SectionActions';
 import { fetchPublicDomains } from '../../lib/directory';
 
 export const dynamic = 'force-dynamic';
@@ -8,13 +9,17 @@ export const dynamic = 'force-dynamic';
 export default async function DirectoryPage() {
   const domains = await fetchPublicDomains();
   const verifiedDomains = domains.filter(
-    (domain) => domain.verified === true || domain.verifiedAt || domain.verificationStatus === 'verified'
+    (domain) =>
+      domain.verified === true ||
+      domain.verificationStatus === 'verified' ||
+      domain.verificationStatus === 'VERIFIED' ||
+      !!domain.verifiedAt
   );
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10 px-6 py-12">
+    <div className="mx-auto max-w-6xl space-y-10 px-6 py-12 md:py-16">
       <header className="space-y-3">
-        <p className="text-sm font-semibold text-faircrawl-accent">Directory</p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Directory</p>
         <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
         <p className="max-w-3xl text-base text-faircrawl-textMuted">
           These domains have verified ownership and published AI access rules through FairCrawl. They are safe defaults when you want high-quality, permissioned data.
@@ -37,13 +42,14 @@ export default async function DirectoryPage() {
                   <p className="text-xs text-white/60">
                     {domain.name} · Verified{publisherName ? ` by ${publisherName}` : ''}
                   </p>
+                  <p className="mt-1 text-xs text-white/50">AI rules published through FairCrawl.</p>
                 </div>
                 <div className="flex justify-end">
                   <a
                     href={`https://${domain.name}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-medium text-white hover:bg-faircrawl-accentSoft"
+                    className="inline-flex items-center rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500/80"
                   >
                     Visit site
                   </a>
@@ -53,22 +59,22 @@ export default async function DirectoryPage() {
           );
         })}
 
-        <MarketingCard>
-          <div className="flex flex-col gap-4 text-white md:flex-row md:items-center md:justify-between">
+        <MarketingCard className="text-white">
+          <div className="space-y-3">
             <div>
               <h3 className="text-lg font-semibold">Your site here</h3>
               <p className="text-sm text-white/70">
                 Verify your own site and it will show up in the directory once we go live.
               </p>
             </div>
-            <div className="flex justify-end">
+            <SectionActions>
               <Link
                 href="/publisher/dashboard"
-                className="inline-flex items-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white hover:bg-faircrawl-accentSoft"
+                className="inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
               >
                 Become a launch publisher
               </Link>
-            </div>
+            </SectionActions>
           </div>
         </MarketingCard>
       </div>

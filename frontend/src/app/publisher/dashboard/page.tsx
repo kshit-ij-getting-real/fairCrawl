@@ -22,6 +22,8 @@ export default function PublisherDashboard() {
   const [policyForm, setPolicyForm] = useState({ pathPattern: '/*', allowAI: true, pricePer1k: 0, maxRps: '' });
   const [verificationToken, setVerificationToken] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
+  const inputClasses =
+    'w-full rounded-2xl bg-[#090f20] border border-white/15 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500';
 
   useEffect(() => {
     if (getRole() !== 'PUBLISHER') {
@@ -130,20 +132,20 @@ export default function PublisherDashboard() {
             <h2 className="text-lg font-semibold text-white">Your sites</h2>
             <p className="text-sm text-white/70">Track the domains you control and jump into their AI rules.</p>
           </div>
-          <form onSubmit={addDomain} className="space-y-3">
+          <form onSubmit={addDomain} className="space-y-2">
             <label className="block text-sm font-medium text-white" htmlFor="domain-input">
               Add a domain
             </label>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
               <input
                 id="domain-input"
-                className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
+                className={inputClasses}
                 placeholder="example.com"
                 value={domainName}
                 onChange={(e) => setDomainName(e.target.value)}
               />
               <button
-                className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+                className="inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
                 type="submit"
               >
                 Add domain
@@ -224,12 +226,12 @@ export default function PublisherDashboard() {
             </div>
             <form onSubmit={addPolicy} className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="space-y-2">
-                <p className="text-xs font-medium uppercase text-white/50">Path</p>
+                <p className="text-sm font-medium text-white">Path</p>
                 <label className="text-sm font-semibold text-white" title="Pick the paths this rule covers. * matches anything in the path.">
                   Path pattern
                 </label>
                 <input
-                  className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
+                  className={inputClasses}
                   placeholder="/, /blog/*, /docs/*"
                   value={policyForm.pathPattern}
                   onChange={(e) => setPolicyForm({ ...policyForm, pathPattern: e.target.value })}
@@ -237,7 +239,7 @@ export default function PublisherDashboard() {
                 <p className="text-xs text-white/60">Which pages this rule applies to.</p>
               </div>
               <div className="space-y-3">
-                <p className="text-xs font-medium uppercase text-white/50">Access</p>
+                <p className="text-sm font-medium text-white">Access</p>
                 <label
                   className="flex items-center gap-2 text-sm font-semibold text-white"
                   title="On = AI crawlers can read this path. Off = all AI requests to this path are blocked."
@@ -246,20 +248,21 @@ export default function PublisherDashboard() {
                     type="checkbox"
                     checked={policyForm.allowAI}
                     onChange={(e) => setPolicyForm({ ...policyForm, allowAI: e.target.checked })}
+                    className="h-4 w-4 rounded border-white/40 bg-transparent"
                   />
                   Allow AI access
                 </label>
                 <p className="text-xs text-white/60">Toggle access for this path.</p>
               </div>
               <div className="space-y-3">
-                <p className="text-xs font-medium uppercase text-white/50">Rate</p>
+                <p className="text-sm font-medium text-white">Rate</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-white" title="Charge AI crawlers per 1k requests if you want metered access.">
                       Price per 1k requests
                     </label>
                     <input
-                      className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
+                      className={inputClasses}
                       placeholder="Price in cents"
                       value={policyForm.pricePer1k}
                       onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
@@ -270,7 +273,7 @@ export default function PublisherDashboard() {
                       Max requests per second
                     </label>
                     <input
-                      className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
+                      className={inputClasses}
                       placeholder="e.g. 1"
                       value={policyForm.maxRps}
                       onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
@@ -285,7 +288,7 @@ export default function PublisherDashboard() {
                 <p className="text-white">Rule 2: Path = /paywalled/*, Allow AI access = No → AI crawlers cannot read any paywalled pages.</p>
               </div>
               <SectionActions>
-                <button className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft" type="submit">
+                <button className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80" type="submit">
                   Save rule
                 </button>
               </SectionActions>
@@ -334,14 +337,14 @@ export default function PublisherDashboard() {
               <p className="text-xs font-medium uppercase text-white/50">Verify domain</p>
               <div className="space-y-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <button onClick={fetchToken} className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft">
+                  <button onClick={fetchToken} className="text-sm font-semibold text-blue-300 hover:text-white">
                     Fetch verification token
                   </button>
                   {verificationToken && <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>}
                 </div>
                 {message && <p className="text-sm text-white/70">{message}</p>}
                 <SectionActions>
-                  <button onClick={verifyDomain} className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft">
+                  <button onClick={verifyDomain} className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80">
                     Verify domain
                   </button>
                 </SectionActions>

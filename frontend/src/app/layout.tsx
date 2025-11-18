@@ -13,11 +13,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-[#050815] text-white">
         <div className="flex min-h-screen flex-col">
           <header className="border-b border-white/5 bg-[#050815]">
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-              <Link href="/" className="text-2xl font-semibold text-white">
-                FairCrawl
-              </Link>
-              <nav className="flex items-center gap-8 text-sm text-white/80">
+            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:py-4">
+              <div className="flex items-center gap-3">
+                <Link href="/" className="text-2xl font-semibold text-white">
+                  FairCrawl
+                </Link>
+                <span className="hidden text-sm text-white/60 sm:inline">AI access with consent built in</span>
+              </div>
+
+              <nav className="flex flex-1 flex-wrap justify-center gap-6 text-sm text-white/80 md:flex-nowrap">
                 <Link href="/how-it-works" className="hover:text-white">
                   How it works
                 </Link>
@@ -34,13 +38,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Directory
                 </Link>
               </nav>
-              <div className="flex items-center gap-4 text-sm">
+
+              <div className="flex items-center gap-4 text-sm md:justify-end">
                 <Link href="/login" className="text-white/80 hover:text-white">
                   Log in
                 </Link>
                 <Link
                   href="/signup"
-                  className="rounded-full bg-faircrawl-accent px-4 py-2 font-medium text-white transition hover:bg-faircrawl-accentSoft"
+                  className="rounded-full bg-blue-500 px-4 py-2 font-medium text-white transition hover:bg-blue-500/80"
                 >
                   Get started
                 </Link>
