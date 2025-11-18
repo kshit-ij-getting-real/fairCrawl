@@ -3,6 +3,10 @@ import { API_BASE } from './config';
 type PublicDomain = {
   name: string;
   verified?: boolean;
+  verifiedAt?: string | null;
+  verificationStatus?: string;
+  displayName?: string;
+  ownerName?: string;
   publisher?:
     | string
     | {
@@ -36,7 +40,11 @@ export async function fetchPublicDomains(): Promise<PublicDomain[]> {
   try {
     const res = await fetch(`${API_BASE}/api/public/domains`, { cache: 'no-store' });
     if (!res.ok) return [];
-    return res.json();
+    const data: PublicDomain[] = await res.json();
+    return data.map((domain) => ({
+      ...domain,
+      verified: domain.verified ?? true,
+    }));
   } catch (err) {
     console.error(err);
     return [];

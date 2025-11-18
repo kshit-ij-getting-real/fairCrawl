@@ -1,8 +1,6 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../../components/ui/MarketingCard';
-import { SectionActions } from '../../components/ui/SectionActions';
-
 const AiTeamsPage = () => {
   const benefits = [
     'One API key for many publishers with clear rules for each domain.',
@@ -62,20 +60,20 @@ const AiTeamsPage = () => {
           </MarketingCard>
         </div>
 
-        <SectionActions>
-          <Link
-            href="/signup?role=ai-client"
-            className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
-          >
-            Get API access
-          </Link>
+        <div className="mt-10 flex justify-end gap-4">
           <Link
             href="/how-it-works"
             className="inline-flex items-center justify-center rounded-full bg-white/10 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
           >
             Read how it works
           </Link>
-        </SectionActions>
+          <Link
+            href="/signup?role=ai-client"
+            className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+          >
+            Get API access
+          </Link>
+        </div>
       </section>
     </div>
   );
