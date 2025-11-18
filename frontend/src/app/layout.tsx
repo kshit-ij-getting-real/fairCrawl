@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-[#050815] text-white">
         <div className="flex min-h-screen flex-col">
           <header className="w-full border-b border-slate-800 bg-[#020617]">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-8">
+            <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap lg:px-8">
               <div className="flex items-center gap-2">
                 <Link href="/" aria-label="FairCrawl home" className="flex items-center gap-2">
                   <Logo size={32} />
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
               </nav>
 
-              <AuthActions />
+              <AuthActions className="hidden items-center gap-4 sm:flex" />
             </div>
 
             <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-3 pt-1 md:hidden lg:px-8">

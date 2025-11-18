@@ -106,7 +106,7 @@ export default function PublisherDashboard() {
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-12 lg:px-8">
       <section className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-faircrawl-textMuted">PUBLISHER CONTROL</p>
             <h1 className="text-3xl font-semibold text-white">Creator control panel</h1>
@@ -136,7 +136,7 @@ export default function PublisherDashboard() {
             <label className="block text-sm font-medium text-white/80" htmlFor="domain-input">
               Add a domain
             </label>
-            <div className="mt-2 flex gap-3">
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <input
                 id="domain-input"
                 className={`${inputClasses} flex-1`}
@@ -156,7 +156,8 @@ export default function PublisherDashboard() {
             <p className="text-sm text-white/70">No sites yet. Add a domain you control to start setting AI rules.</p>
           ) : (
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
-              <table className="w-full text-left text-sm text-white">
+              <div className="overflow-x-auto">
+                <table className="min-w-[720px] w-full text-left text-sm text-white">
                 <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
                   <tr>
                     <th className="py-2 px-3">Domain</th>
@@ -200,7 +201,8 @@ export default function PublisherDashboard() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
         </MarketingCard>
@@ -235,12 +237,17 @@ export default function PublisherDashboard() {
                 </div>
                 {message && <p className="text-sm text-white/70">{message}</p>}
               </div>
-            </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase text-white/50">Analytics</p>
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
-                <div className="flex justify-between"><span>Total reads</span><span>{analytics[selectedDomain]?.totalRequests ?? 0}</span></div>
-                <div className="flex justify-between"><span>Estimated revenue</span><span>${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</span></div>
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <span>Total reads</span>
+                  <span>{analytics[selectedDomain]?.totalRequests ?? 0}</span>
+                </div>
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <span>Estimated revenue</span>
+                  <span>${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</span>
+                </div>
               </div>
             </div>
             <div className="space-y-2">
@@ -248,9 +255,12 @@ export default function PublisherDashboard() {
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
                 {analytics[selectedDomain]?.topClients?.length ? (
                   analytics[selectedDomain].topClients.map((client: any) => (
-                    <div key={client.aiClientId} className="flex justify-between">
-                      <span>{client.name}</span>
-                      <span>{client.requests} reads</span>
+                    <div
+                      key={client.aiClientId}
+                      className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <span className="font-medium text-white">{client.name}</span>
+                      <span className="text-white/80">{client.requests} reads</span>
                     </div>
                   ))
                 ) : (
@@ -258,7 +268,7 @@ export default function PublisherDashboard() {
                 )}
               </div>
             </div>
-            <SectionActions>
+            <SectionActions className="justify-start sm:justify-end">
               <button onClick={verifyDomain} className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80">
                 Verify domain
               </button>
@@ -385,24 +395,24 @@ export default function PublisherDashboard() {
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white">
                 <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Examples</p>
                 <ul className="space-y-2 text-white/80">
-                  <li className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm">
+                  <li className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm">
                     <span>/blog/*</span>
                     <span className="rounded-full bg-blue-500/20 px-3 py-1 text-[11px] font-semibold text-blue-100">Metered</span>
                     <span className="text-white/70">$1 / 1,000 reads · 5 req/sec</span>
                   </li>
-                  <li className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm">
+                  <li className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm">
                     <span>/drafts/*</span>
                     <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white">Blocked</span>
                     <span className="text-white/70">—</span>
                   </li>
-                  <li className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:text-sm">
+                  <li className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm">
                     <span>/premium/*</span>
                     <span className="rounded-full bg-amber-500/20 px-3 py-1 text-[11px] font-semibold text-amber-100">Metered</span>
                     <span className="text-white/70">$5 / 1,000 reads · 1 req/sec</span>
                   </li>
                 </ul>
               </div>
-              <SectionActions>
+              <SectionActions className="justify-start sm:justify-end">
                 <button className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80" type="submit">
                   Save rule
                 </button>
