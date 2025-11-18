@@ -7,17 +7,20 @@ export const dynamic = 'force-dynamic';
 
 export default async function DirectoryPage() {
   const domains = await fetchPublicDomains();
-  const verifiedDomains = domains.filter(
-    (domain) =>
+  const verifiedDomains = domains.filter((domain) => {
+    const status =
       domain.verified === true ||
       domain.isVerified === true ||
-      domain.verificationStatus === 'verified' ||
-      domain.verificationStatus === 'VERIFIED' ||
-      !!domain.verifiedAt
-  );
+      domain.verificationStatus?.toString().toLowerCase() === 'verified' ||
+      !!domain.verifiedAt;
+
+    return status || (!('verified' in domain) && !('isVerified' in domain) && !domain.verificationStatus && domain.verifiedAt === undefined);
+  });
+
+  const displayDomains = verifiedDomains.length > 0 ? verifiedDomains : domains;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
+    <main className="mx-auto max-w-6xl px-6 py-16 space-y-8">
       <header className="space-y-3">
         <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Directory</p>
         <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
@@ -26,8 +29,9 @@ export default async function DirectoryPage() {
         </p>
       </header>
 
-      <div className="mt-8 space-y-4">
-        {verifiedDomains.map((domain) => {
+      <div className="space-y-4">
+        {displayDomains.map((domain) => {
+          const domainName = domain.domain || domain.host || domain.name;
           const publisherName =
             domain.ownerName ||
             (typeof domain.publisher === 'object'
@@ -35,20 +39,23 @@ export default async function DirectoryPage() {
               : domain.publisher || undefined);
 
           return (
-            <MarketingCard key={domain.name} className="flex flex-col justify-between gap-3 text-white md:flex-row md:items-center">
-              <div>
-                <h3 className="text-lg font-semibold text-white">{domain.displayName ?? domain.name}</h3>
+            <MarketingCard
+              key={domain.id ?? domainName}
+              className="flex flex-col gap-3 text-white md:flex-row md:items-center md:justify-between"
+            >
+              <div className="flex flex-col gap-1">
+                <h3 className="text-lg font-semibold text-white">{domain.displayName ?? domainName}</h3>
                 <p className="text-xs text-white/60">
-                  {domain.name} · Verified{publisherName ? ` by ${publisherName}` : ''}
+                  {domainName} · Verified{publisherName ? ` by ${publisherName}` : ''}
                 </p>
-                <p className="mt-1 text-xs text-white/50">AI rules published through FairCrawl.</p>
+                <p className="text-xs text-white/50">AI rules published through FairCrawl.</p>
               </div>
               <div className="flex justify-end">
                 <a
-                  href={`https://${domain.name}`}
+                  href={`https://${domainName}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
+                  className="inline-flex items-center rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
                 >
                   Visit site
                 </a>

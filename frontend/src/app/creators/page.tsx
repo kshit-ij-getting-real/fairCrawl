@@ -12,7 +12,7 @@ const CreatorsPage = () => {
   ];
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
+    <main className="mx-auto max-w-6xl px-6 py-16 space-y-10">
       <section className="space-y-8 text-white">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
@@ -22,18 +22,18 @@ const CreatorsPage = () => {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="space-y-6">
-            <ul className="space-y-3 text-sm text-white/80">
-              {highlights.map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+        <ul className="space-y-3 text-sm text-white/80">
+          {highlights.map((item) => (
+            <li key={item} className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
 
-            <MarketingCard className="space-y-4 text-white">
+        <div className="grid gap-8 md:grid-cols-2 items-stretch">
+          <MarketingCard className="flex flex-col">
+            <div className="flex flex-col gap-4 text-white">
               <p className="text-sm font-semibold text-white/80">Publisher control snapshot</p>
               <div className="space-y-3 text-sm text-white/80">
                 <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.08] px-4 py-3 shadow-sm">
@@ -54,11 +54,11 @@ const CreatorsPage = () => {
                 <p className="mt-2 text-sm text-white">atlas-research.ai → /blog/ai-trends (200)</p>
                 <p className="text-xs text-white/70">Visible to both sides with timestamps.</p>
               </div>
-            </MarketingCard>
-          </div>
+            </div>
+          </MarketingCard>
 
-          <div className="space-y-6">
-            <MarketingCard className="flex h-full flex-col justify-between space-y-4 text-white">
+          <MarketingCard className="flex flex-col">
+            <div className="flex flex-col gap-4 text-white">
               <div className="space-y-3">
                 <h2 className="text-2xl font-semibold">What you control</h2>
                 <p className="text-sm text-white/70">
@@ -79,7 +79,7 @@ const CreatorsPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="mt-auto flex justify-end gap-3">
                 <Link href="/directory" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
                   Browse AI-ready sites
                 </Link>
@@ -90,29 +90,29 @@ const CreatorsPage = () => {
                   Get started as a creator
                 </Link>
               </div>
-            </MarketingCard>
-
-            <MarketingCard className="flex h-full flex-col justify-between space-y-3 text-white">
-              <div className="space-y-3">
-                <h3 className="text-xl font-semibold">From free crawling to paid feeds</h3>
-                <p className="text-sm text-white/70">
-                  Today, AI crawlers read your work for free and you rarely see it. With FairCrawl, the same rules that say what’s open, what’s private, and how fast they can read also set what they pay. When crawlers hit your site through FairCrawl, those rules apply in real time, so large readers pay for a controlled, logged feed instead of scraping in the dark.
-                </p>
-              </div>
-              <div className="mt-6 flex justify-end gap-3">
-                <Link href="/directory" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
-                  Browse AI-ready sites
-                </Link>
-                <Link
-                  href="/signup?role=publisher"
-                  className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
-                >
-                  Get started as a creator
-                </Link>
-              </div>
-            </MarketingCard>
-          </div>
+            </div>
+          </MarketingCard>
         </div>
+
+        <MarketingCard className="flex flex-col gap-4 text-white">
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold">From free crawling to paid feeds</h3>
+            <p className="text-sm text-white/70">
+              Today, AI crawlers read your work for free and you rarely see it. With FairCrawl, the same rules that say what’s open, what’s private, and how fast they can read also set what they pay. When crawlers hit your site through FairCrawl, those rules apply in real time, so large readers pay for a controlled, logged feed instead of scraping in the dark.
+            </p>
+          </div>
+          <div className="mt-6 flex justify-end gap-3">
+            <Link href="/directory" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
+              Browse AI-ready sites
+            </Link>
+            <Link
+              href="/signup?role=publisher"
+              className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
+            >
+              Get started as a creator
+            </Link>
+          </div>
+        </MarketingCard>
       </section>
     </main>
   );
