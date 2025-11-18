@@ -7,7 +7,9 @@ export const dynamic = 'force-dynamic';
 
 export default async function DirectoryPage() {
   const domains = await fetchPublicDomains();
-  const verifiedDomains = domains.filter((domain) => domain.verified);
+  const verifiedDomains = domains.filter(
+    (domain) => domain.verified === true || domain.verifiedAt || domain.verificationStatus === 'verified'
+  );
 
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-6 py-12">
@@ -22,15 +24,16 @@ export default async function DirectoryPage() {
       <div className="space-y-4">
         {verifiedDomains.map((domain) => {
           const publisherName =
-            typeof domain.publisher === 'object'
+            domain.ownerName ||
+            (typeof domain.publisher === 'object'
               ? domain.publisher?.user?.email || domain.publisher?.name
-              : domain.publisher || undefined;
+              : domain.publisher || undefined);
 
           return (
             <MarketingCard key={domain.name} className="text-white">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{domain.name}</h3>
+                  <h3 className="text-lg font-semibold text-white">{domain.displayName ?? domain.name}</h3>
                   <p className="text-xs text-white/60">
                     {domain.name} · Verified{publisherName ? ` by ${publisherName}` : ''}
                   </p>

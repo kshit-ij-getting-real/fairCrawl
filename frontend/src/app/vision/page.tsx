@@ -1,8 +1,6 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../../components/ui/MarketingCard';
-import { SectionActions } from '../../components/ui/SectionActions';
-
 const VisionPage = () => {
   return (
     <div className="mx-auto max-w-6xl space-y-12 px-6 py-12 md:space-y-16">
@@ -36,14 +34,14 @@ const VisionPage = () => {
           </MarketingCard>
         </div>
 
-        <SectionActions>
+        <div className="mt-10 flex justify-end">
           <Link
             href="/signup"
             className="inline-flex items-center rounded-full bg-faircrawl-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
           >
             Get started
           </Link>
-        </SectionActions>
+        </div>
       </section>
     </div>
   );

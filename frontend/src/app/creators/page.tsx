@@ -1,8 +1,6 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../../components/ui/MarketingCard';
-import { SectionActions } from '../../components/ui/SectionActions';
-
 const CreatorsPage = () => {
   const highlights = [
     'Choose which pages AIs can read and which stay private.',
@@ -89,20 +87,20 @@ const CreatorsPage = () => {
           </div>
         </div>
 
-        <SectionActions>
-          <Link
-            href="/signup?role=publisher"
-            className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
-          >
-            Get started as a creator
-          </Link>
+        <div className="mt-10 flex justify-end gap-4">
           <Link
             href="/directory"
             className="inline-flex items-center justify-center rounded-full bg-white/10 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
           >
             Browse AI-ready sites
           </Link>
-        </SectionActions>
+          <Link
+            href="/signup?role=publisher"
+            className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+          >
+            Get started as a creator
+          </Link>
+        </div>
       </section>
     </div>
   );
