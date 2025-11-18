@@ -63,7 +63,7 @@ export default function AIClientDashboard() {
               clearSession();
               router.replace('/');
             }}
-            className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
+            className="text-sm font-semibold text-blue-300 hover:text-white"
           >
             Log out
           </button>
@@ -77,14 +77,14 @@ export default function AIClientDashboard() {
             <p className="text-sm text-white/60">Each key belongs to one crawler or app. Keep keys secret.</p>
           </div>
           <button
-            className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+            className="inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
             onClick={generateKey}
           >
             Generate new key
           </button>
         </div>
         {newKey && (
-          <div className="space-y-1 rounded-2xl border border-faircrawl-accent/40 bg-faircrawl-accent/10 p-4 text-sm">
+          <div className="space-y-1 rounded-2xl border border-blue-400/40 bg-blue-500/10 p-4 text-sm">
             <p className="font-semibold text-white">Your new API key:</p>
             <p className="break-all font-mono text-white/90">{newKey}</p>
             <p className="text-white/70">Store this securely. You will not see it again.</p>
@@ -92,7 +92,7 @@ export default function AIClientDashboard() {
         )}
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
           <table className="w-full text-left text-sm text-white/80">
-            <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/60">
+            <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/40">
               <tr>
                 <th className="py-3 px-4">Key ID</th>
                 <th className="px-4">Created</th>
@@ -109,7 +109,7 @@ export default function AIClientDashboard() {
                   <td className="px-4 text-right">
                     {!key.revokedAt && (
                       <button
-                        className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
+                        className="text-sm font-semibold text-blue-300 hover:text-white"
                         onClick={() => revokeKey(key.id)}
                       >
                         Revoke
@@ -148,9 +148,10 @@ export default function AIClientDashboard() {
           <h2 className="text-lg font-semibold text-white">Example: ask FairCrawl to fetch one page for your AI</h2>
           <p className="text-white/70">Replace YOUR_KEY with the API key above and change the url to the page your crawler wants to read.</p>
         </div>
-        <div className="rounded-2xl bg-black/40 p-4 font-mono text-xs text-white/80">
-          {`curl "${API_BASE}/api/gateway/fetch?url=https://example.com/premium/article" \\\n  -H "X-API-Key: YOUR_KEY"`}
-        </div>
+        <pre className="mt-3 overflow-x-auto rounded-2xl bg-black/50 px-4 py-3 text-xs font-mono text-blue-100">
+{`curl "${API_BASE}/api/gateway/fetch?url=https://example.com/premium/article" \\
+  -H "X-API-Key: YOUR_KEY"`}
+        </pre>
         <ul className="list-disc list-inside space-y-1 text-white/70">
           <li>Use {API_BASE} as the base URL. Update it if your deploy uses another host.</li>
           <li>Swap YOUR_KEY for the key shown above.</li>
@@ -159,7 +160,7 @@ export default function AIClientDashboard() {
         <SectionActions>
           <Link
             href="/ai-teams"
-            className="inline-flex items-center justify-center rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+            className="inline-flex items-center justify-center rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/50 hover:text-white"
           >
             Read the API overview
           </Link>
