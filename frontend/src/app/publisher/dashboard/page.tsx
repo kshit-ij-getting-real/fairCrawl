@@ -22,6 +22,7 @@ export default function PublisherDashboard() {
   const [policyForm, setPolicyForm] = useState({ pathPattern: '/*', allowAI: true, pricePer1k: 0, maxRps: '' });
   const [verificationToken, setVerificationToken] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
+
   const inputClasses =
     'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
 
@@ -158,49 +159,49 @@ export default function PublisherDashboard() {
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
               <div className="overflow-x-auto">
                 <table className="min-w-[720px] w-full text-left text-sm text-white">
-                <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
-                  <tr>
-                    <th className="py-2 px-3">Domain</th>
-                    <th className="px-3">Status</th>
-                    <th className="px-3">Rules</th>
-                    <th className="px-3">Total reads</th>
-                    <th className="px-3 text-right">Earned</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-sm">
-                  {domains.map((domain) => (
-                    <tr key={domain.id} className={selectedDomain === domain.id ? 'bg-white/5' : ''}>
-                      <td className="py-3 px-3 font-medium">{domain.name}</td>
-                      <td className="py-3 px-3">
-                        <span
-                          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${
-                            domain.verified
-                              ? 'border-green-400/50 bg-green-500/10 text-green-50'
-                              : 'border-amber-300/50 bg-amber-500/10 text-amber-50'
-                          }`}
-                        >
-                          {domain.verified ? 'Verified' : 'Not verified'}
-                        </span>
-                      </td>
-                      <td className="py-3 px-3 text-white/80">
-                        <button
-                          className="font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
-                          onClick={() => {
-                            setSelectedDomain(domain.id);
-                            loadAnalytics(domain.id);
-                            document.getElementById('ai-rules')?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                        >
-                          Manage rules
-                        </button>
-                      </td>
-                      <td className="py-3 px-3 text-white/80">{analytics[domain.id]?.totalRequests ?? '—'}</td>
-                      <td className="py-3 px-3 text-right text-white/80">
-                        ${analytics[domain.id]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}
-                      </td>
+                  <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
+                    <tr>
+                      <th className="py-2 px-3">Domain</th>
+                      <th className="px-3">Status</th>
+                      <th className="px-3">Rules</th>
+                      <th className="px-3">Total reads</th>
+                      <th className="px-3 text-right">Earned</th>
                     </tr>
-                  ))}
-                </tbody>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-sm">
+                    {domains.map((domain) => (
+                      <tr key={domain.id} className={selectedDomain === domain.id ? 'bg-white/5' : ''}>
+                        <td className="py-3 px-3 font-medium">{domain.name}</td>
+                        <td className="py-3 px-3">
+                          <span
+                            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${
+                              domain.verified
+                                ? 'border-green-400/50 bg-green-500/10 text-green-50'
+                                : 'border-amber-300/50 bg-amber-500/10 text-amber-50'
+                            }`}
+                          >
+                            {domain.verified ? 'Verified' : 'Not verified'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-white/80">
+                          <button
+                            className="font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
+                            onClick={() => {
+                              setSelectedDomain(domain.id);
+                              loadAnalytics(domain.id);
+                              document.getElementById('ai-rules')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                          >
+                            Manage rules
+                          </button>
+                        </td>
+                        <td className="py-3 px-3 text-white/80">{analytics[domain.id]?.totalRequests ?? '—'}</td>
+                        <td className="py-3 px-3 text-right text-white/80">
+                          ${analytics[domain.id]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -220,11 +221,11 @@ export default function PublisherDashboard() {
             </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase text-white/50">How to verify</p>
-              <ol className="list-decimal list-inside space-y-2 text-sm text-white/80">
+              <ol className="list-inside list-decimal space-y-2 text-sm text-white/80">
                 <li>Fetch your unique verification token.</li>
                 <li>
-                  Add a file at <code className="rounded bg-white/10 px-2 py-1">/.well-known/faircrawl-verification.txt</code> with only
-                  the token below.
+                  Add a file at <code className="rounded bg-white/10 px-2 py-1">/.well-known/faircrawl-verification.txt</code> with
+                  only the token below.
                 </li>
                 <li>Click “Verify domain” once the file is live.</li>
               </ol>
@@ -233,10 +234,13 @@ export default function PublisherDashboard() {
                   <button onClick={fetchToken} className="text-sm font-semibold text-blue-300 hover:text-white">
                     Fetch verification token
                   </button>
-                  {verificationToken && <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>}
+                  {verificationToken && (
+                    <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>
+                  )}
                 </div>
                 {message && <p className="text-sm text-white/70">{message}</p>}
               </div>
+            </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase text-white/50">Analytics</p>
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
@@ -294,7 +298,9 @@ export default function PublisherDashboard() {
                     <li key={policy.id} className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-white/80">
                       <div className="font-semibold text-white">{policy.pathPattern}</div>
                       <div className="text-white/70">
-                        {policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${policy.maxRps} rps max` : 'No cap'}
+                        {policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${
+                          policy.maxRps
+                        } rps max` : 'No cap'}
                       </div>
                     </li>
                   ))}
@@ -388,9 +394,7 @@ export default function PublisherDashboard() {
               </div>
               <p className="text-xs text-white/70">
                 AI crawlers can read https://{domains.find((d) => d.id === selectedDomain)?.name ?? 'your-domain.com'}
-                {policyForm.pathPattern || '/*'} at up to {policyForm.maxRps || '—'} req/sec for ${
-                  policyForm.pricePer1k || 0
-                } per 1,000 reads.
+                {policyForm.pathPattern || '/*'} at up to {policyForm.maxRps || '—'} req/sec for ${policyForm.pricePer1k || 0} per 1,000 reads.
               </p>
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white">
                 <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Examples</p>
