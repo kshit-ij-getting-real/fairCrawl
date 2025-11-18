@@ -55,17 +55,21 @@ const CreatorsPage = () => {
           <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">Turn crawlers into paid feeds</h3>
-              <p className="text-sm text-white/70">
-                Today, AIs read your work for free and you rarely see it. With FairCrawl, the same rules that say what’s open and what’s private also set what they pay. When crawlers hit your site through FairCrawl, those rules apply in real time, so large readers get a controlled, logged feed instead of scraping in the dark.
-              </p>
+              <ul className="mt-3 space-y-2 text-sm text-slate-200">
+                <li>Stop AIs reading your work for free.</li>
+                <li>Use one rule set to decide what’s open, what stays private, and what AI pays.</li>
+                <li>When crawlers hit your site through FairCrawl, they get a controlled, logged feed instead of scraping in the dark.</li>
+              </ul>
             </div>
           </div>
 
           <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
-            <p className="mt-3 text-sm text-slate-200">
-              FairCrawl gives you a shared log of AI access. You see which crawlers hit which paths, how often, and what they read. That log underpins payouts, audits, and disputes so you can prove how your work was used and give AI teams a single source of truth for usage.
-            </p>
+            <ul className="mt-3 space-y-2 text-sm text-slate-200">
+              <li>See which crawlers hit which paths, how often, and what they read.</li>
+              <li>Use a shared log as ground truth for payouts, audits, and disputes.</li>
+              <li>Give AI teams a single source of truth for how your work was used.</li>
+            </ul>
           </div>
         </div>
 
