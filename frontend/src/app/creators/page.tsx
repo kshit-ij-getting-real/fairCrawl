@@ -14,22 +14,24 @@ const CreatorsPage = () => {
   return (
     <main className="mx-auto max-w-6xl px-6 py-16 space-y-10">
       <section className="space-y-8 text-white">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
-          <h1 className="text-3xl font-semibold">FairCrawl for creators &amp; publishers</h1>
-          <p className="text-base leading-relaxed text-white/80">
-            Decide what AIs can read, keep drafts private, and see every AI crawler that touches your work.
-          </p>
-        </div>
+        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
+            <h1 className="text-3xl font-semibold">FairCrawl for creators &amp; publishers</h1>
+            <p className="text-base leading-relaxed text-white/80">
+              Decide what AIs can read, keep drafts private, and see every AI crawler that touches your work.
+            </p>
+          </div>
 
-        <ul className="space-y-3 text-sm text-white/80">
-          {highlights.map((item) => (
-            <li key={item} className="flex items-start gap-2">
-              <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+          <ul className="space-y-3 text-sm text-white/80">
+            {highlights.map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="grid gap-8 md:grid-cols-2 items-stretch">
           <MarketingCard className="flex flex-col">
