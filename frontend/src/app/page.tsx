@@ -39,8 +39,8 @@ const Page = () => {
           </div>
 
           <div className="flex flex-1 items-stretch">
-            <div className="w-full">
-              <div className="h-full space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 text-white shadow-lg">
+            <div className="w-full rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white shadow-lg">
+              <div className="h-full space-y-4 rounded-3xl p-8 text-white">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold">Gateway snapshot</h2>
