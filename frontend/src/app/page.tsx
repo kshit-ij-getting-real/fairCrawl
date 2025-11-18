@@ -21,11 +21,11 @@ const Page = () => {
                 AI crawlers call FairCrawl instead of your site directly. On every request, FairCrawl applies your access and pricing rules, then either serves the page or returns a clear block.
               </p>
               <p className="text-sm md:text-base text-white/60">
-                Control and monetisation are part of the same rule set: change a path’s access or price once and every crawler has to follow it.
+                With FairCrawl, control and monetisation live in the same simple rule set. Update a path’s access or price once, and every AI crawler automatically has to follow it. No extra configs, rate-limit hacks, or side deals.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-4">
               <Link
                 href="/signup"
                 className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
@@ -40,7 +40,7 @@ const Page = () => {
 
           <div className="flex flex-1 items-stretch">
             <div className="w-full">
-              <MarketingCard className="h-full text-white">
+              <MarketingCard className="h-full text-white bg-none bg-slate-950/80 border border-slate-800/90 shadow-xl">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold">Gateway snapshot</h2>
