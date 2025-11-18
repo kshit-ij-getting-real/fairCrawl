@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiFetch, clearSession, getRole } from '../../../lib/api';
-import { DashboardCard } from '../../../components/dashboard-card';
+import { MarketingCard } from '../../../components/ui/MarketingCard';
 import { SectionActions } from '../../../components/ui/SectionActions';
 
 interface Domain {
@@ -122,40 +122,38 @@ export default function PublisherDashboard() {
             Log out
           </button>
         </div>
-        <DashboardCard className="bg-white/5 text-white text-sm space-y-2">
+        <MarketingCard className="bg-white/5 text-white text-sm space-y-2">
           <h2 className="text-base font-semibold text-white">How this dashboard works</h2>
           <p className="leading-relaxed text-white/70">
             You register your sites here, prove you own them once, and then set AI access rules per path. FairCrawl enforces
             these rules on every request from AI clients.
           </p>
-        </DashboardCard>
+        </MarketingCard>
       </section>
 
       <section>
-        <DashboardCard className="space-y-6 text-white">
+        <MarketingCard className="space-y-6 text-white">
           <div className="space-y-1">
             <h2 className="text-xl font-semibold">Your sites</h2>
             <p className="text-sm text-white/70">Track the domains you control and jump into their AI rules.</p>
           </div>
           <form onSubmit={addDomain} className="space-y-3">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="w-full flex-1 space-y-1">
-                <label className="text-xs font-medium uppercase tracking-wide text-white/60">Add a domain</label>
+            <div className="space-y-2">
+              <label className="text-xs font-medium uppercase tracking-wide text-white/60">Add a domain</label>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <input
-                  className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                  className="w-full flex-1 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-white placeholder-white/50 transition focus:border-faircrawl-accent focus:outline-none"
                   placeholder="example.com"
                   value={domainName}
                   onChange={(e) => setDomainName(e.target.value)}
                 />
-              </div>
-              <SectionActions className="mt-0 w-full md:w-auto md:flex-none">
                 <button
-                  className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+                  className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
                   type="submit"
                 >
                   Add domain
                 </button>
-              </SectionActions>
+              </div>
             </div>
           </form>
           {domains.length === 0 ? (
@@ -205,12 +203,12 @@ export default function PublisherDashboard() {
               </table>
             </div>
             )}
-          </DashboardCard>
+          </MarketingCard>
         </section>
 
       {selectedDomain && (
         <section className="grid gap-8 lg:grid-cols-2" id="ai-rules">
-          <DashboardCard className="space-y-5 text-white">
+          <MarketingCard className="space-y-5 text-white">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">AI access rules</h3>
               <p className="text-sm text-white/70">These settings control which pages AI agents can read and how fast they can read them.</p>
@@ -297,8 +295,8 @@ export default function PublisherDashboard() {
                 </button>
               </SectionActions>
             </form>
-          </DashboardCard>
-          <DashboardCard className="space-y-5 text-white">
+          </MarketingCard>
+          <MarketingCard className="space-y-5 text-white">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">Verify that you own this site</h3>
               <p className="text-sm text-white/70">
@@ -353,7 +351,7 @@ export default function PublisherDashboard() {
                 </SectionActions>
               </div>
             </div>
-          </DashboardCard>
+          </MarketingCard>
         </section>
       )}
     </div>

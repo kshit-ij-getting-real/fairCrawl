@@ -44,7 +44,7 @@ export async function fetchPublicDomains(): Promise<PublicDomain[]> {
 }
 
 export function buildDirectoryEntries(domains: PublicDomain[]): DirectoryEntry[] {
-  const verifiedDomains = domains.filter((domain) => domain.verified ?? true);
+  const verifiedDomains = domains.filter((domain) => domain.verified);
 
   const directoryEntries = verifiedDomains.map((domain) => {
     const publisherEmail = typeof domain.publisher === 'object' ? domain.publisher?.user?.email : undefined;

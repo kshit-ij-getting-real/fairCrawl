@@ -104,7 +104,7 @@ function SignupContent() {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-white">Role</label>
             <select
-              className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white focus:border-faircrawl-accent focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:border-white/20 focus:border-faircrawl-accent focus:ring-2 focus:ring-faircrawl-accent/40 focus:outline-none"
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
             >

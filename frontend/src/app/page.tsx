@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { MarketingCard } from '../components/marketing-card';
+import { MarketingCard } from '../components/ui/MarketingCard';
 import { SectionActions } from '../components/ui/SectionActions';
 
 const Page = () => {
@@ -18,8 +18,11 @@ const Page = () => {
               <p className="text-lg leading-relaxed text-faircrawl-textMuted">
                 FairCrawl sits between AI crawlers and your site so you decide what AIs see and how they access it.
               </p>
+              <p className="text-base text-white/80">
+                AI crawlers call FairCrawl instead of your site directly. FairCrawl checks your rules, then either serves the page or returns a clear block.
+              </p>
             </div>
-            <SectionActions>
+            <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="/signup"
                 className="rounded-full bg-faircrawl-accent px-6 py-3 font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-faircrawl-accentSoft"
@@ -29,7 +32,7 @@ const Page = () => {
               <Link href="/how-it-works" className="font-semibold text-faircrawl-textMain hover:text-white">
                 See how FairCrawl works
               </Link>
-            </SectionActions>
+            </div>
           </div>
           <MarketingCard className="text-white">
             <div className="space-y-4">
@@ -62,9 +65,7 @@ const Page = () => {
             <div className="space-y-2">
               <p className="text-sm font-semibold text-faircrawl-accent">Creators</p>
               <h2 className="text-2xl font-semibold text-white">Create for AI, stay in control</h2>
-              <p className="text-sm text-faircrawl-textMuted">
-                Decide what AIs can read, how fast, and on what terms.
-              </p>
+              <p className="text-sm text-faircrawl-textMuted">Set simple AI access rules, see who crawls, and keep drafts private.</p>
             </div>
             <SectionActions>
               <Link
@@ -82,9 +83,7 @@ const Page = () => {
             <div className="space-y-2">
               <p className="text-sm font-semibold text-faircrawl-accent">AI teams</p>
               <h2 className="text-2xl font-semibold text-white">Source the best data, without guesswork</h2>
-              <p className="text-sm text-faircrawl-textMuted">
-                One gateway to clean, permissioned content across publishers.
-              </p>
+              <p className="text-sm text-faircrawl-textMuted">One gateway to permissioned content with clear rules from every publisher.</p>
             </div>
             <SectionActions>
               <Link
@@ -98,40 +97,37 @@ const Page = () => {
         </MarketingCard>
       </section>
 
-      <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-xl shadow-black/30">
-        <div className="flex flex-col gap-4 items-start justify-between md:flex-row md:items-center">
-          <p className="text-base text-white">
-            FairCrawl is building the default bridge between AI crawlers and the web.
-          </p>
-          <SectionActions className="mt-0">
+      <section className="grid gap-6 md:grid-cols-2">
+        <MarketingCard>
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-white">Our vision: a fair web for AI</h3>
+            <p className="text-sm text-faircrawl-textMuted">We are building a standard where AI traffic is transparent, measured, and respectful of creators.</p>
+          </div>
+          <SectionActions>
             <Link
               href="/vision"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white hover:bg-white/10"
+              className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white hover:bg-faircrawl-accentSoft"
             >
-              Our vision
+              Read the vision
             </Link>
           </SectionActions>
-        </div>
-      </section>
+        </MarketingCard>
 
-      <section>
         <MarketingCard>
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-2">
-              <h3 className="text-2xl font-semibold text-white">Verified AI-ready sites</h3>
-              <p className="text-sm text-faircrawl-textMuted">
-                Domains that have verified ownership and published AI access rules through FairCrawl.
-              </p>
-            </div>
-            <SectionActions className="mt-0">
-              <Link
-                href="/signup?role=publisher"
-                className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white hover:bg-faircrawl-accentSoft"
-              >
-                Become a launch publisher
-              </Link>
-            </SectionActions>
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-white">Verified AI-ready sites</h3>
+            <p className="text-sm text-faircrawl-textMuted">
+              Explore domains that have verified ownership and published AI access rules through FairCrawl.
+            </p>
           </div>
+          <SectionActions>
+            <Link
+              href="/directory"
+              className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white hover:bg-faircrawl-accentSoft"
+            >
+              View directory
+            </Link>
+          </SectionActions>
         </MarketingCard>
       </section>
     </main>
