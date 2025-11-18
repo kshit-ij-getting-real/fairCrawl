@@ -10,42 +10,65 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#050815] text-white">
+      <body className="bg-[#050815] text-white">
         <div className="flex min-h-screen flex-col">
-          <header className="border-b border-white/5 bg-[#050815]">
-            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:py-4">
-              <div className="flex items-center gap-3">
-                <Link href="/" className="text-2xl font-semibold text-white">
+          <header className="border-b border-white/5 bg-[#050815]/95 backdrop-blur">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-8">
+              <div className="flex items-baseline gap-2">
+                <Link href="/" className="text-lg font-semibold tracking-tight">
                   FairCrawl
                 </Link>
-                <span className="hidden text-sm text-white/60 sm:inline">AI access with consent built in</span>
+                <span className="hidden text-xs text-white/60 sm:inline">AI access with consent built in</span>
               </div>
 
-              <nav className="flex flex-1 flex-wrap justify-center gap-6 text-sm text-white/80 md:flex-nowrap">
-                <Link href="/how-it-works" className="hover:text-white">
-                  How it works
-                </Link>
-                <Link href="/creators" className="hover:text-white">
-                  Creators
-                </Link>
-                <Link href="/ai-teams" className="hover:text-white">
-                  AI teams
-                </Link>
-                <Link href="/vision" className="hover:text-white">
-                  Vision
-                </Link>
-                <Link href="/directory" className="hover:text-white">
-                  Directory
-                </Link>
+              <nav className="hidden md:flex md:flex-1 md:justify-center">
+                <div className="flex items-center gap-8 text-sm text-white/70">
+                  <Link href="/how-it-works" className="hover:text-white">
+                    How it works
+                  </Link>
+                  <Link href="/creators" className="hover:text-white">
+                    Creators
+                  </Link>
+                  <Link href="/ai-teams" className="hover:text-white">
+                    AI teams
+                  </Link>
+                  <Link href="/vision" className="hover:text-white">
+                    Vision
+                  </Link>
+                  <Link href="/directory" className="hover:text-white">
+                    Directory
+                  </Link>
+                </div>
               </nav>
 
-              <div className="flex items-center gap-4 text-sm md:justify-end">
-                <Link href="/login" className="text-white/80 hover:text-white">
+              <div className="flex items-center gap-4">
+                <Link href="/login" className="text-sm text-white/70 hover:text-white">
                   Log in
                 </Link>
                 <Link
                   href="/signup"
-                  className="rounded-full bg-blue-500 px-4 py-2 font-medium text-white transition hover:bg-blue-500/80"
+                  className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-400"
+                >
+                  Get started
+                </Link>
+              </div>
+            </div>
+
+            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-3 pt-1 md:hidden lg:px-8">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
+                <Link href="/how-it-works">How it works</Link>
+                <Link href="/creators">Creators</Link>
+                <Link href="/ai-teams">AI teams</Link>
+                <Link href="/vision">Vision</Link>
+                <Link href="/directory">Directory</Link>
+              </div>
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <Link href="/login" className="text-white/70 hover:text-white">
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-400"
                 >
                   Get started
                 </Link>

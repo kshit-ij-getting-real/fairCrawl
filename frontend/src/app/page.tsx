@@ -1,15 +1,14 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../components/ui/MarketingCard';
-import { SectionActions } from '../components/ui/SectionActions';
 
 const Page = () => {
   return (
-    <div className="mx-auto max-w-6xl space-y-16 px-4 py-12 md:space-y-20 md:py-16">
+    <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section className="grid items-center gap-10 md:grid-cols-2">
         <div className="space-y-4 text-white">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/70">
-            <span className="h-2 w-2 rounded-full bg-blue-400"></span>
+            <span className="h-2 w-2 rounded-full bg-blue-400" />
             Controlled AI crawling
           </div>
           <h1 className="text-4xl font-bold leading-tight md:text-5xl">Let AI in without losing control</h1>
@@ -22,23 +21,20 @@ const Page = () => {
           <p className="text-base text-white/70">
             Over time, we plug in payouts so crawlers that read at scale have to pay instead of scraping in the dark.
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-6 flex gap-4">
             <Link
               href="/signup"
-              className="inline-flex items-center rounded-full bg-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-blue-500/80"
+              className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
             >
               Get early access
             </Link>
-            <Link
-              href="/how-it-works"
-              className="inline-flex items-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white/80 hover:border-white/40 hover:text-white"
-            >
+            <Link href="/how-it-works" className="text-sm font-medium text-white/80 hover:text-white">
               See how FairCrawl works
             </Link>
           </div>
         </div>
 
-        <MarketingCard className="text-white">
+        <MarketingCard className="h-full text-white">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Gateway snapshot</h2>
@@ -50,17 +46,24 @@ const Page = () => {
             <div className="space-y-3">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between text-sm text-white/80">
-                  <span className="font-semibold">/blog/ai</span>
+                  <span className="font-semibold">Allowed paths: /blog/*</span>
                   <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold text-blue-200">allowed</span>
                 </div>
-                <p className="mt-2 text-xs text-white/60">AI crawler: atlas-research.ai · Rate: 5 rps</p>
+                <p className="mt-2 text-xs text-white/60">AI crawler: atlas-research.ai · AI speed cap: 5 req/sec</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between text-sm text-white/80">
-                  <span className="font-semibold">/drafts/*</span>
+                  <span className="font-semibold">Blocked: /drafts/*</span>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">blocked</span>
                 </div>
                 <p className="mt-2 text-xs text-white/60">AI crawler: unknown · Reason: publisher rules</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div className="flex items-center justify-between text-sm text-white/80">
+                  <span className="font-semibold">Metered: /premium/*</span>
+                  <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-100">metered</span>
+                </div>
+                <p className="mt-2 text-xs text-white/60">AI crawler: lumen.ai · Requests logged for payouts</p>
               </div>
             </div>
           </div>
@@ -68,86 +71,88 @@ const Page = () => {
       </section>
 
       <section className="mt-16">
-        <div className="mx-auto grid max-w-5xl gap-6 px-4 md:grid-cols-2">
-          <MarketingCard>
-            <div className="space-y-3 text-white">
-              <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-blue-200">
-                  <path d="M6 12a6 6 0 1112 0 6 6 0 01-12 0z" />
-                  <path d="M12 6v12M6 12h12" />
-                </svg>
+        <div className="grid gap-8 md:grid-cols-2">
+          <MarketingCard className="flex h-full flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
+                <span>CREATORS</span>
               </div>
-              <p className="text-xs uppercase tracking-wide text-blue-300/80">Creators</p>
-              <h2 className="text-2xl font-semibold">Create for AI, stay in control</h2>
-              <p className="text-sm text-white/70">Decide what AIs can read and see which crawlers actually show up.</p>
-              <SectionActions>
-                <Link
-                  href="/creators"
-                  className="inline-flex items-center justify-center rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
-                >
-                  Learn more
-                </Link>
-              </SectionActions>
+              <h2 className="text-xl font-semibold">Create for AI, stay in control</h2>
+              <p className="text-sm text-white/70">
+                Decide what AIs can read from your site and see which crawlers actually show up.
+              </p>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Link
+                href="/creators"
+                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
+              >
+                Learn more
+              </Link>
             </div>
           </MarketingCard>
 
-          <MarketingCard>
-            <div className="space-y-3 text-white">
-              <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-blue-200">
-                  <path d="M4 8l8-4 8 4-8 4-8-4z" />
-                  <path d="M4 8v8l8 4 8-4V8" />
-                </svg>
+          <MarketingCard className="flex h-full flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
+                <span>AI TEAMS</span>
               </div>
-              <p className="text-xs uppercase tracking-wide text-blue-300/80">AI teams</p>
-              <h2 className="text-2xl font-semibold">Source the best data, without guesswork</h2>
-              <p className="text-sm text-white/70">One gateway to permissioned content across publishers, with clear rules for every domain.</p>
-              <SectionActions>
-                <Link
-                  href="/ai-teams"
-                  className="inline-flex items-center justify-center rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
-                >
-                  Learn more
-                </Link>
-              </SectionActions>
+              <h2 className="text-xl font-semibold">Source the best data, without guesswork</h2>
+              <p className="text-sm text-white/70">
+                One gateway to permissioned content across creators, with clear rules for every domain.
+              </p>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Link
+                href="/ai-teams"
+                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
+              >
+                Learn more
+              </Link>
             </div>
           </MarketingCard>
-        </div>
-      </section>
 
-      <section className="mt-20 mb-16">
-        <div className="mx-auto grid max-w-5xl gap-6 px-4 md:grid-cols-2">
-          <MarketingCard>
-            <div className="space-y-3 text-white">
-              <h3 className="text-xl font-semibold">Our vision: a fair web for AI</h3>
+          <MarketingCard className="flex h-full flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
+                <span>VISION</span>
+              </div>
+              <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
               <p className="text-sm text-white/70">
                 FairCrawl turns invisible AI traffic into a protocol with consent, speed, and value built in.
               </p>
-              <SectionActions>
-                <Link
-                  href="/vision"
-                  className="inline-flex items-center justify-center rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
-                >
-                  Read the vision
-                </Link>
-              </SectionActions>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Link
+                href="/vision"
+                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
+              >
+                Read the vision
+              </Link>
             </div>
           </MarketingCard>
 
-          <MarketingCard>
-            <div className="space-y-3 text-white">
-              <h3 className="text-xl font-semibold">Verified AI-ready sites</h3>
+          <MarketingCard className="flex h-full flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
+                <span>DIRECTORY</span>
+              </div>
+              <h2 className="text-xl font-semibold">Verified AI-ready sites</h2>
               <p className="text-sm text-white/70">
                 Explore domains that have verified ownership and published AI access rules through FairCrawl.
               </p>
-              <SectionActions>
-                <Link
-                  href="/directory"
-                  className="inline-flex items-center justify-center rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
-                >
-                  View directory
-                </Link>
-              </SectionActions>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Link
+                href="/directory"
+                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
+              >
+                View directory
+              </Link>
             </div>
           </MarketingCard>
         </div>

@@ -3,6 +3,7 @@ import { API_BASE } from './config';
 type PublicDomain = {
   name: string;
   verified?: boolean;
+  isVerified?: boolean;
   verifiedAt?: string | null;
   verificationStatus?: string;
   displayName?: string;

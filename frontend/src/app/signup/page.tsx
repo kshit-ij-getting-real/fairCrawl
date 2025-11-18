@@ -17,7 +17,7 @@ function SignupContent() {
   const [loading, setLoading] = useState(false);
 
   const fieldClasses =
-    'w-full rounded-2xl bg-[#090f20] border border-white/15 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500';
+    'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
 
   useEffect(() => {
     const roleParam = params.get('role');
@@ -94,14 +94,14 @@ function SignupContent() {
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-white">Role</label>
             <select
-              className={`${fieldClasses} appearance-none`}
+              className={`${fieldClasses} appearance-none text-white`}
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
             >
-              <option value="PUBLISHER" className="bg-[#090f20] text-white">
+              <option value="PUBLISHER" className="bg-[#101424] text-white">
                 Publisher
               </option>
-              <option value="AICLIENT" className="bg-[#090f20] text-white">
+              <option value="AICLIENT" className="bg-[#101424] text-white">
                 AI team
               </option>
             </select>
