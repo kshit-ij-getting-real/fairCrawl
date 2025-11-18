@@ -21,20 +21,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
             <div className="flex flex-1 items-center justify-end gap-8 text-sm">
               <nav className="flex items-center gap-5 text-sm text-faircrawl-textMain">
-                <Link href="/#how-it-works" className="hover:text-white">
+                <Link href="/how-it-works" className="hover:text-white">
                   How it works
                 </Link>
-                <Link href="/#creators" className="hover:text-white">
+                <Link href="/creators" className="hover:text-white">
                   Creators
                 </Link>
-                <Link href="/#ai-teams" className="hover:text-white">
+                <Link href="/ai-teams" className="hover:text-white">
                   AI teams
                 </Link>
-                <Link href="/#verified-sites" className="hover:text-white">
-                  Verified sites
-                </Link>
-                <Link href="/about" className="hover:text-white">
-                  About
+                <Link href="/vision" className="hover:text-white">
+                  Vision
                 </Link>
               </nav>
               <div className="flex items-center gap-3">
