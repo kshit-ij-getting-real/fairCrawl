@@ -28,12 +28,14 @@ const HowItWorksPage = () => {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section className="space-y-8 text-white">
-        <div className="mx-auto max-w-3xl space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Product flow</p>
-          <h1 className="text-3xl font-semibold">How FairCrawl works</h1>
-          <p className="text-base leading-relaxed text-white/80">
-            FairCrawl is the handshake between AI crawlers and the sites they need. We check identity, pace, and permissions so both sides know what is allowed.
-          </p>
+        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+          <div className="mx-auto max-w-3xl space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Product flow</p>
+            <h1 className="text-3xl font-semibold">How FairCrawl works</h1>
+            <p className="text-base leading-relaxed text-white/80">
+              FairCrawl is the handshake between AI crawlers and the sites they need. We check identity, pace, and permissions so both sides know what is allowed.
+            </p>
+          </div>
         </div>
 
         <ul className="space-y-3 text-sm text-white/80">

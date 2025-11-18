@@ -21,7 +21,7 @@ export default async function DirectoryPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-16 space-y-8">
-      <div className="space-y-3 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+      <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
         <header className="mx-auto max-w-3xl space-y-3">
           <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Directory</p>
           <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
