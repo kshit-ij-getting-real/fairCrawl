@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../components/marketing-card';
+import { SectionActions } from '../components/ui/SectionActions';
 import { fetchPublicDomains } from '../lib/directory';
 
 export const dynamic = 'force-dynamic';
@@ -27,33 +28,31 @@ const Page = async () => {
                 AI crawlers call FairCrawl instead of your site directly. FairCrawl checks your rules, then either serves the page or returns a clear block.
               </p>
             </div>
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-4">
-                <a
-                  href="/signup"
-                  className="rounded-full bg-faircrawl-accent px-6 py-3 font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-faircrawl-accentSoft"
-                >
-                  Get early access
-                </a>
-                <a href="#how-it-works" className="font-semibold text-faircrawl-textMain hover:text-white">
-                  See how FairCrawl works
-                </a>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#creators"
-                  className="w-full rounded-full border border-white/30 bg-white/5 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
-                >
-                  I&apos;m a creator
-                </a>
-                <a
-                  href="#ai-teams"
-                  className="w-full rounded-full border border-white/30 bg-white/5 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
-                >
-                  I&apos;m an AI builder
-                </a>
-              </div>
-            </div>
+            <SectionActions>
+              <a
+                href="/signup"
+                className="rounded-full bg-faircrawl-accent px-6 py-3 font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-faircrawl-accentSoft"
+              >
+                Get early access
+              </a>
+              <a href="#how-it-works" className="font-semibold text-faircrawl-textMain hover:text-white">
+                See how FairCrawl works
+              </a>
+            </SectionActions>
+            <SectionActions className="gap-2">
+              <a
+                href="#creators"
+                className="rounded-full border border-white/30 bg-white/5 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                I&apos;m a creator
+              </a>
+              <a
+                href="#ai-teams"
+                className="rounded-full border border-white/30 bg-white/5 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                I&apos;m an AI builder
+              </a>
+            </SectionActions>
           </div>
           <MarketingCard className="text-white">
             <div className="space-y-4">
@@ -145,12 +144,14 @@ const Page = async () => {
               </li>
             ))}
           </ul>
-          <a
-            href="#how-it-works"
-            className="inline-flex w-fit items-center rounded-full border border-white/30 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-          >
-            See how creators use FairCrawl
-          </a>
+          <SectionActions>
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center rounded-full border border-white/30 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              See how creators use FairCrawl
+            </a>
+          </SectionActions>
         </div>
         <MarketingCard className="text-white">
           <div className="space-y-4">
@@ -220,7 +221,7 @@ const Page = async () => {
               </p>
             </div>
             <ul className="space-y-3 text-sm text-white/80">
-              {[ 
+              {[
                 'AI-friendly delivery: one API for many publishers, with clear rules for each domain.',
                 'Built-in rate limiting and audit trail so partners can see how you access their content.',
                 'Know which paths are open, metered, or blocked before you crawl.',
@@ -232,12 +233,14 @@ const Page = async () => {
                 </li>
               ))}
             </ul>
-            <a
-              href="#verified-sites"
-              className="inline-flex w-fit items-center rounded-full border border-white/30 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              Explore verified sources
-            </a>
+            <SectionActions>
+              <a
+                href="#verified-sites"
+                className="inline-flex items-center rounded-full border border-white/30 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Explore verified sources
+              </a>
+            </SectionActions>
           </div>
         </div>
       </section>
@@ -276,14 +279,18 @@ const Page = async () => {
               </MarketingCard>
             ))}
             <MarketingCard>
-              <h3 className="text-lg font-semibold text-white">Your site here</h3>
-              <p className="mt-2 text-sm text-white/70">Verify your own site and it will show up in the directory once we go live.</p>
-              <Link
-                href="/signup?role=publisher"
-                className="mt-4 inline-flex w-fit items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white"
-              >
-                Become a launch publisher
-              </Link>
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold text-white">Your site here</h3>
+                <p className="text-sm text-white/70">Verify your own site and it will show up in the directory once we go live.</p>
+                <SectionActions>
+                  <Link
+                    href="/signup?role=publisher"
+                    className="inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white"
+                  >
+                    Become a launch publisher
+                  </Link>
+                </SectionActions>
+              </div>
             </MarketingCard>
           </div>
         </div>

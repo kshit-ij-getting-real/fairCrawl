@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiFetch, clearSession, getRole } from '../../../lib/api';
 import { DashboardCard } from '../../../components/dashboard-card';
+import { SectionActions } from '../../../components/ui/SectionActions';
 
 interface Domain {
   id: number;
@@ -136,22 +137,26 @@ export default function PublisherDashboard() {
             <h2 className="text-xl font-semibold">Your sites</h2>
             <p className="text-sm text-white/70">Track the domains you control and jump into their AI rules.</p>
           </div>
-          <form onSubmit={addDomain} className="flex flex-col gap-3 md:flex-row md:items-center">
-            <div className="flex-1 space-y-1 w-full">
-              <label className="text-xs font-medium uppercase tracking-wide text-white/60">Add a domain</label>
-              <input
-                className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
-                placeholder="example.com"
-                value={domainName}
-                onChange={(e) => setDomainName(e.target.value)}
-              />
+          <form onSubmit={addDomain} className="space-y-3">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="w-full flex-1 space-y-1">
+                <label className="text-xs font-medium uppercase tracking-wide text-white/60">Add a domain</label>
+                <input
+                  className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                  placeholder="example.com"
+                  value={domainName}
+                  onChange={(e) => setDomainName(e.target.value)}
+                />
+              </div>
+              <SectionActions className="mt-0 w-full md:w-auto md:flex-none">
+                <button
+                  className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+                  type="submit"
+                >
+                  Add domain
+                </button>
+              </SectionActions>
             </div>
-            <button
-              className="w-full md:w-auto rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
-              type="submit"
-            >
-              Add domain
-            </button>
           </form>
           {domains.length === 0 ? (
             <p className="text-sm text-white/70">No sites yet. Add a domain you control to start setting AI rules.</p>
@@ -286,9 +291,11 @@ export default function PublisherDashboard() {
                 <p className="text-white">Rule 1: Path = /, Allow AI access = Yes, Max requests per second = 1 → AI can read public pages slowly.</p>
                 <p className="text-white">Rule 2: Path = /paywalled/*, Allow AI access = No → AI cannot read any paywalled pages.</p>
               </div>
-              <button className="rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft" type="submit">
-                Save rule
-              </button>
+              <SectionActions>
+                <button className="rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft" type="submit">
+                  Save rule
+                </button>
+              </SectionActions>
             </form>
           </DashboardCard>
           <DashboardCard className="space-y-5 text-white">
@@ -331,17 +338,19 @@ export default function PublisherDashboard() {
             </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase text-white/50">Verify domain</p>
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-3">
+              <div className="space-y-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <button onClick={fetchToken} className="text-sm font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft">
                     Fetch verification token
                   </button>
                   {verificationToken && <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>}
                 </div>
-                <button onClick={verifyDomain} className="self-start rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft">
-                  Verify domain
-                </button>
                 {message && <p className="text-sm text-white/70">{message}</p>}
+                <SectionActions>
+                  <button onClick={verifyDomain} className="rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft">
+                    Verify domain
+                  </button>
+                </SectionActions>
               </div>
             </div>
           </DashboardCard>
