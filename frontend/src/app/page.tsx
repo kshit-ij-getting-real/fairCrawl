@@ -9,17 +9,17 @@ const Page = () => {
         <div className="space-y-4 text-white">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/70">
             <span className="h-2 w-2 rounded-full bg-blue-400" />
-            Controlled AI crawling
+            Controlled, paid AI crawling
           </div>
           <h1 className="text-4xl font-bold leading-tight md:text-5xl">Let AI in without losing control</h1>
           <p className="text-lg leading-relaxed text-white/80">
-            FairCrawl sits between AI crawlers and your site. Crawlers ask us for pages, you set the rules, and we enforce them on every request.
+            FairCrawl sits between AI crawlers and your site. You decide what they can read, how fast they can read it, and what they pay for that access. Every request is enforced and logged on those terms instead of being free scraping.
           </p>
           <p className="text-base text-white/70">
-            AI crawlers call FairCrawl instead of your site directly. FairCrawl checks your rules, then either serves the page or returns a clear block.
+            AI crawlers call FairCrawl instead of your site directly. On every request, FairCrawl applies your access and pricing rules, then either serves the page or returns a clear block.
           </p>
-          <p className="text-base text-white/70">
-            Over time, we plug in payouts so crawlers that read at scale have to pay instead of scraping in the dark.
+          <p className="text-sm md:text-base text-white/60">
+            Control and monetisation are part of the same rule set: change a path’s access or price once and every crawler has to follow it.
           </p>
           <div className="mt-6 flex gap-4">
             <Link
@@ -80,7 +80,7 @@ const Page = () => {
               </div>
               <h2 className="text-xl font-semibold">Create for AI, stay in control</h2>
               <p className="text-sm text-white/70">
-                Decide what AIs can read from your site and see which crawlers actually show up.
+                Choose what AIs can read, keep the rest private, and charge for the parts that matter, all from one control panel.
               </p>
             </div>
             <div className="mt-6 flex justify-end">
@@ -101,7 +101,7 @@ const Page = () => {
               </div>
               <h2 className="text-xl font-semibold">Source the best data, without guesswork</h2>
               <p className="text-sm text-white/70">
-                One gateway to permissioned content across creators, with clear rules for every domain.
+                One gateway where every domain’s access and pricing rules are explicit, so you get predictable paid access instead of random blocks.
               </p>
             </div>
             <div className="mt-6 flex justify-end">

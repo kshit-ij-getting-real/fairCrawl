@@ -5,6 +5,7 @@ import { MarketingCard } from '../../components/ui/MarketingCard';
 const CreatorsPage = () => {
   const highlights = [
     'Choose which pages AIs can read and which stay private.',
+    'Turn AI reads into paid, logged access using the same rules that control what they can see.',
     'See which AI crawlers actually visit your site and what they read.',
     'Decide page by page which parts of your site are open to AI crawlers.',
     'Protect your site from noisy crawlers with simple speed limits.',
@@ -95,7 +96,7 @@ const CreatorsPage = () => {
               <div className="space-y-3">
                 <h3 className="text-xl font-semibold">From free crawling to paid feeds</h3>
                 <p className="text-sm text-white/70">
-                  Today, AI crawlers read your work for free and you never see it. FairCrawl is built to flip that. First you set the rules and see the traffic. Next, we plug in payouts so AIs that read at scale have to pay for a clean, permissioned feed instead of scraping in the dark.
+                  Today, AI crawlers read your work for free and you rarely see it. With FairCrawl, the same rules that say what’s open, what’s private, and how fast they can read also set what they pay. When crawlers hit your site through FairCrawl, those rules apply in real time, so large readers pay for a controlled, logged feed instead of scraping in the dark.
                 </p>
               </div>
               <div className="mt-6 flex justify-end gap-3">

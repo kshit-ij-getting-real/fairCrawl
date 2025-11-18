@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/" className="text-lg font-semibold tracking-tight">
                   FairCrawl
                 </Link>
-                <span className="hidden text-xs text-white/60 sm:inline">AI access with consent built in</span>
+                <span className="hidden text-xs text-white/60 sm:inline">AI access with consent and payouts built in</span>
               </div>
 
               <nav className="hidden md:flex md:flex-1 md:justify-center">
