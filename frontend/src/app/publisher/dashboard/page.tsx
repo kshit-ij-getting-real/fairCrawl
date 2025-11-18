@@ -102,8 +102,8 @@ export default function PublisherDashboard() {
   };
 
   return (
-    <div className="space-y-10">
-      <section className="rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg space-y-4">
+    <div className="mx-auto max-w-6xl space-y-10 px-6 py-12">
+      <section className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-faircrawl-textMuted">Publisher control</p>
@@ -117,43 +117,37 @@ export default function PublisherDashboard() {
               clearSession();
               router.replace('/');
             }}
-            className="text-sm px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition"
+            className="rounded-full bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20"
           >
             Log out
           </button>
         </div>
-        <MarketingCard className="bg-white/5 text-white text-sm space-y-2">
-          <h2 className="text-base font-semibold text-white">How this dashboard works</h2>
-          <p className="leading-relaxed text-white/70">
-            You register your sites here, prove you own them once, and then set AI access rules per path. FairCrawl enforces
-            these rules on every request from AI clients.
-          </p>
-        </MarketingCard>
       </section>
 
-      <section>
-        <MarketingCard className="space-y-6 text-white">
+      <section className="space-y-4">
+        <MarketingCard className="space-y-6">
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold">Your sites</h2>
+            <h2 className="text-lg font-semibold text-white">Your sites</h2>
             <p className="text-sm text-white/70">Track the domains you control and jump into their AI rules.</p>
           </div>
           <form onSubmit={addDomain} className="space-y-3">
-            <div className="space-y-2">
-              <label className="text-xs font-medium uppercase tracking-wide text-white/60">Add a domain</label>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <input
-                  className="w-full flex-1 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-white placeholder-white/50 transition focus:border-faircrawl-accent focus:outline-none"
-                  placeholder="example.com"
-                  value={domainName}
-                  onChange={(e) => setDomainName(e.target.value)}
-                />
-                <button
-                  className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
-                  type="submit"
-                >
-                  Add domain
-                </button>
-              </div>
+            <label className="block text-sm font-medium text-white" htmlFor="domain-input">
+              Add a domain
+            </label>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <input
+                id="domain-input"
+                className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
+                placeholder="example.com"
+                value={domainName}
+                onChange={(e) => setDomainName(e.target.value)}
+              />
+              <button
+                className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
+                type="submit"
+              >
+                Add domain
+              </button>
             </div>
           </form>
           {domains.length === 0 ? (
@@ -202,16 +196,16 @@ export default function PublisherDashboard() {
                 </tbody>
               </table>
             </div>
-            )}
-          </MarketingCard>
-        </section>
+          )}
+        </MarketingCard>
+      </section>
 
       {selectedDomain && (
         <section className="grid gap-8 lg:grid-cols-2" id="ai-rules">
           <MarketingCard className="space-y-5 text-white">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">AI access rules</h3>
-              <p className="text-sm text-white/70">These settings control which pages AI agents can read and how fast they can read them.</p>
+              <p className="text-sm text-white/70">These settings control which pages AI crawlers can read and how fast they can read them.</p>
             </div>
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase text-white/50">Current rules</p>
@@ -229,13 +223,13 @@ export default function PublisherDashboard() {
               </ul>
             </div>
             <form onSubmit={addPolicy} className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <p className="text-xs font-medium uppercase text-white/50">Path</p>
                 <label className="text-sm font-semibold text-white" title="Pick the paths this rule covers. * matches anything in the path.">
                   Path pattern
                 </label>
                 <input
-                  className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                  className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
                   placeholder="/, /blog/*, /docs/*"
                   value={policyForm.pathPattern}
                   onChange={(e) => setPolicyForm({ ...policyForm, pathPattern: e.target.value })}
@@ -246,7 +240,7 @@ export default function PublisherDashboard() {
                 <p className="text-xs font-medium uppercase text-white/50">Access</p>
                 <label
                   className="flex items-center gap-2 text-sm font-semibold text-white"
-                  title="On = AI agents can read this path. Off = all AI requests to this path are blocked."
+                  title="On = AI crawlers can read this path. Off = all AI requests to this path are blocked."
                 >
                   <input
                     type="checkbox"
@@ -255,47 +249,49 @@ export default function PublisherDashboard() {
                   />
                   Allow AI access
                 </label>
+                <p className="text-xs text-white/60">Toggle access for this path.</p>
               </div>
               <div className="space-y-3">
                 <p className="text-xs font-medium uppercase text-white/50">Rate</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold text-white" title="Charge AI readers per 1k requests if you want metered access.">
+                    <label className="text-sm font-semibold text-white" title="Charge AI crawlers per 1k requests if you want metered access.">
                       Price per 1k requests
                     </label>
                     <input
-                      className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                      className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
                       placeholder="Price in cents"
                       value={policyForm.pricePer1k}
                       onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold text-white" title="Speed limit for bots hitting this path.">
+                    <label className="text-sm font-semibold text-white" title="Speed limit for crawlers hitting this path.">
                       Max requests per second
                     </label>
                     <input
-                      className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/50 focus:border-faircrawl-accent focus:outline-none"
+                      className="w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
                       placeholder="e.g. 1"
                       value={policyForm.maxRps}
                       onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
                     />
                   </div>
                 </div>
-                <p className="text-xs text-white/60">Set gentle speed limits and pricing for AI readers.</p>
+                <p className="text-xs text-white/60">Set gentle speed limits and pricing for AI crawlers.</p>
               </div>
               <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.05] p-3 text-xs leading-relaxed text-white/70">
                 <p className="text-xs font-medium uppercase text-white/50">Examples</p>
-                <p className="text-white">Rule 1: Path = /, Allow AI access = Yes, Max requests per second = 1 → AI can read public pages slowly.</p>
-                <p className="text-white">Rule 2: Path = /paywalled/*, Allow AI access = No → AI cannot read any paywalled pages.</p>
+                <p className="text-white">Rule 1: Path = /, Allow AI access = Yes, Max requests per second = 1 → AI crawlers can read public pages slowly.</p>
+                <p className="text-white">Rule 2: Path = /paywalled/*, Allow AI access = No → AI crawlers cannot read any paywalled pages.</p>
               </div>
               <SectionActions>
-                <button className="rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft" type="submit">
+                <button className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft" type="submit">
                   Save rule
                 </button>
               </SectionActions>
             </form>
           </MarketingCard>
+
           <MarketingCard className="space-y-5 text-white">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">Verify that you own this site</h3>
@@ -314,14 +310,14 @@ export default function PublisherDashboard() {
             </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase text-white/50">Analytics</p>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80 space-y-2">
+              <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
                 <div className="flex justify-between"><span>Total requests</span><span>{analytics[selectedDomain]?.totalRequests ?? 0}</span></div>
                 <div className="flex justify-between"><span>Estimated revenue</span><span>${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</span></div>
               </div>
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-medium uppercase text-white/50">Top AI clients</p>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80 space-y-2">
+              <p className="text-xs font-medium uppercase text-white/50">Top AI teams</p>
+              <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
                 {analytics[selectedDomain]?.topClients?.length ? (
                   analytics[selectedDomain].topClients.map((client: any) => (
                     <div key={client.aiClientId} className="flex justify-between">
@@ -345,7 +341,7 @@ export default function PublisherDashboard() {
                 </div>
                 {message && <p className="text-sm text-white/70">{message}</p>}
                 <SectionActions>
-                  <button onClick={verifyDomain} className="rounded-full bg-faircrawl-accent px-4 py-2 text-white transition hover:bg-faircrawl-accentSoft">
+                  <button onClick={verifyDomain} className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft">
                     Verify domain
                   </button>
                 </SectionActions>

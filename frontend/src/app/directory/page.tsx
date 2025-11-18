@@ -1,19 +1,16 @@
 import Link from 'next/link';
 
 import { MarketingCard } from '../../components/ui/MarketingCard';
-import { SectionActions } from '../../components/ui/SectionActions';
-import { buildDirectoryEntries, DirectoryEntry, fetchPublicDomains } from '../../lib/directory';
+import { fetchPublicDomains } from '../../lib/directory';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DirectoryPage() {
   const domains = await fetchPublicDomains();
-  const directoryEntries: DirectoryEntry[] = buildDirectoryEntries(domains);
-  const verifiedEntries = directoryEntries.filter((entry) => entry.verified);
-  const ctaEntry = directoryEntries.find((entry) => !entry.verified);
+  const verifiedDomains = domains.filter((domain) => domain.verified);
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto max-w-6xl space-y-10 px-6 py-12">
       <header className="space-y-3">
         <p className="text-sm font-semibold text-faircrawl-accent">Directory</p>
         <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
@@ -22,45 +19,56 @@ export default async function DirectoryPage() {
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {verifiedEntries.map((entry, idx) => (
-          <MarketingCard key={`${entry.title || entry.domain}-${idx}`} className="space-y-4 text-white">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold">{entry.title || entry.domain}</h2>
-                <span className="rounded-full bg-faircrawl-accent/20 px-3 py-1 text-xs font-semibold text-faircrawl-accent">Verified</span>
-              </div>
-              <p className="text-sm text-white/70">{entry.subtitle}</p>
-              <p className="text-sm text-white/60">AI rules published through FairCrawl.</p>
-            </div>
-            <SectionActions>
-              <a
-                href={entry.link || (entry.domain ? `https://${entry.domain}` : '#')}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
-              >
-                Visit site
-              </a>
-            </SectionActions>
-          </MarketingCard>
-        ))}
-      </div>
+      <div className="space-y-4">
+        {verifiedDomains.map((domain) => {
+          const publisherName =
+            typeof domain.publisher === 'object'
+              ? domain.publisher?.user?.email || domain.publisher?.name
+              : domain.publisher || undefined;
 
-      {ctaEntry && (
-        <MarketingCard className="space-y-3 text-white">
-          <h2 className="text-2xl font-semibold">{ctaEntry.title}</h2>
-          <p className="text-sm text-white/70">{ctaEntry.description}</p>
-          <SectionActions>
-            <Link
-              href={(ctaEntry.link as string) || '/signup?role=publisher'}
-              className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
-            >
-              {ctaEntry.cta || 'Become a launch publisher'}
-            </Link>
-          </SectionActions>
+          return (
+            <MarketingCard key={domain.name} className="text-white">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">{domain.name}</h3>
+                  <p className="text-xs text-white/60">
+                    {domain.name} · Verified{publisherName ? ` by ${publisherName}` : ''}
+                  </p>
+                </div>
+                <div className="flex justify-end">
+                  <a
+                    href={`https://${domain.name}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-medium text-white hover:bg-faircrawl-accentSoft"
+                  >
+                    Visit site
+                  </a>
+                </div>
+              </div>
+            </MarketingCard>
+          );
+        })}
+
+        <MarketingCard>
+          <div className="flex flex-col gap-4 text-white md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="text-lg font-semibold">Your site here</h3>
+              <p className="text-sm text-white/70">
+                Verify your own site and it will show up in the directory once we go live.
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <Link
+                href="/publisher/dashboard"
+                className="inline-flex items-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white hover:bg-faircrawl-accentSoft"
+              >
+                Become a launch publisher
+              </Link>
+            </div>
+          </div>
         </MarketingCard>
-      )}
+      </div>
     </div>
   );
 }
