@@ -10,41 +10,72 @@ export const Logo: React.FC<LogoProps> = ({ size = 32 }) => {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 60 60"
+      viewBox="0 0 120 120"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      {/* Circle background with thin white border */}
+      <defs>
+        <clipPath id="faircrawl-clip">
+          <circle cx="60" cy="60" r="52" />
+        </clipPath>
+      </defs>
+
+      {/* Outer ring */}
       <circle
-        cx="30"
-        cy="30"
-        r="18"
-        fill="#0F172A"
-        stroke="#F9FAFB"
-        strokeWidth="1"
+        cx="60"
+        cy="60"
+        r="52"
+        fill="#020617"
+        stroke="#FFFFFF"
+        strokeWidth={6}
       />
 
-      {/* Crawl band */}
-      <path
-        d="M12 30
-           L18 24
-           L24 26
-           L30 22
-           L36 24
-           L42 20
-           L48 23
-           L48 12
-           L12 12
-           Z"
-        fill="#2563EB"
-      />
+      <g clipPath="url(#faircrawl-clip)">
+        {/* Base dark circle */}
+        <circle cx="60" cy="60" r="52" fill="#0F172A" />
 
-      {/* Crawl nodes */}
-      <circle cx="18" cy="24" r="1.6" fill="#F9FAFB" />
-      <circle cx="24" cy="26" r="1.6" fill="#F9FAFB" />
-      <circle cx="30" cy="22" r="1.6" fill="#F9FAFB" />
-      <circle cx="36" cy="24" r="1.6" fill="#F9FAFB" />
-      <circle cx="42" cy="20" r="1.6" fill="#F9FAFB" />
+        {/* Blue area above zig-zag */}
+        <path
+          d="
+            M8 8
+            H112
+            V60
+            L96 56
+            L78 68
+            L60 52
+            L42 64
+            L24 58
+            L8 64
+            Z
+          "
+          fill="#2563EB"
+        />
+
+        {/* White zig-zag line (same lower edge as blue area) */}
+        <path
+          d="
+            M8 64
+            L24 58
+            L42 64
+            L60 52
+            L78 68
+            L96 56
+            L112 60
+          "
+          stroke="#FFFFFF"
+          strokeWidth={4}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+
+        {/* Nodes */}
+        <circle cx="24" cy="58" r={4.5} fill="#FFFFFF" />
+        <circle cx="42" cy="64" r={4.5} fill="#FFFFFF" />
+        <circle cx="60" cy="52" r={4.5} fill="#FFFFFF" />
+        <circle cx="78" cy="68" r={4.5} fill="#FFFFFF" />
+        <circle cx="96" cy="56" r={4.5} fill="#FFFFFF" />
+      </g>
     </svg>
   );
 };
