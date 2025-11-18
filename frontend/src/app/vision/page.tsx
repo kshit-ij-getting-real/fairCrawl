@@ -9,7 +9,7 @@ const VisionPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Vision</p>
-            <h1 className="text-3xl font-semibold">Our vision: a fair web for AI</h1>
+            <h1 className="text-3xl font-semibold">Our vision: A fair web for AI</h1>
             <p className="max-w-3xl text-base leading-relaxed text-white/80">
               AI is becoming the web’s main reader. FairCrawl turns that traffic into a protocol with clear consent, speed, and value built in so creators keep control and AI teams get predictable access.
             </p>

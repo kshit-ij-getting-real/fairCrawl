@@ -6,7 +6,7 @@ const AboutPage = () => {
       <section className="rounded-3xl bg-slate-900 p-10 shadow-xl">
         <div className="mx-auto max-w-3xl space-y-6 text-white">
           <div className="space-y-3 text-center">
-            <h1 className="text-3xl font-semibold">Our vision: a fair web for AI</h1>
+            <h1 className="text-3xl font-semibold">Our vision: A fair web for AI</h1>
             <p className="text-base leading-relaxed text-white/80">
               AI is becoming the web’s main reader. Today that traffic is invisible, unaccountable, and often hostile to the sites it depends on. FairCrawl’s job is to turn that mess into a protocol everyone can live with.
             </p>

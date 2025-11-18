@@ -3,12 +3,6 @@ import Link from 'next/link';
 import { MarketingCard } from '../../components/ui/MarketingCard';
 
 const HowItWorksPage = () => {
-  const handshake = [
-    'AI crawlers route through FairCrawl instead of scraping in the dark.',
-    'You choose which paths are open, throttled, or blocked for crawlers.',
-    'Every request is logged so both sides see the same record.',
-  ];
-
   const steps = [
     {
       title: 'Crawler hits a wall',
@@ -35,30 +29,26 @@ const HowItWorksPage = () => {
             <p className="text-base leading-relaxed text-white/80">
               FairCrawl is the handshake between AI crawlers and the sites they need. We check identity, pace, and permissions so both sides know what is allowed.
             </p>
+            <p className="text-base leading-relaxed text-white/80">
+              AI crawlers route through FairCrawl instead of scraping in the dark. You choose which paths are open, throttled, or blocked, and every request is logged so both sides see the same record.
+            </p>
           </div>
         </div>
 
-        <ul className="space-y-3 text-sm text-white/80">
-          {handshake.map((item) => (
-            <li key={item} className="flex items-start gap-2">
-              <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-
         <div className="grid gap-6 md:grid-cols-3">
           {steps.map((step) => (
-            <MarketingCard key={step.title} className="flex h-full flex-col justify-between space-y-3 text-white">
-              <div className="space-y-3">
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-blue-200">
-                    <path d="M12 3v18" />
-                    <path d="M5 9l7 6 7-6" />
-                  </svg>
+            <MarketingCard key={step.title} className="flex h-full flex-col text-white">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-slate-900 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4 text-blue-200">
+                      <path d="M12 3v18" />
+                      <path d="M5 9l7 6 7-6" />
+                    </svg>
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-50">{step.title}</h3>
                 </div>
-                <h3 className="text-xl font-semibold">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-white/70">{step.body}</p>
+                <p className="mt-3 text-sm text-slate-200">{step.body}</p>
               </div>
             </MarketingCard>
           ))}

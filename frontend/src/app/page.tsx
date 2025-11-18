@@ -122,7 +122,7 @@ const Page = () => {
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
                 <span>VISION</span>
               </div>
-              <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
+              <h2 className="text-xl font-semibold">Our vision: A fair web for AI</h2>
               <p className="text-sm text-white/70">
                 FairCrawl turns invisible AI traffic into a protocol with consent, speed, and value built in.
               </p>
