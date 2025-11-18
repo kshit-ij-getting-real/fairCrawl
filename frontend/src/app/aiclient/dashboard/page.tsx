@@ -50,7 +50,7 @@ export default function AIClientDashboard() {
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-12 text-white lg:px-8">
       <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-white/70">AI TEAM CONTROL</p>
             <h1 className="text-3xl font-semibold">Crawler control panel</h1>
@@ -86,37 +86,39 @@ export default function AIClientDashboard() {
           </div>
         )}
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-          <table className="w-full text-left text-sm text-white/80">
-            <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/40">
-              <tr>
-                <th className="py-3 px-4">Key ID</th>
-                <th className="px-4">Created</th>
-                <th className="px-4">Status</th>
-                <th className="px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {apiKeys.map((key) => (
-                <tr key={key.id}>
-                  <td className="py-3 px-4 font-semibold text-white">{key.id}</td>
-                  <td className="px-4">{new Date(key.createdAt).toLocaleString()}</td>
-                  <td className="px-4">{key.revokedAt ? 'Revoked' : 'Active'}</td>
-                  <td className="px-4 text-right">
-                    {!key.revokedAt && (
-                      <button
-                        className="text-sm font-semibold text-blue-300 hover:text-white"
-                        onClick={() => revokeKey(key.id)}
-                      >
-                        Revoke
-                      </button>
-                    )}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-[640px] w-full text-left text-sm text-white/80">
+              <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/40">
+                <tr>
+                  <th className="py-3 px-4">Key ID</th>
+                  <th className="px-4">Created</th>
+                  <th className="px-4">Status</th>
+                  <th className="px-4 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {apiKeys.map((key) => (
+                  <tr key={key.id}>
+                    <td className="py-3 px-4 font-semibold text-white">{key.id}</td>
+                    <td className="px-4">{new Date(key.createdAt).toLocaleString()}</td>
+                    <td className="px-4">{key.revokedAt ? 'Revoked' : 'Active'}</td>
+                    <td className="px-4 text-right">
+                      {!key.revokedAt && (
+                        <button
+                          className="text-sm font-semibold text-blue-300 hover:text-white"
+                          onClick={() => revokeKey(key.id)}
+                        >
+                          Revoke
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-start sm:justify-end">
           <button
             className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
             onClick={generateKey}
@@ -170,27 +172,33 @@ export default function AIClientDashboard() {
         </div>
         <p className="text-sm text-white">Total reads: {usage.totalRequests}</p>
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] text-sm text-white/80">
-          <div className="grid grid-cols-5 gap-2 bg-white/[0.04] px-3 py-2 text-xs uppercase tracking-wide text-white/50">
-            <span>API key</span>
-            <span>Domain</span>
-            <span>Reads</span>
-            <span>Spend</span>
-            <span>Last seen</span>
-          </div>
-          <div className="divide-y divide-white/5">
-            {usage.usageByDomain.length === 0 ? (
-              <p className="px-3 py-4 text-white/60">No reads yet. Once your crawlers use FairCrawl, you’ll see reads and spend here.</p>
-            ) : (
-              usage.usageByDomain.map((item) => (
-                <div key={item.domain} className="grid grid-cols-5 gap-2 px-3 py-2">
-                  <span>—</span>
-                  <span>{item.domain}</span>
-                  <span>{item.requests}</span>
-                  <span>—</span>
-                  <span>—</span>
-                </div>
-              ))
-            )}
+          <div className="overflow-x-auto">
+            <div className="min-w-[560px]">
+              <div className="grid grid-cols-5 gap-2 bg-white/[0.04] px-3 py-2 text-xs uppercase tracking-wide text-white/50">
+                <span>API key</span>
+                <span>Domain</span>
+                <span>Reads</span>
+                <span>Spend</span>
+                <span>Last seen</span>
+              </div>
+              <div className="divide-y divide-white/5">
+                {usage.usageByDomain.length === 0 ? (
+                  <p className="px-3 py-4 text-white/60">
+                    No reads yet. Once your crawlers use FairCrawl, you’ll see reads and spend here.
+                  </p>
+                ) : (
+                  usage.usageByDomain.map((item) => (
+                    <div key={item.domain} className="grid grid-cols-5 gap-2 px-3 py-2">
+                      <span>—</span>
+                      <span>{item.domain}</span>
+                      <span>{item.requests}</span>
+                      <span>—</span>
+                      <span>—</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </MarketingCard>
