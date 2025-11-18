@@ -13,17 +13,25 @@ interface Domain {
   policies: any[];
 }
 
+interface SiteStats {
+  totalReads: number;
+  earnedUsd: number;
+}
+
 export default function PublisherDashboard() {
   const router = useRouter();
   const [domains, setDomains] = useState<Domain[]>([]);
   const [domainName, setDomainName] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [analytics, setAnalytics] = useState<Record<number, any>>({});
+  const [siteStats, setSiteStats] = useState<Record<number, SiteStats>>({});
   const [policyForm, setPolicyForm] = useState({ pathPattern: '/*', allowAI: true, pricePer1k: 0, maxRps: '' });
   const [verificationToken, setVerificationToken] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
   const inputClasses =
     'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
+
+  const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
 
   useEffect(() => {
     if (getRole() !== 'PUBLISHER') {
@@ -35,11 +43,21 @@ export default function PublisherDashboard() {
 
   const loadDomains = async () => {
     try {
-      const result = await apiFetch('/api/publisher/domains');
-      setDomains(result);
-      if (result.length > 0) {
-        setSelectedDomain(result[0].id);
-        loadAnalytics(result[0].id);
+      const [domainResult, sitesResult] = await Promise.all([
+        apiFetch('/api/publisher/domains'),
+        apiFetch('/api/publisher/sites'),
+      ]);
+      setDomains(domainResult);
+
+      const statsMap: Record<number, SiteStats> = {};
+      (sitesResult?.sites || []).forEach((site: any) => {
+        statsMap[site.id] = { totalReads: site.totalReads, earnedUsd: site.earnedUsd };
+      });
+      setSiteStats(statsMap);
+
+      if (domainResult.length > 0) {
+        setSelectedDomain(domainResult[0].id);
+        loadAnalytics(domainResult[0].id);
       }
     } catch (err: any) {
       console.error(err);
@@ -193,9 +211,9 @@ export default function PublisherDashboard() {
                           Manage rules
                         </button>
                       </td>
-                      <td className="py-3 px-3 text-white/80">{analytics[domain.id]?.totalRequests ?? '—'}</td>
+                      <td className="py-3 px-3 text-white/80">{siteStats[domain.id]?.totalReads ?? '—'}</td>
                       <td className="py-3 px-3 text-right text-white/80">
-                        ${analytics[domain.id]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}
+                        {formatCurrency(siteStats[domain.id]?.earnedUsd ?? 0)}
                       </td>
                     </tr>
                   ))}

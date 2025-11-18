@@ -39,6 +39,7 @@ model AIClient {
   apiKeys   APIKey[]
   requests  RequestLog[]
   usages    UsageAggregate[]
+  readEvents ReadEvent[]
   createdAt DateTime  @default(now())
 }
 
@@ -52,6 +53,7 @@ model Domain {
   policies    AIPolicy[]
   requests    RequestLog[]
   usages      UsageAggregate[]
+  readEvents  ReadEvent[]
   createdAt   DateTime   @default(now())
 }
 
@@ -104,4 +106,23 @@ model UsageAggregate {
   domain      Domain    @relation(fields: [domainId], references: [id])
   aiClient    AIClient  @relation(fields: [aiClientId], references: [id])
   apiKey      APIKey?   @relation(fields: [apiKeyId], references: [id])
+}
+
+model ReadEvent {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+
+  clientId    Int
+  domainId    Int
+  url         String
+  bytes       Int
+  tokens      Int?
+  priceMicros Int
+
+  client      AIClient  @relation(fields: [clientId], references: [id])
+  domain      Domain    @relation(fields: [domainId], references: [id])
+
+  @@index([clientId])
+  @@index([domainId])
+  @@index([createdAt])
 }

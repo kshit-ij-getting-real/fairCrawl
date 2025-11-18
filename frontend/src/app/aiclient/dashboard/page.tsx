@@ -13,13 +13,22 @@ interface ApiKey {
   revokedAt: string | null;
 }
 
+interface UsageRow {
+  domainId: number;
+  domain: string;
+  reads: number;
+  spendUsd: number;
+  lastSeen: string;
+}
+
 export default function AIClientDashboard() {
   const router = useRouter();
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [newKey, setNewKey] = useState<string>('');
-  const [usage, setUsage] = useState<{ totalRequests: number; usageByDomain: { domain: string; requests: number }[] }>({
-    totalRequests: 0,
-    usageByDomain: [],
+  const [usage, setUsage] = useState<{ totalReads: number; totalSpendUsd: number; usage: UsageRow[] }>({
+    totalReads: 0,
+    totalSpendUsd: 0,
+    usage: [],
   });
 
   useEffect(() => {
@@ -168,26 +177,24 @@ export default function AIClientDashboard() {
             Usage shows how many pages each crawler read, which domains they accessed, and what you owe publishers.
           </p>
         </div>
-        <p className="text-sm text-white">Total reads: {usage.totalRequests}</p>
+        <p className="text-sm text-white">Total reads: {usage.totalReads}</p>
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] text-sm text-white/80">
-          <div className="grid grid-cols-5 gap-2 bg-white/[0.04] px-3 py-2 text-xs uppercase tracking-wide text-white/50">
-            <span>API key</span>
+          <div className="grid grid-cols-4 gap-2 bg-white/[0.04] px-3 py-2 text-xs uppercase tracking-wide text-white/50">
             <span>Domain</span>
             <span>Reads</span>
             <span>Spend</span>
             <span>Last seen</span>
           </div>
           <div className="divide-y divide-white/5">
-            {usage.usageByDomain.length === 0 ? (
+            {usage.usage.length === 0 ? (
               <p className="px-3 py-4 text-white/60">No reads yet. Once your crawlers use FairCrawl, you’ll see reads and spend here.</p>
             ) : (
-              usage.usageByDomain.map((item) => (
-                <div key={item.domain} className="grid grid-cols-5 gap-2 px-3 py-2">
-                  <span>—</span>
+              usage.usage.map((item) => (
+                <div key={item.domainId} className="grid grid-cols-4 gap-2 px-3 py-2">
                   <span>{item.domain}</span>
-                  <span>{item.requests}</span>
-                  <span>—</span>
-                  <span>—</span>
+                  <span>{item.reads}</span>
+                  <span>${item.spendUsd.toFixed(2)}</span>
+                  <span>{item.lastSeen ? new Date(item.lastSeen).toLocaleString() : '—'}</span>
                 </div>
               ))
             )}
