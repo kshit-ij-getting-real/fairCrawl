@@ -1,3 +1,4 @@
+// components/Logo.tsx
 import React from "react";
 
 type LogoProps = {
@@ -13,8 +14,15 @@ export const Logo: React.FC<LogoProps> = ({ size = 32 }) => {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      {/* Circle background */}
-      <circle cx="30" cy="30" r="18" fill="#0F172A" />
+      {/* Circle background with thin white border */}
+      <circle
+        cx="30"
+        cy="30"
+        r="18"
+        fill="#0F172A"
+        stroke="#F9FAFB"
+        strokeWidth="1"
+      />
 
       {/* Crawl band */}
       <path
