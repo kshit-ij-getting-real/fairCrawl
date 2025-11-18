@@ -55,20 +55,38 @@ const CreatorsPage = () => {
           <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">Turn crawlers into paid feeds</h3>
-              <ul className="mt-3 space-y-2 text-sm text-slate-200">
-                <li>Stop AIs reading your work for free.</li>
-                <li>Use one rule set to decide what’s open, what stays private, and what AI pays.</li>
-                <li>When crawlers hit your site through FairCrawl, they get a controlled, logged feed instead of scraping in the dark.</li>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                  <span>Stop AIs reading your work for free.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                  <span>Use one rule set to decide what’s open, what stays private, and what AI pays.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                  <span>When crawlers hit your site through FairCrawl, they get a controlled, logged feed instead of scraping in the dark.</span>
+                </li>
               </ul>
             </div>
           </div>
 
           <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-200">
-              <li>See which crawlers hit which paths, how often, and what they read.</li>
-              <li>Use a shared log as ground truth for payouts, audits, and disputes.</li>
-              <li>Give AI teams a single source of truth for how your work was used.</li>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                <span>See which crawlers hit which paths, how often, and what they read.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                <span>Use a shared log as ground truth for payouts, audits, and disputes.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                <span>Give AI teams a single source of truth for how your work was used.</span>
+              </li>
             </ul>
           </div>
         </div>
