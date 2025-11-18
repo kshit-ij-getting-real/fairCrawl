@@ -32,11 +32,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Link href="/ai-teams" className="hover:text-white">
                     AI teams
                   </Link>
-                  <Link href="/vision" className="hover:text-white">
-                    Vision
-                  </Link>
                   <Link href="/directory" className="hover:text-white">
                     Directory
+                  </Link>
+                  <Link href="/vision" className="hover:text-white">
+                    Vision
                   </Link>
                 </div>
               </nav>
@@ -59,8 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/how-it-works">How it works</Link>
                 <Link href="/creators">Creators</Link>
                 <Link href="/ai-teams">AI teams</Link>
-                <Link href="/vision">Vision</Link>
                 <Link href="/directory">Directory</Link>
+                <Link href="/vision">Vision</Link>
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm">
                 <Link href="/login" className="text-white/70 hover:text-white">
