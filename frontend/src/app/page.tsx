@@ -6,7 +6,7 @@ const Page = () => {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section>
-        <MarketingCard className="flex flex-col gap-10 bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white shadow-lg lg:flex-row lg:items-stretch">
+        <div className="rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg text-white flex flex-col gap-10 lg:flex-row lg:items-stretch lg:py-10">
           <div className="flex flex-1 flex-col justify-between gap-6 text-white">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/70">
@@ -36,44 +36,40 @@ const Page = () => {
           </div>
 
           <div className="flex flex-1 items-stretch">
-            <div className="w-full rounded-3xl border border-slate-800/80 bg-slate-900/40 text-white">
-              <div className="h-full space-y-4 rounded-3xl p-8 text-white">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Gateway snapshot</h2>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">Live monitor</span>
+            <div className="flex h-full w-full flex-col gap-6 rounded-3xl bg-slate-950/70 border border-slate-800/80 p-6 text-white lg:p-7">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Gateway snapshot</h2>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">Live monitor</span>
+              </div>
+              <p className="text-sm text-white/70">
+                Every AI request is logged, matched against your rules, and returned with a clear allow or block.
+              </p>
+              <div className="space-y-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between text-sm text-white/80">
+                    <span className="font-semibold">Allowed paths: /blog/*</span>
+                    <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold text-blue-200">allowed</span>
                   </div>
-                  <p className="text-sm text-white/70">
-                    Every AI request is logged, matched against your rules, and returned with a clear allow or block.
-                  </p>
-                  <div className="space-y-3">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between text-sm text-white/80">
-                        <span className="font-semibold">Allowed paths: /blog/*</span>
-                        <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold text-blue-200">allowed</span>
-                      </div>
-                      <p className="mt-2 text-xs text-white/60">AI crawler: atlas-research.ai · AI speed cap: 5 req/sec</p>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between text-sm text-white/80">
-                        <span className="font-semibold">Blocked: /drafts/*</span>
-                        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">blocked</span>
-                      </div>
-                      <p className="mt-2 text-xs text-white/60">AI crawler: unknown · Reason: publisher rules</p>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between text-sm text-white/80">
-                        <span className="font-semibold">Metered: /premium/*</span>
-                        <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-100">metered</span>
-                      </div>
-                      <p className="mt-2 text-xs text-white/60">AI crawler: lumen.ai · Requests logged for payouts</p>
-                    </div>
+                  <p className="mt-2 text-xs text-white/60">AI crawler: atlas-research.ai · AI speed cap: 5 req/sec</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between text-sm text-white/80">
+                    <span className="font-semibold">Blocked: /drafts/*</span>
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">blocked</span>
                   </div>
+                  <p className="mt-2 text-xs text-white/60">AI crawler: unknown · Reason: publisher rules</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between text-sm text-white/80">
+                    <span className="font-semibold">Metered: /premium/*</span>
+                    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-100">metered</span>
+                  </div>
+                  <p className="mt-2 text-xs text-white/60">AI crawler: lumen.ai · Requests logged for payouts</p>
                 </div>
               </div>
             </div>
           </div>
-        </MarketingCard>
+        </div>
       </section>
 
       <section className="mt-16">
