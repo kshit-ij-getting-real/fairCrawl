@@ -5,20 +5,20 @@ import { SectionActions } from '../../components/ui/SectionActions';
 
 const AiTeamsPage = () => {
   const benefits = [
-    'One API for many publishers, with clear rules per domain.',
-    'Built-in rate limits and audit trails so partners can see your access.',
-    'Know which paths are open, metered, or blocked before you crawl.',
-    'Skip one-off scrapers and keep legal happy with transparent access.',
+    'One API key for many publishers with clear rules for each domain.',
+    'See which paths are free, metered, or blocked before you crawl.',
+    'Built-in rate limiting and audit trail so you can show partners how you access content.',
+    'Shared observability so you and the publisher see the same record of reads.',
   ];
 
   return (
-    <main className="space-y-12 md:space-y-16">
+    <div className="mx-auto max-w-6xl space-y-12 px-6 py-12 md:space-y-16">
       <section className="space-y-10 text-white">
         <div className="space-y-3">
           <p className="text-sm font-semibold text-faircrawl-accent">For AI teams</p>
           <h1 className="text-3xl font-semibold">FairCrawl for AI teams</h1>
           <p className="text-base leading-relaxed text-white/80">
-            One integration to ask publishers for access, honor their rules, and get clean data without guesswork.
+            Get clean, permissioned data without fighting random blocks. FairCrawl makes crawler access predictable and transparent.
           </p>
         </div>
 
@@ -26,16 +26,17 @@ const AiTeamsPage = () => {
           <MarketingCard className="space-y-4 text-white">
             <div className="space-y-2">
               <p className="text-sm font-semibold text-faircrawl-accent">API preview</p>
-              <div className="space-y-2 text-sm text-white">
-                <p className="font-semibold">curl https://api.faircrawl.ai/check</p>
-                <p className="rounded-lg border border-white/10 bg-white/[0.05] px-4 py-3 font-mono text-xs text-white/90">{'{"url": "https://site.com/blog/ai"}'}</p>
-                <p className="rounded-lg border border-white/10 bg-white/[0.05] px-4 py-3 font-mono text-xs text-white/90">→ allowed with 5 rps, log shared</p>
-              </div>
+              <p className="text-sm text-white/80">A single call tells you if a page is open, throttled, or blocked for your crawler.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/40 p-4 font-mono text-sm text-white/80">
+              curl "https://api.faircrawl.ai/check" \\
+              <br />-H "X-API-Key: YOUR_KEY" \\
+              <br />-d '{'{"url": "https://site.com/blog/ai"}'}'
             </div>
             <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
               <div className="flex items-center justify-between">
                 <span className="font-semibold">Identity</span>
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">API key per agent</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">API key per crawler</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-semibold">Pacing</span>
@@ -76,7 +77,7 @@ const AiTeamsPage = () => {
           </Link>
         </SectionActions>
       </section>
-    </main>
+    </div>
   );
 };
 

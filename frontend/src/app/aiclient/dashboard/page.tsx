@@ -49,13 +49,13 @@ export default function AIClientDashboard() {
   };
 
   return (
-    <div className="space-y-8 text-white">
+    <div className="mx-auto max-w-6xl space-y-8 px-6 py-12 text-white">
       <MarketingCard className="space-y-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-3xl font-semibold">Your AI agent dashboard</h1>
+            <h1 className="text-3xl font-semibold">Your AI teams dashboard</h1>
             <p className="text-sm text-white/70">
-              Create API keys for your agents and see how many pages they fetch through FairCrawl.
+              Create API keys for your crawlers and see how many pages they fetch through FairCrawl.
             </p>
           </div>
           <button
@@ -71,12 +71,10 @@ export default function AIClientDashboard() {
       </MarketingCard>
 
       <MarketingCard className="space-y-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="mb-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold">API keys for your agents</h2>
-            <p className="text-sm text-white/70">
-              Each key belongs to one agent or one app. Keep keys secret and use them in the <span className="font-mono">X-API-Key</span> header when calling the gateway.
-            </p>
+            <h2 className="text-lg font-semibold text-white">API keys for your crawlers</h2>
+            <p className="text-sm text-white/60">Each key belongs to one crawler or app. Keep keys secret.</p>
           </div>
           <button
             className="inline-flex items-center justify-center rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft"
@@ -88,7 +86,7 @@ export default function AIClientDashboard() {
         {newKey && (
           <div className="space-y-1 rounded-2xl border border-faircrawl-accent/40 bg-faircrawl-accent/10 p-4 text-sm">
             <p className="font-semibold text-white">Your new API key:</p>
-            <p className="font-mono break-all text-white/90">{newKey}</p>
+            <p className="break-all font-mono text-white/90">{newKey}</p>
             <p className="text-white/70">Store this securely. You will not see it again.</p>
           </div>
         )}
@@ -127,8 +125,8 @@ export default function AIClientDashboard() {
 
       <MarketingCard className="space-y-3">
         <div className="space-y-1">
-          <h2 className="text-xl font-semibold">Usage</h2>
-          <p className="text-sm text-white/70">Check how many requests your agents made through FairCrawl.</p>
+          <h2 className="text-lg font-semibold text-white">Usage</h2>
+          <p className="text-sm text-white/60">Check how many requests your crawlers made through FairCrawl.</p>
         </div>
         <p className="text-sm text-white">Total requests: {usage.totalRequests}</p>
         <div className="space-y-2 text-sm text-white/80">
@@ -147,19 +145,16 @@ export default function AIClientDashboard() {
 
       <MarketingCard className="space-y-4 text-sm">
         <div className="space-y-1">
-          <h2 className="text-xl font-semibold text-white">Example: ask FairCrawl to fetch one page for your AI</h2>
-          <p className="text-white/70">Replace YOUR_KEY with the API key above and change the url to the page your AI wants to read.</p>
+          <h2 className="text-lg font-semibold text-white">Example: ask FairCrawl to fetch one page for your AI</h2>
+          <p className="text-white/70">Replace YOUR_KEY with the API key above and change the url to the page your crawler wants to read.</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-black/50 p-4">
-          <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs text-white">
-{`curl "${API_BASE}/api/gateway/fetch?url=https://example.com/premium/article" \\
-  -H "X-API-Key: YOUR_KEY"`}
-          </pre>
+        <div className="rounded-2xl bg-black/40 p-4 font-mono text-xs text-white/80">
+          {`curl "${API_BASE}/api/gateway/fetch?url=https://example.com/premium/article" \\\n  -H "X-API-Key: YOUR_KEY"`}
         </div>
         <ul className="list-disc list-inside space-y-1 text-white/70">
           <li>Use {API_BASE} as the base URL. Update it if your deploy uses another host.</li>
           <li>Swap YOUR_KEY for the key shown above.</li>
-          <li>Set the url value to the page your agent wants to fetch.</li>
+          <li>Set the url value to the page your crawler wants to fetch.</li>
         </ul>
         <SectionActions>
           <Link

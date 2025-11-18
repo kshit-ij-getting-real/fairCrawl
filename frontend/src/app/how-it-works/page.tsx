@@ -5,20 +5,37 @@ import { SectionActions } from '../../components/ui/SectionActions';
 
 const HowItWorksPage = () => {
   const handshake = [
-    'AI crawlers point at FairCrawl instead of guessing your robots rules.',
-    'FairCrawl checks your publisher rules and the AI’s identity before any content moves.',
-    'Every request gets a clear allow or block with the same log for both sides.',
+    'AI crawlers route through FairCrawl instead of scraping in the dark.',
+    'You decide which paths are open, throttled, or blocked for AI crawlers.',
+    'Every request is logged so both sides see the same record.',
+  ];
+
+  const steps = [
+    {
+      title: 'Crawler hits a wall',
+      body:
+        'An AI crawler tries to read your site. Instead of guessing your robots rules or scraping around blocks, it goes through FairCrawl.',
+    },
+    {
+      title: 'Request goes through FairCrawl',
+      body:
+        'The AI team signs up, gets an API key, and sends each URL to FairCrawl first. We know who they are, how fast they crawl, and what they want to access.',
+    },
+    {
+      title: 'You set the rules',
+      body:
+        'You choose which paths are open, which are metered, and which stay private. FairCrawl enforces those rules on every request.',
+    },
   ];
 
   return (
-    <main className="space-y-12 md:space-y-16">
-      <section className="space-y-10 text-white">
-        <div className="space-y-4">
+    <div className="mx-auto max-w-6xl space-y-12 px-6 py-12 md:space-y-16">
+      <section className="space-y-8 text-white">
+        <div className="space-y-3">
           <p className="text-sm font-semibold text-faircrawl-accent">Product flow</p>
           <h1 className="text-3xl font-semibold">How FairCrawl works</h1>
           <p className="max-w-3xl text-base leading-relaxed text-white/80">
-            FairCrawl is the handshake between AI crawlers and the sites they need. We check identity, pace, and permissions so both
-            sides know what is allowed.
+            FairCrawl is the handshake between AI crawlers and the sites they need. We check identity, pace, and permissions so both sides know what is allowed.
           </p>
         </div>
 
@@ -32,27 +49,12 @@ const HowItWorksPage = () => {
         </ul>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <MarketingCard className="space-y-3 text-white">
-            <h3 className="text-xl font-semibold">Crawler hits a wall</h3>
-            <p className="text-sm leading-relaxed text-white/70">
-              An AI product tries to crawl your site. Instead of guessing your rules or scraping around blocks, it is told to go through
-              FairCrawl.
-            </p>
-          </MarketingCard>
-          <MarketingCard className="space-y-3 text-white">
-            <h3 className="text-xl font-semibold">Request goes through FairCrawl</h3>
-            <p className="text-sm leading-relaxed text-white/70">
-              The AI team signs up, gets an API key, and sends each URL to FairCrawl first. We know who they are and what they want to do
-              with your content.
-            </p>
-          </MarketingCard>
-          <MarketingCard className="space-y-3 text-white">
-            <h3 className="text-xl font-semibold">You set the rules</h3>
-            <p className="text-sm leading-relaxed text-white/70">
-              You decide which paths are open, which are metered, and which stay off-limits. FairCrawl enforces those rules and keeps both
-              sides honest.
-            </p>
-          </MarketingCard>
+          {steps.map((step) => (
+            <MarketingCard key={step.title} className="space-y-3 text-white">
+              <h3 className="text-xl font-semibold">{step.title}</h3>
+              <p className="text-sm leading-relaxed text-white/70">{step.body}</p>
+            </MarketingCard>
+          ))}
         </div>
 
         <SectionActions>
@@ -70,7 +72,7 @@ const HowItWorksPage = () => {
           </Link>
         </SectionActions>
       </section>
-    </main>
+    </div>
   );
 };
 

@@ -35,8 +35,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-faircrawl-bgDark px-4 py-16">
-      <div className="mx-auto max-w-md rounded-3xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 p-8 shadow-xl">
+    <div className="px-4 py-16">
+      <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
         <h1 className="text-2xl font-semibold text-white mb-2">Login</h1>
         <p className="text-sm text-white/70 mb-6">FairCrawl keeps AI access transparent.</p>
         <form onSubmit={submit} className="space-y-4">

@@ -44,8 +44,8 @@ function SignupContent() {
   };
 
   return (
-    <div className="min-h-screen bg-faircrawl-bgDark px-4 py-16">
-      <div className="mx-auto max-w-md space-y-6 rounded-3xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 p-8 shadow-xl">
+    <div className="px-4 py-16">
+      <div className="mx-auto max-w-md space-y-6 rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-white">Create your FairCrawl account</h1>
           <p className="text-sm text-white/70">FairCrawl keeps AI access transparent.</p>
@@ -58,7 +58,7 @@ function SignupContent() {
               <ul className="list-disc list-inside space-y-1">
                 <li>Add a domain you control.</li>
                 <li>Prove you own it by serving a small verification file.</li>
-                <li>Set crawl policies and see which AI clients access your site.</li>
+                <li>Set crawl policies and see which AI crawlers access your site.</li>
               </ul>
             </div>
           </div>
@@ -104,7 +104,7 @@ function SignupContent() {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-white">Role</label>
             <select
-              className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:border-white/20 focus:border-faircrawl-accent focus:ring-2 focus:ring-faircrawl-accent/40 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-white/10 bg-[#101424] px-4 py-2 text-sm text-white transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#050815]"
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
             >
@@ -112,7 +112,7 @@ function SignupContent() {
                 Publisher
               </option>
               <option value="AICLIENT" className="text-black">
-                AI Client
+                AI team
               </option>
             </select>
           </div>
