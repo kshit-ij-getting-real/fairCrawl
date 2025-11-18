@@ -15,7 +15,7 @@ const CreatorsPage = () => {
     <main className="mx-auto max-w-6xl px-6 py-16 space-y-10">
       <section className="space-y-8 text-white">
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
-          <div className="space-y-2">
+          <div className="mx-auto max-w-3xl space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
             <h1 className="text-3xl font-semibold">FairCrawl for creators &amp; publishers</h1>
             <p className="text-base leading-relaxed text-white/80">
