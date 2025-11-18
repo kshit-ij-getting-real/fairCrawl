@@ -12,15 +12,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-faircrawl-bgDark text-faircrawl-textMain">
         <header className="bg-faircrawl-surface/80 backdrop-blur border-b border-white/10">
-          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-5">
-            <div>
+          <div className="max-w-6xl mx-auto flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
               <Link href="/" className="text-2xl font-semibold text-white">
                 FairCrawl
               </Link>
               <p className="text-xs text-faircrawl-textMuted">A clean bridge between creators and AI agents.</p>
             </div>
-            <div className="flex flex-1 items-center justify-end gap-8 text-sm">
-              <nav className="flex items-center gap-5 text-sm text-faircrawl-textMain">
+            <nav className="flex w-full items-center justify-center text-sm text-faircrawl-textMain md:w-auto">
+              <div className="flex flex-wrap items-center justify-center gap-5">
                 <Link href="/how-it-works" className="hover:text-white">
                   How it works
                 </Link>
@@ -33,18 +33,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/vision" className="hover:text-white">
                   Vision
                 </Link>
-              </nav>
-              <div className="flex items-center gap-3">
-                <Link href="/login" className="text-faircrawl-textMain hover:text-white">
-                  Login
-                </Link>
-                <Link
-                  href="/signup"
-                  className="px-4 py-2 rounded-full bg-faircrawl-accent text-white font-medium hover:bg-faircrawl-accentSoft transition"
-                >
-                  Sign up
+                <Link href="/directory" className="hover:text-white">
+                  Directory
                 </Link>
               </div>
+            </nav>
+            <div className="flex items-center gap-4 text-sm">
+              <Link href="/login" className="text-faircrawl-textMain hover:text-white">
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className="rounded-full bg-faircrawl-accent px-4 py-2 font-medium text-white transition hover:bg-faircrawl-accentSoft"
+              >
+                Get started
+              </Link>
             </div>
           </div>
         </header>
