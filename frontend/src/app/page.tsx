@@ -15,10 +15,13 @@ const Page = () => {
               </div>
               <h1 className="text-4xl font-bold leading-tight md:text-5xl">Let AI in, keep control, get paid</h1>
               <p className="text-lg leading-relaxed text-white/80">
-                FairCrawl sits between AI crawlers and your site, so you decide what they can read, how fast they can fetch it, and what they pay. Every request is enforced and logged instead of being free scraping.
+                FairCrawl sits between AI crawlers and your content, turning anonymous scraping into a transparent, paid gateway.
               </p>
               <p className="text-base text-white/70">
-                You publish one set of rules for access, speed, and price. FairCrawl serves or blocks each request based on those rules and tracks usage for payouts and audits.
+                AI teams call FairCrawl instead of your site directly. We check who they are, what they want to read, and how fast they can crawl, then serve content only when your rules allow it.
+              </p>
+              <p className="text-base text-white/70">
+                You publish one set of rules for access, speed, and price. Every request is matched against those rules, logged for both sides, and used to calculate payouts and audits instead of being free, invisible scraping.
               </p>
             </div>
 
