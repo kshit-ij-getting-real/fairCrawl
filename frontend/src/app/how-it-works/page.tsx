@@ -6,16 +6,15 @@ const HowItWorksPage = () => {
   const steps = [
     {
       title: 'Crawler hits a wall',
-      body: 'An AI crawler tries to read your site. Instead of guessing your rules or scraping around blocks, it goes through FairCrawl.',
+      body: 'An AI crawler tries to read your site. Instead of guessing your rules or scraping around blocks, it goes through the FairCrawl gateway.',
     },
     {
       title: 'Request goes through FairCrawl',
-      body:
-        'The AI team signs up, gets an API key, and sends each URL to FairCrawl first. We know who they are, how fast they crawl, and what they want to access.',
+      body: 'The AI team signs up, gets an API key, and identifies itself on every request. We know who they are, how fast they crawl, and what they want to access.',
     },
     {
       title: 'You set the rules',
-      body: 'You choose which paths are open, which are metered, and which stay private. FairCrawl enforces those rules on every request.',
+      body: 'You choose which paths are open, throttled, or blocked, and what each crawler pays. FairCrawl checks every request against those rules, logs it, and either serves the page or clearly blocks it.',
     },
   ];
 
@@ -27,7 +26,7 @@ const HowItWorksPage = () => {
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Product flow</p>
             <h1 className="text-3xl font-semibold">How FairCrawl works</h1>
             <p className="text-base leading-relaxed text-white/80">
-              FairCrawl is the handshake between AI crawlers and the sites they need. We check identity, pace, and permissions so both sides know what is allowed.
+              FairCrawl is the handshake between AI crawlers and the sites they need. Crawlers authenticate, you set the rules, and FairCrawl enforces them on every request.
             </p>
             <p className="text-base leading-relaxed text-white/80">
               AI crawlers route through FairCrawl instead of scraping in the dark. You choose which paths are open, throttled, or blocked, and every request is logged so both sides see the same record.

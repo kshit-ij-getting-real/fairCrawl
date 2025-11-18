@@ -26,7 +26,7 @@ export default async function DirectoryPage() {
           <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Directory</p>
           <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
           <p className="text-base text-faircrawl-textMuted">
-            These domains have verified ownership and published AI access rules through FairCrawl. They are safe defaults when you want high-quality, permissioned data.
+            These domains have verified ownership and published AI access rules through FairCrawl. They’re safe defaults when you want high-quality, permissioned training data.
           </p>
         </header>
       </div>

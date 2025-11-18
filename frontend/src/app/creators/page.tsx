@@ -23,7 +23,7 @@ const CreatorsPage = () => {
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
             <h1 className="text-3xl font-semibold">FairCrawl for creators &amp; publishers</h1>
             <p className="text-base leading-relaxed text-white/80">
-              Decide what AIs can read, keep drafts private, and see every AI crawler that touches your work.
+              Set rules per path, see which AI crawlers read your work, and turn AI training from theft into income.
             </p>
           </div>
         </div>
@@ -47,7 +47,7 @@ const CreatorsPage = () => {
                 </div>
               </div>
               <p className="text-sm text-white/70">
-                Share the parts of your site that help you grow and keep private areas off limits. Choose which pages AIs can read, which stay private, and which get throttled when traffic spikes. You decide page by page which paths are open, limited, or completely blocked.
+                Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AIs can read and how fast they can fetch it.
               </p>
             </div>
           </div>
@@ -62,7 +62,7 @@ const CreatorsPage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Use one rule set to decide what’s open, what stays private, and what AI pays.</span>
+                  <span>Use one rule set to decide what’s open, what stays private, and what each AI team pays.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
@@ -74,20 +74,20 @@ const CreatorsPage = () => {
 
           <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
-            <ul className="space-y-3 text-sm text-white/80">
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                <span>See which crawlers hit which paths, how often, and what they read.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                <span>Use a shared log as ground truth for payouts, audits, and disputes.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                <span>Give AI teams a single source of truth for how your work was used.</span>
-              </li>
-            </ul>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                  <span>See which crawlers hit which paths, how often, and what they read.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                  <span>Use a shared log as ground truth for payouts, audits, and disputes.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                  <span>Give AI teams and publishers the same record of how your work was used.</span>
+                </li>
+              </ul>
           </div>
         </div>
 

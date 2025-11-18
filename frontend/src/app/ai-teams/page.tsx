@@ -5,9 +5,9 @@ import { API_BASE } from '../../lib/config';
 
 const AiTeamsPage = () => {
   const benefits = [
-    'One API key for many creators with clear rules for each domain.',
+    'One API key for many publishers, with clear rules for each domain.',
     'See which paths are free, metered, or blocked before you crawl.',
-    'Built-in rate limiting and audit trail so you can show partners how you access content.',
+    'Built-in rate limiting, identity verification, and audit logs prove you’re playing fair.',
     'Shared observability so you and the publisher see the same record of reads.',
   ];
 
@@ -19,7 +19,7 @@ const AiTeamsPage = () => {
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For AI teams</p>
             <h1 className="text-3xl font-semibold">FairCrawl for AI teams</h1>
             <p className="text-base leading-relaxed text-white/80">
-              Get clean, permissioned data without fighting random blocks. FairCrawl makes crawler access predictable and transparent.
+              Get clean, permissioned access to creator content through a single API, with clear rules and audit logs on every crawl.
             </p>
           </div>
         </div>

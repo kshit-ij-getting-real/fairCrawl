@@ -11,7 +11,7 @@ const VisionPage = () => {
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Vision</p>
             <h1 className="text-3xl font-semibold">Our vision: A fair web for AI</h1>
             <p className="max-w-3xl text-base leading-relaxed text-white/80">
-              AI is becoming the web’s main reader. FairCrawl turns that traffic into a protocol with clear consent, speed, and value built in so creators keep control and AI teams get predictable access.
+              AI is becoming the web’s main reader. FairCrawl turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models.
             </p>
           </div>
         </div>
