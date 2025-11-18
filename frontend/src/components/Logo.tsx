@@ -5,7 +5,7 @@ type LogoProps = {
   size?: number;
 };
 
-export const Logo: React.FC<LogoProps> = ({ size = 32 }) => {
+export const Logo: React.FC<LogoProps> = ({ size = 40 }) => {
   return (
     <svg
       width={size}
