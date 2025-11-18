@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { AuthActions } from '@/components/AuthActions';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -42,17 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
               </nav>
 
-              <div className="flex items-center gap-4">
-                <Link href="/login" className="text-sm text-white/70 hover:text-white">
-                  Log in
-                </Link>
-                <Link
-                  href="/signup"
-                  className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-400"
-                >
-                  Get started
-                </Link>
-              </div>
+              <AuthActions />
             </div>
 
             <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-3 pt-1 md:hidden lg:px-8">
@@ -63,31 +54,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/directory">Directory</Link>
                 <Link href="/vision">Vision</Link>
               </div>
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <Link href="/login" className="text-white/70 hover:text-white">
-                  Log in
-                </Link>
-                <Link
-                  href="/signup"
-                  className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-400"
-                >
-                  Get started
-                </Link>
-              </div>
+              <AuthActions className="flex flex-wrap items-center gap-3 text-sm" />
             </div>
           </header>
           <main className="flex-1">{children}</main>
           <footer className="border-t border-white/10 bg-faircrawl-surface">
             <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-8 text-sm text-faircrawl-textMuted sm:flex-row sm:items-center sm:justify-between">
               <span>FairCrawl keeps AI access transparent.</span>
-              <div className="flex gap-4">
-                <a href="/login" className="hover:text-white">
-                  Login
-                </a>
-                <a href="/signup" className="hover:text-white">
-                  Sign up
-                </a>
-              </div>
+              <AuthActions variant="footer" />
             </div>
           </footer>
         </div>
