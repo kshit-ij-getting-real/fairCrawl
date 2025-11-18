@@ -6,7 +6,7 @@ const VisionPage = () => {
   return (
     <main className="mx-auto flex min-h-[calc(100vh-160px)] max-w-6xl flex-col px-6 py-16">
       <div className="flex-1 flex flex-col justify-center space-y-10 text-white">
-        <div className="space-y-3 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Vision</p>
             <h1 className="text-3xl font-semibold">Our vision: a fair web for AI</h1>

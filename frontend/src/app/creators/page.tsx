@@ -1,7 +1,5 @@
 import Link from 'next/link';
 
-import { MarketingCard } from '../../components/ui/MarketingCard';
-
 const CreatorsPage = () => {
   const highlights = [
     'Choose which pages AIs can read and which stay private.',
@@ -24,8 +22,8 @@ const CreatorsPage = () => {
           </div>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 items-stretch">
-          <MarketingCard className="flex h-full flex-col text-white">
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold">What you control</h2>
               <p className="text-sm text-white/70">
@@ -62,9 +60,9 @@ const CreatorsPage = () => {
                 Browse AI-ready sites
               </Link>
             </div>
-          </MarketingCard>
+          </div>
 
-          <MarketingCard className="flex h-full flex-col text-white">
+          <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold">Turn crawlers into paid feeds</h2>
               <p className="text-sm text-white/70">
@@ -82,7 +80,31 @@ const CreatorsPage = () => {
                 Browse AI-ready sites
               </Link>
             </div>
-          </MarketingCard>
+          </div>
+
+          <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
+            <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
+            <p className="mt-3 text-sm text-slate-200">
+              FairCrawl gives you a shared log of AI access. You see which crawlers hit which paths, how often, and on what terms. That log underpins payouts, audits, and disputes so you can prove how your work was used.
+            </p>
+            <ul className="mt-4 space-y-2 text-sm text-slate-200">
+              <li>Track reads per crawler, path, and time.</li>
+              <li>Export logs for billing, analytics, and rights management.</li>
+              <li>Give AI teams a single source of truth for usage.</li>
+            </ul>
+
+            <div className="mt-auto pt-6 flex flex-wrap gap-4">
+              <Link
+                href="/signup?role=publisher"
+                className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
+              >
+                Get started as a creator
+              </Link>
+              <Link href="/directory" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
+                Browse AI-ready sites
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </main>
