@@ -6,7 +6,7 @@ const Page = () => {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section>
-        <MarketingCard className="flex flex-col gap-10 lg:flex-row lg:items-stretch">
+        <MarketingCard className="flex flex-col gap-10 bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white shadow-lg lg:flex-row lg:items-stretch">
           <div className="flex flex-1 flex-col justify-between gap-6 text-white">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/70">
@@ -15,13 +15,10 @@ const Page = () => {
               </div>
               <h1 className="text-4xl font-bold leading-tight md:text-5xl">Let AI in without losing control</h1>
               <p className="text-lg leading-relaxed text-white/80">
-                FairCrawl sits between AI crawlers and your site. You decide what they can read, how fast they can read it, and what they pay for that access. Every request is enforced and logged on those terms instead of being free scraping.
+                FairCrawl sits between AI crawlers and your site, so you decide what they can read, how fast they can fetch it, and what they pay. Every request is enforced and logged instead of being free scraping.
               </p>
               <p className="text-base text-white/70">
-                AI crawlers call FairCrawl instead of your site directly. On every request, FairCrawl applies your access and pricing rules, then either serves the page or returns a clear block.
-              </p>
-              <p className="text-sm md:text-base text-white/60">
-                With FairCrawl, control and monetisation live in the same simple rule set. Update a path’s access or price once, and every AI crawler automatically has to follow it. No extra configs, rate-limit hacks, or side deals.
+                You publish one set of rules for access, speed, and price. FairCrawl serves or blocks each request based on those rules and tracks usage for payouts and audits.
               </p>
             </div>
 
@@ -39,7 +36,7 @@ const Page = () => {
           </div>
 
           <div className="flex flex-1 items-stretch">
-            <div className="w-full rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white shadow-lg">
+            <div className="w-full rounded-3xl border border-slate-800/80 bg-slate-900/40 text-white">
               <div className="h-full space-y-4 rounded-3xl p-8 text-white">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">

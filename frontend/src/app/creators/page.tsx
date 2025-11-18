@@ -59,7 +59,7 @@ const CreatorsPage = () => {
             </div>
           </MarketingCard>
 
-          <MarketingCard className="flex flex-col">
+          <MarketingCard className="flex h-full flex-col">
             <div className="flex flex-col gap-4 text-white">
               <div className="space-y-3">
                 <h2 className="text-2xl font-semibold">What you control</h2>
@@ -81,17 +81,17 @@ const CreatorsPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-auto flex justify-end gap-3">
-                <Link href="/directory" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
-                  Browse AI-ready sites
-                </Link>
-                <Link
-                  href="/signup?role=publisher"
-                  className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
-                >
-                  Get started as a creator
-                </Link>
-              </div>
+            </div>
+            <div className="mt-auto pt-6 flex flex-wrap gap-4">
+              <Link href="/directory" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
+                Browse AI-ready sites
+              </Link>
+              <Link
+                href="/signup?role=publisher"
+                className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
+              >
+                Get started as a creator
+              </Link>
             </div>
           </MarketingCard>
         </div>
