@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Logo } from '../components/Logo';
+import { Logo } from '@/components/Logo';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -17,8 +17,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-8">
               <div className="flex items-center gap-2">
                 <Link href="/" aria-label="FairCrawl home" className="flex items-center gap-2">
-                  <Logo size={40} />
-                  <span className="text-[18px] font-semibold tracking-[0.04em] text-slate-50">FairCrawl</span>
+                  <Logo size={32} />
+                  <span className="text-[18px] font-semibold tracking-[0.08em] text-slate-50">FairCrawl</span>
                 </Link>
               </div>
 
