@@ -49,8 +49,8 @@ export default function AIClientDashboard() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-12 text-white lg:px-8">
-      <MarketingCard className="space-y-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+        <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-3xl font-semibold">Your AI teams dashboard</h1>
             <p className="text-sm text-white/70">
@@ -67,7 +67,7 @@ export default function AIClientDashboard() {
             Log out
           </button>
         </div>
-      </MarketingCard>
+      </div>
 
       <MarketingCard className="flex flex-col gap-4">
         <div className="space-y-1">

@@ -40,7 +40,7 @@ const Page = () => {
 
           <div className="flex flex-1 items-stretch">
             <div className="w-full">
-              <MarketingCard className="h-full text-white bg-none bg-slate-950/80 border border-slate-800/90 shadow-xl">
+              <div className="h-full space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 text-white shadow-lg">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold">Gateway snapshot</h2>
@@ -73,7 +73,7 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
-              </MarketingCard>
+              </div>
             </div>
           </div>
         </MarketingCard>
