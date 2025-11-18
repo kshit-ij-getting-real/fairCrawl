@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { apiFetch, clearSession, getRole } from '../../../lib/api';
 import { API_BASE } from '../../../lib/config';
 import { MarketingCard } from '../../../components/ui/MarketingCard';
-import { SectionActions } from '../../../components/ui/SectionActions';
 
 interface ApiKey {
   id: number;
@@ -49,7 +48,7 @@ export default function AIClientDashboard() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 px-6 py-12 text-white">
+    <div className="mx-auto max-w-6xl space-y-8 px-4 py-12 text-white lg:px-8">
       <MarketingCard className="space-y-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
@@ -70,18 +69,10 @@ export default function AIClientDashboard() {
         </div>
       </MarketingCard>
 
-      <MarketingCard className="space-y-4">
-        <div className="mb-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-1">
-            <h2 className="text-lg font-semibold text-white">API keys for your crawlers</h2>
-            <p className="text-sm text-white/60">Each key belongs to one crawler or app. Keep keys secret.</p>
-          </div>
-          <button
-            className="inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80"
-            onClick={generateKey}
-          >
-            Generate new key
-          </button>
+      <MarketingCard className="flex flex-col gap-4">
+        <div className="space-y-1">
+          <h2 className="text-lg font-semibold text-white">API keys for your crawlers</h2>
+          <p className="text-sm text-white/60">Each key belongs to one AI crawler or app. Keep keys secret.</p>
         </div>
         {newKey && (
           <div className="space-y-1 rounded-2xl border border-blue-400/40 bg-blue-500/10 p-4 text-sm">
@@ -121,12 +112,20 @@ export default function AIClientDashboard() {
             </tbody>
           </table>
         </div>
+        <div className="mt-4 flex justify-end">
+          <button
+            className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
+            onClick={generateKey}
+          >
+            Generate new key
+          </button>
+        </div>
       </MarketingCard>
 
       <MarketingCard className="space-y-3">
         <div className="space-y-1">
           <h2 className="text-lg font-semibold text-white">Usage</h2>
-          <p className="text-sm text-white/60">Check how many requests your crawlers made through FairCrawl.</p>
+          <p className="text-sm text-white/60">Check how many requests your AI crawlers made through FairCrawl.</p>
         </div>
         <p className="text-sm text-white">Total requests: {usage.totalRequests}</p>
         <div className="space-y-2 text-sm text-white/80">
@@ -143,7 +142,7 @@ export default function AIClientDashboard() {
         </div>
       </MarketingCard>
 
-      <MarketingCard className="space-y-4 text-sm">
+      <MarketingCard className="flex flex-col gap-4 text-sm">
         <div className="space-y-1">
           <h2 className="text-lg font-semibold text-white">Example: ask FairCrawl to fetch one page for your AI</h2>
           <p className="text-white/70">Replace YOUR_KEY with the API key above and change the url to the page your crawler wants to read.</p>
@@ -157,14 +156,14 @@ export default function AIClientDashboard() {
           <li>Swap YOUR_KEY for the key shown above.</li>
           <li>Set the url value to the page your crawler wants to fetch.</li>
         </ul>
-        <SectionActions>
+        <div className="mt-6 flex justify-end">
           <Link
             href="/ai-teams"
-            className="inline-flex items-center justify-center rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/50 hover:text-white"
+            className="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/50 hover:text-white"
           >
             Read the API overview
           </Link>
-        </SectionActions>
+        </div>
       </MarketingCard>
     </div>
   );

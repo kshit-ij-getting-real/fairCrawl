@@ -1,17 +1,15 @@
 import * as React from 'react';
 
-interface MarketingCardProps extends React.HTMLAttributes<HTMLDivElement> {}
+import { cn } from '../../lib/cn';
 
-export function MarketingCard({ className, children, ...props }: MarketingCardProps) {
-  const classes = [
-    'w-full rounded-3xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 shadow-xl shadow-black/40 p-6 md:p-8',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
+export function MarketingCard({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={classes} {...props}>
+    <div
+      className={cn(
+        'w-full rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-6 shadow-xl shadow-black/40 md:p-8',
+        className,
+      )}
+    >
       {children}
     </div>
   );
