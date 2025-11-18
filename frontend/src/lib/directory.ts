@@ -1,7 +1,10 @@
 import { API_BASE } from './config';
 
 type PublicDomain = {
+  id?: string | number;
   name: string;
+  domain?: string;
+  host?: string;
   verified?: boolean;
   isVerified?: boolean;
   verifiedAt?: string | null;
@@ -42,7 +45,16 @@ export async function fetchPublicDomains(): Promise<PublicDomain[]> {
     const res = await fetch(`${API_BASE}/api/public/domains`, { cache: 'no-store' });
     if (!res.ok) return [];
     const data: PublicDomain[] = await res.json();
-    return data;
+    return data.map((domain) => ({
+      ...domain,
+      domain: domain.domain ?? domain.name,
+      verified:
+        domain.verified === true ||
+        domain.isVerified === true ||
+        domain.verificationStatus?.toString().toLowerCase() === 'verified' ||
+        !!domain.verifiedAt ||
+        domain.verified,
+    }));
   } catch (err) {
     console.error(err);
     return [];

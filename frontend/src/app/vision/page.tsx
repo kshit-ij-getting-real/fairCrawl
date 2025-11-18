@@ -4,8 +4,8 @@ import { MarketingCard } from '../../components/ui/MarketingCard';
 
 const VisionPage = () => {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <section className="space-y-10 text-white">
+    <main className="mx-auto flex min-h-[calc(100vh-160px)] max-w-6xl flex-col px-6 py-16">
+      <div className="flex-1 flex flex-col justify-center space-y-10 text-white">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Vision</p>
           <h1 className="text-3xl font-semibold">Our vision: a fair web for AI</h1>
@@ -14,8 +14,8 @@ const VisionPage = () => {
           </p>
         </div>
 
-        <div className="mt-10 grid items-stretch gap-8 md:grid-cols-3">
-          <MarketingCard className="flex h-full flex-col justify-between space-y-3 text-white">
+        <div className="grid gap-8 md:grid-cols-3">
+          <MarketingCard className="flex flex-col gap-3 text-white">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
@@ -27,7 +27,7 @@ const VisionPage = () => {
               </p>
             </div>
           </MarketingCard>
-          <MarketingCard className="flex h-full flex-col justify-between space-y-3 text-white">
+          <MarketingCard className="flex flex-col gap-3 text-white">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
@@ -39,7 +39,7 @@ const VisionPage = () => {
               </p>
             </div>
           </MarketingCard>
-          <MarketingCard className="flex h-full flex-col justify-between space-y-3 text-white">
+          <MarketingCard className="flex flex-col gap-3 text-white">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
@@ -53,7 +53,7 @@ const VisionPage = () => {
           </MarketingCard>
         </div>
 
-        <div className="mt-10 flex justify-end">
+        <div className="flex justify-end">
           <Link
             href="/signup"
             className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
@@ -61,7 +61,7 @@ const VisionPage = () => {
             Get started
           </Link>
         </div>
-      </section>
+      </div>
     </main>
   );
 };
