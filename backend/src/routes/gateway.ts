@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import crypto from 'crypto';
 import prisma from '../db';
-import { logReadEvent } from '../services/readEvents';
 
 const router = Router();
 
@@ -66,15 +65,6 @@ router.get('/gateway/fetch', async (req, res) => {
         statusCode: originRes.status,
       },
     });
-
-    if (originRes.ok) {
-      await logReadEvent({
-        clientId: keyRecord.aiClientId,
-        domainId: domain.id,
-        url: targetUrl.toString(),
-        bytes: buffer.length,
-      });
-    }
 
     res.status(originRes.status);
     originRes.headers.forEach((value, key) => {
