@@ -21,50 +21,6 @@ router.get('/me', async (req: AuthRequest, res) => {
   }
 });
 
-router.get('/sites', async (req: AuthRequest, res) => {
-  try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
-    if (!publisher) return res.json({ sites: [] });
-
-    const domains = await prisma.domain.findMany({ where: { publisherId: publisher.id } });
-
-    if (domains.length === 0) {
-      return res.json({ sites: [] });
-    }
-
-    const stats = await prisma.readEvent.groupBy({
-      by: ['domainId'],
-      where: { domainId: { in: domains.map((d) => d.id) } },
-      _count: { _all: true },
-      _sum: { priceMicros: true },
-    });
-
-    const statsByDomain: Record<number, { reads: number; earnedMicros: number }> = {};
-    for (const row of stats) {
-      statsByDomain[row.domainId] = {
-        reads: row._count._all,
-        earnedMicros: row._sum.priceMicros || 0,
-      };
-    }
-
-    const sites = domains.map((d) => {
-      const s = statsByDomain[d.id] || { reads: 0, earnedMicros: 0 };
-      return {
-        id: d.id,
-        host: d.name,
-        status: d.verified ? 'verified' : 'not_verified',
-        totalReads: s.reads,
-        earnedUsd: s.earnedMicros / 1_000_000,
-      };
-    });
-
-    return res.json({ sites });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to load sites' });
-  }
-});
-
 router.post('/domains', async (req: AuthRequest, res) => {
   try {
     const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
