@@ -15,11 +15,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="flex min-h-screen flex-col">
           <header className="w-full border-b border-slate-800 bg-[#020617]">
             <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-8">
-              <div className="flex items-center gap-3">
-                <Link href="/" aria-label="FairCrawl home" className="flex items-center">
-                  <Logo />
+              <div className="flex items-center gap-2">
+                <Link href="/" aria-label="FairCrawl home" className="flex items-center gap-2">
+                  <Logo size={28} />
+                  <span className="text-[18px] font-semibold tracking-[0.04em] text-slate-50">FairCrawl</span>
                 </Link>
-                <span className="hidden text-xs text-white/70 sm:inline">AI access with consent and payouts built in</span>
               </div>
 
               <nav className="hidden md:flex md:flex-1 md:justify-center">
