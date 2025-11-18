@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API_BASE } from '../../lib/config';
 import { setSession, Role } from '../../lib/api';
+import { SectionActions } from '../../components/ui/SectionActions';
 
 function SignupContent() {
   const router = useRouter();
@@ -116,13 +117,15 @@ function SignupContent() {
             </select>
           </div>
           {error && <p className="text-sm text-red-400">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft disabled:opacity-70"
-          >
-            {loading ? 'Creating account…' : 'Sign up'}
-          </button>
+          <SectionActions>
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft disabled:opacity-70"
+            >
+              {loading ? 'Creating account…' : 'Sign up'}
+            </button>
+          </SectionActions>
         </form>
       </div>
     </div>
