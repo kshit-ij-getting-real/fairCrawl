@@ -11,12 +11,12 @@ const heroHighlights = [
   {
     title: 'Track usage',
     body:
-      'See what’s happening in real time. FairCrawl shows you which AI teams accessed your content, what they looked at, and how often.',
+      'See what’s happening in real time. FairMarket shows you which AI teams accessed your content, what they looked at, and how often.',
   },
   {
     title: 'Earn from your work',
     body:
-      'Turn your best content into a steady income stream. When an AI needs your premium material, it pays the price you set, and you see the earnings inside FairCrawl.',
+      'Turn your best content into a steady income stream. When an AI needs your premium material, it pays the price you set, and you see the earnings inside FairMarket.',
   },
 ];
 
@@ -33,7 +33,7 @@ const Page = () => {
               </div>
               <h1 className="text-4xl font-bold leading-tight md:text-5xl">Get paid when AI uses your content</h1>
               <p className="text-lg leading-relaxed text-white/80">
-                FairCrawl is a marketplace where creators license their paywalled and premium content to AI companies. You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
+                FairMarket is a marketplace where creators license their paywalled and premium content to AI companies. You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
               </p>
               <div className="grid gap-4 md:grid-cols-3">
                 {heroHighlights.map((item) => (
@@ -53,7 +53,7 @@ const Page = () => {
                 Get started
               </Link>
               <Link href="/how-it-works" className="text-sm font-medium text-white/80 hover:text-white">
-                See how FairCrawl works
+                See how FairMarket works
               </Link>
             </div>
           </div>
@@ -65,7 +65,7 @@ const Page = () => {
                 <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">Live monitor</span>
               </div>
               <p className="text-sm text-white/70">
-                Every AI request goes through FairCrawl, is checked against your rules, and comes back with a clear “allow”, “paid”, or “block”.
+                Every AI request goes through FairMarket, is checked against your rules, and comes back with a clear “allow”, “paid”, or “block”.
               </p>
               <div className="space-y-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -105,7 +105,7 @@ const Page = () => {
               </div>
               <h2 className="text-xl font-semibold">Create for AI, stay in control</h2>
               <p className="text-sm text-white/70">
-                Choose what AI can read, keep the rest private, and charge for the parts that matter. FairCrawl turns your paywalled and premium content into a licensed feed for AI teams.
+                Choose what AI can read, keep the rest private, and charge for the parts that matter. FairMarket turns your paywalled and premium content into a licensed feed for AI teams.
               </p>
             </div>
             <div className="mt-6 flex justify-end">
@@ -147,7 +147,7 @@ const Page = () => {
               </div>
               <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
               <p className="text-sm text-white/70">
-                AI is becoming the web’s main reader. FairCrawl turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
+                AI is becoming the web’s main reader. FairMarket turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
               </p>
             </div>
             <div className="mt-6 flex justify-end">
@@ -168,7 +168,7 @@ const Page = () => {
               </div>
               <h2 className="text-xl font-semibold">Verified AI-ready sites</h2>
               <p className="text-sm text-white/70">
-                Browse sites that have verified ownership and published AI access rules through FairCrawl. They’re safe defaults when you want high-quality, permissioned training data.
+                Browse sites that have verified ownership and published AI access rules through FairMarket. They’re safe defaults when you want high-quality, permissioned training data.
               </p>
             </div>
             <div className="mt-6 flex justify-end">

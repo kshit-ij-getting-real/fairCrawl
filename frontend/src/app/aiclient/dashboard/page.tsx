@@ -77,7 +77,7 @@ export default function AIClientDashboard() {
         </div>
         <div className="space-y-1">
           <h2 className="text-lg font-semibold text-white">Create keys for your crawlers</h2>
-          <p className="text-sm text-white/60">Create or revoke API keys for each crawler. Every request through FairCrawl must use a valid key so publishers can see who is reading their content.</p>
+          <p className="text-sm text-white/60">Create or revoke API keys for each crawler. Every request through FairMarket must use a valid key so publishers can see who is reading their content.</p>
         </div>
         {newKey && (
           <div className="space-y-1 rounded-2xl border border-blue-400/40 bg-blue-500/10 p-4 text-sm">
@@ -169,7 +169,7 @@ export default function AIClientDashboard() {
         <div className="space-y-1">
           <h2 className="text-lg font-semibold text-white">Track reads and spend</h2>
           <p className="text-sm text-white/60">
-            Every request through FairCrawl is logged with domain, path, and price. Use this table to see which sites you’re reading, how much you’re paying, and how usage changes over time.
+            Every request through FairMarket is logged with domain, path, and price. Use this table to see which sites you’re reading, how much you’re paying, and how usage changes over time.
           </p>
         </div>
         <p className="text-sm text-white">Total reads: {usage.totalRequests}</p>
@@ -188,7 +188,7 @@ export default function AIClientDashboard() {
                 {usage.usageByDomain.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="px-3 py-4 text-white/60">
-                      No reads yet. Once your crawlers use FairCrawl, you’ll see reads and spend here.
+                      No reads yet. Once your crawlers use FairMarket, you’ll see reads and spend here.
                     </td>
                   </tr>
                 ) : (

@@ -94,7 +94,7 @@ router.post('/domains/:domainId/verify', async (req: AuthRequest, res) => {
     const domain = await domainOwnedBy(domainId, publisher.id);
     if (!domain) return res.status(404).json({ error: 'Domain not found' });
 
-    const url = `https://${domain.name}/.well-known/faircrawl-verification.txt`;
+    const url = `https://${domain.name}/.well-known/fairmarket-verification.txt`;
     const response = await fetch(url).catch(() => null);
     if (!response || !response.ok) {
       return res.status(400).json({ error: 'Verification file not accessible' });

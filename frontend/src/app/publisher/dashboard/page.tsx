@@ -94,7 +94,7 @@ export default function PublisherDashboard() {
       loadDomains();
     } catch (err: any) {
       const defaultMsg =
-        "We couldn’t read '/.well-known/faircrawl-verification.txt' on this domain. Check that the file exists and contains the token shown above.";
+        "We couldn’t read '/.well-known/fairmarket-verification.txt' on this domain. Check that the file exists and contains the token shown above.";
       const msg = err?.message ?? defaultMsg;
       if (msg.toLowerCase().includes('not found') || msg.includes('404')) {
         setMessage(defaultMsg);
@@ -232,7 +232,7 @@ export default function PublisherDashboard() {
               <ol className="list-inside list-decimal space-y-2 text-sm text-white/80">
                 <li>Fetch your unique verification token.</li>
                 <li>
-                  Add a file at <code className="rounded bg-white/10 px-2 py-1">/.well-known/faircrawl-verification.txt</code> with
+                  Add a file at <code className="rounded bg-white/10 px-2 py-1">/.well-known/fairmarket-verification.txt</code> with
                   only the token below.
                 </li>
                 <li>Click “Check verification status” once the record is live.</li>
@@ -412,7 +412,7 @@ export default function PublisherDashboard() {
                       value={policyForm.pricePer1k}
                       onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
                     />
-                    <p className="text-xs text-white/60">This is what AI teams pay when they access this path through FairCrawl.</p>
+                    <p className="text-xs text-white/60">This is what AI teams pay when they access this path through FairMarket.</p>
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-white" title="Speed limit for crawlers hitting this path.">

@@ -29,7 +29,7 @@ router.get('/gateway/fetch', async (req, res) => {
     const targetUrl = new URL(urlParam);
     const domain = await prisma.domain.findUnique({ where: { name: targetUrl.hostname }, include: { policies: true } });
     if (!domain || !domain.verified) {
-      return res.status(403).json({ error: 'Domain not available via Fair Crawl' });
+      return res.status(403).json({ error: 'Domain not available via FairMarket' });
     }
 
     const policy = domain.policies.find((p) => matchesPattern(p.pathPattern, targetUrl.pathname));
