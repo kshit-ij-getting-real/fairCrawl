@@ -1,6 +1,6 @@
-import Link from 'next/link';
-
 import { MarketingCard } from '../../components/ui/MarketingCard';
+import { SecondaryButton } from '../../components/ui/Buttons';
+import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
 import { fetchPublicDomains } from '../../lib/directory';
 
 export const dynamic = 'force-dynamic';
@@ -20,10 +20,10 @@ export default async function DirectoryPage() {
   const displayDomains = verifiedDomains.length > 0 ? verifiedDomains : domains;
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16 space-y-8">
-      <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+    <main className="mx-auto max-w-6xl space-y-8 px-6 py-16">
+      <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg lg:p-10">
         <header className="mx-auto max-w-3xl space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Directory</p>
+          <SectionEyebrow className="text-white/70">Directory</SectionEyebrow>
           <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
           <p className="text-base text-faircrawl-textMuted">
             These domains have verified ownership and published AI access rules through FairMarket. They’re good defaults when you want high-quality, permissioned training data with clear licensing terms.
@@ -52,14 +52,9 @@ export default async function DirectoryPage() {
                 </p>
               </div>
               <div className="flex justify-end">
-                <a
-                  href={`https://${domainName}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
-                >
+                <SecondaryButton href={`https://${domainName}`} target="_blank" rel="noreferrer">
                   Visit site
-                </a>
+                </SecondaryButton>
               </div>
             </MarketingCard>
           );
@@ -74,12 +69,7 @@ export default async function DirectoryPage() {
               </p>
             </div>
             <div className="flex justify-end">
-              <Link
-                href="/signup?role=publisher"
-                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
-              >
-                Become a launch publisher
-              </Link>
+              <SecondaryButton href="/signup?role=publisher">Become a launch publisher</SecondaryButton>
             </div>
           </div>
         </MarketingCard>

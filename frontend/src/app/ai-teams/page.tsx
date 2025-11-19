@@ -1,7 +1,7 @@
-import Link from 'next/link';
-
 import { MarketingCard } from '../../components/ui/MarketingCard';
 import { API_BASE } from '../../lib/config';
+import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
+import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
 
 const AiTeamsPage = () => {
   const benefits = [
@@ -10,14 +10,19 @@ const AiTeamsPage = () => {
     'Built-in rate limiting, identity verification, and audit logs prove you’re playing fair.',
     'Shared observability so you and the publisher see the same record of reads.',
   ];
+  const statusBadges = [
+    { label: 'Open', className: 'bg-blue-500/20 text-blue-100' },
+    { label: 'Throttled', className: 'bg-amber-500/20 text-amber-100' },
+    { label: 'Blocked', className: 'bg-white/10 text-white' },
+  ];
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16 space-y-10">
+    <main className="mx-auto max-w-6xl space-y-10 px-6 py-16">
       <section className="space-y-10 text-white">
-        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg lg:p-10">
           <div className="mx-auto max-w-3xl space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For AI teams</p>
-            <h1 className="text-3xl font-semibold">FairMarket for AI teams</h1>
+            <SectionEyebrow className="text-white/70">For AI teams</SectionEyebrow>
+            <h1 className="text-3xl font-semibold md:text-4xl">FairMarket for AI teams</h1>
             <p className="text-base leading-relaxed text-white/80">
               Get clean, permissioned access to creator content through a single API, with clear rules and audit logs on every crawl.
             </p>
@@ -25,47 +30,36 @@ const AiTeamsPage = () => {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          <MarketingCard className="flex flex-col gap-4 min-h-[320px] text-white">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-blue-300">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
-              <span>API PREVIEW</span>
-            </div>
+          <MarketingCard className="flex min-h-[320px] flex-col gap-4 text-white">
+            <SectionEyebrow className="text-blue-200">API preview</SectionEyebrow>
             <p className="text-sm text-white/70">
               A single call tells you if a page is open, throttled, or blocked for your crawler.
             </p>
-            <div className="space-y-2 rounded-2xl border border-white/10 bg-black/50 px-4 py-3 text-xs font-mono text-blue-100">
-              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/60">
-                <span className="rounded-full bg-white/10 px-2 py-1">Identity</span>
-                <span className="rounded-full bg-white/10 px-2 py-1">Pacing</span>
-                <span className="rounded-full bg-white/10 px-2 py-1">Logging</span>
+            <div className="space-y-4 rounded-2xl border border-white/10 bg-black/60 p-4 text-xs font-mono text-blue-100">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/70">
+                {statusBadges.map((badge) => (
+                  <span key={badge.label} className={`rounded-full px-3 py-1 ${badge.className}`}>
+                    {badge.label}
+                  </span>
+                ))}
               </div>
-              <pre className="mt-4 overflow-x-auto overflow-y-hidden rounded-xl bg-black/60 p-4 text-xs font-mono whitespace-pre">{`curl "${API_BASE}/api/gateway/fetch?url=https://site.com/blog/ai" \\
+              <pre className="overflow-x-auto whitespace-pre rounded-xl bg-black/70 p-4 text-xs text-white">{`curl "${API_BASE}/api/gateway/fetch?url=https://site.com/blog/ai" \\
   -H "X-API-Key: YOUR_KEY"`}</pre>
             </div>
           </MarketingCard>
 
-          <MarketingCard className="flex flex-col justify-between gap-4 min-h-[320px] text-white">
+          <MarketingCard className="flex min-h-[320px] flex-col justify-between gap-4 text-white">
             <div className="space-y-3">
               <h2 className="text-2xl font-semibold">Why AI teams use FairMarket</h2>
-              <ul className="space-y-3 text-sm text-white/80">
+              <ul className="list-disc space-y-2 pl-5 text-sm text-white/80">
                 {benefits.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                    <span>{item}</span>
-                  </li>
+                  <li key={item}>{item}</li>
                 ))}
               </ul>
             </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <Link href="/how-it-works" className="rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10">
-                Read how it works
-              </Link>
-              <Link
-                href="/signup?role=aiclient"
-                className="rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400"
-              >
-                Get API access
-              </Link>
+            <div className="mt-6 flex flex-wrap justify-end gap-3">
+              <SecondaryButton href="/how-it-works">Read how it works</SecondaryButton>
+              <PrimaryButton href="/signup?role=aiclient">Get API access</PrimaryButton>
             </div>
           </MarketingCard>
         </div>
