@@ -23,7 +23,7 @@ const CreatorsPage = () => {
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
             <h1 className="text-3xl font-semibold">FairCrawl for creators &amp; publishers</h1>
             <p className="text-base leading-relaxed text-white/80">
-              Set rules per path, see which AI crawlers read your work, and turn AI training from theft into income.
+              Set rules per path, see which AI crawlers read your work, and turn AI training into income.
             </p>
           </div>
         </div>
@@ -47,7 +47,7 @@ const CreatorsPage = () => {
                 </div>
               </div>
               <p className="text-sm text-white/70">
-                Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AIs can read and how fast they can fetch it.
+                Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AI can read and how fast each crawler can go.
               </p>
             </div>
           </div>
@@ -62,11 +62,11 @@ const CreatorsPage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Use one rule set to decide what’s open, what stays private, and what each AI team pays.</span>
+                  <span>Use one rule set to decide what’s open, what’s premium, and what each AI team pays.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>When crawlers hit your site through FairCrawl, they get a controlled, logged feed instead of scraping in the dark.</span>
+                  <span>When crawlers use FairCrawl, they get a controlled, logged feed instead of scraping around your site.</span>
                 </li>
               </ul>
             </div>
@@ -81,7 +81,7 @@ const CreatorsPage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Use a shared log as ground truth for payouts, audits, and disputes.</span>
+                  <span>Use a shared log as the source of truth for audits, payouts, and disputes.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />

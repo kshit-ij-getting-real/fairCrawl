@@ -9,7 +9,7 @@ const VisionPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Vision</p>
-            <h1 className="text-3xl font-semibold">Our vision: A fair web for AI</h1>
+            <h1 className="text-3xl font-semibold">Our vision: a fair web for AI</h1>
             <p className="max-w-3xl text-base leading-relaxed text-white/80">
               AI is becoming the web’s main reader. FairCrawl turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models.
             </p>
@@ -21,11 +21,11 @@ const VisionPage = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
-                <span>AI AS A USER</span>
+                <span>AI as a user</span>
               </div>
               <h3 className="text-lg font-semibold">AI as a first-class web user</h3>
               <p className="text-sm leading-relaxed text-white/70">
-                Most of the web was built for human browsers. FairCrawl treats AI crawlers as first-class users so they can access content without breaking the sites they depend on.
+                Most of the web was built for human browsers. FairCrawl treats AI crawlers as first-class users so they can access content without breaking sites, and creators can set clear terms for that access.
               </p>
             </div>
           </MarketingCard>
@@ -33,11 +33,11 @@ const VisionPage = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
-                <span>CONSENT &amp; SPEED</span>
+                <span>Consent &amp; speed</span>
               </div>
-              <h3 className="text-lg font-semibold">Consent, speed and money as native concepts</h3>
+              <h3 className="text-lg font-semibold">Consent, speed and money built in</h3>
               <p className="text-sm leading-relaxed text-white/70">
-                Every AI request should carry identity, pacing, and a way to account for value. FairCrawl bakes identity, rate limits, and metering into the request path.
+                Every AI request should carry identity, rate limits, and a way to account for value. FairCrawl bakes identity, pacing, and metering into the request path, so consent and payments are part of the protocol, not an afterthought.
               </p>
             </div>
           </MarketingCard>
@@ -45,11 +45,11 @@ const VisionPage = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-blue-300">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px]">●</span>
-                <span>STANDARD</span>
+                <span>Standard</span>
               </div>
               <h3 className="text-lg font-semibold">From one product to a standard</h3>
               <p className="text-sm leading-relaxed text-white/70">
-                We start as a hosted gateway for AI traffic. The long-term goal is a standard way for any site and any AI team to talk about access, no matter who runs the infrastructure.
+                We start as a hosted gateway for AI traffic. The long-term goal is a common way for any site and any AI team to talk about access, licensing, and price — no matter who runs the infrastructure.
               </p>
             </div>
           </MarketingCard>

@@ -104,16 +104,21 @@ export default function PublisherDashboard() {
     }
   };
 
+  const selectedPolicies: any[] = selectedDomain
+    ? domains.find((d) => d.id === selectedDomain)?.policies ?? []
+    : [];
+
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-12 lg:px-8">
       <section className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-faircrawl-textMuted">PUBLISHER CONTROL</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-faircrawl-textMuted">Publisher controls</p>
             <h1 className="text-3xl font-semibold text-white">Creator control panel</h1>
             <p className="text-sm text-faircrawl-textMuted">
-              Verify your sites, set AI access rules, and track paid reads in one place.
+              Verify your sites, set AI access rules, and track paid access to your content.
             </p>
+            <p className="text-xs text-white/70">Use this dashboard to manage your domains, rules, and earnings in one place.</p>
           </div>
           <button
             onClick={() => {
@@ -131,7 +136,7 @@ export default function PublisherDashboard() {
         <MarketingCard className="space-y-6">
           <div className="space-y-1">
             <h2 className="text-lg font-semibold text-white">Your sites</h2>
-            <p className="text-sm text-white/70">Track the domains you control and jump into their AI rules.</p>
+            <p className="text-sm text-white/70">Track the domains you’ve added and jump into their rules and stats.</p>
           </div>
           <form onSubmit={addDomain} className="space-y-2">
             <label className="block text-sm font-medium text-white/80" htmlFor="domain-input">
@@ -165,7 +170,7 @@ export default function PublisherDashboard() {
                       <th className="px-3">Status</th>
                       <th className="px-3">Rules</th>
                       <th className="px-3">Total reads</th>
-                      <th className="px-3 text-right">Earned</th>
+                      <th className="px-3 text-right">Earnings</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5 text-sm">
@@ -210,14 +215,17 @@ export default function PublisherDashboard() {
       </section>
 
       {selectedDomain && (
-        <section className="grid gap-8 lg:grid-cols-2" id="ai-rules">
+        <>
+          <section className="grid gap-8 lg:grid-cols-2" id="ai-rules">
           <MarketingCard className="space-y-5 text-white">
             <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/70">
-              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">STEP 1 · Verify domain</span>
+              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">Step 1 · Verify ownership</span>
             </div>
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">Prove you own this site</h3>
-              <p className="text-sm text-white/70">Add the verification file or meta tag to prove you control this domain.</p>
+              <p className="text-sm text-white/70">
+                Complete one of the steps below to verify that you control this domain. Once verified, you can publish AI access rules and start earning from AI usage.
+              </p>
             </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase text-white/50">How to verify</p>
@@ -227,12 +235,13 @@ export default function PublisherDashboard() {
                   Add a file at <code className="rounded bg-white/10 px-2 py-1">/.well-known/faircrawl-verification.txt</code> with
                   only the token below.
                 </li>
-                <li>Click “Verify domain” once the file is live.</li>
+                <li>Click “Check verification status” once the record is live.</li>
               </ol>
+              <p className="text-xs text-white/60">After you’ve added the record, click “Check verification status”.</p>
               <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-sm text-white/80">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <button onClick={fetchToken} className="text-sm font-semibold text-blue-300 hover:text-white">
-                    Fetch verification token
+                    Get verification token
                   </button>
                   {verificationToken && (
                     <p className="break-all rounded bg-white/10 p-2 font-mono text-white">{verificationToken}</p>
@@ -241,8 +250,24 @@ export default function PublisherDashboard() {
                 {message && <p className="text-sm text-white/70">{message}</p>}
               </div>
             </div>
+            <SectionActions className="justify-start sm:justify-end">
+              <button onClick={verifyDomain} className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80">
+                Check verification status
+              </button>
+            </SectionActions>
+          </MarketingCard>
+
+          <MarketingCard className="space-y-5 text-white">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/70">
+              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">Step 2 · Analytics (optional)</span>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">Analytics (optional)</h3>
+              <p className="text-sm text-white/70">
+                Connect your own analytics if you want extra insight into how AI and humans use your site. This is optional and doesn’t affect payouts.
+              </p>
+            </div>
             <div className="space-y-3">
-              <p className="text-xs font-medium uppercase text-white/50">Analytics</p>
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <span>Total reads</span>
@@ -253,58 +278,70 @@ export default function PublisherDashboard() {
                   <span>${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</span>
                 </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xs font-medium uppercase text-white/50">Top AI teams</p>
-              <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
-                {analytics[selectedDomain]?.topClients?.length ? (
-                  analytics[selectedDomain].topClients.map((client: any) => (
-                    <div
-                      key={client.aiClientId}
-                      className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <span className="font-medium text-white">{client.name}</span>
-                      <span className="text-white/80">{client.requests} reads</span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-white/60">No data yet.</p>
-                )}
+              <div>
+                <p className="text-xs font-medium uppercase text-white/50">Top AI teams</p>
+                <div className="mt-2 space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
+                  {analytics[selectedDomain]?.topClients?.length ? (
+                    analytics[selectedDomain].topClients.map((client: any) => (
+                      <div
+                        key={client.aiClientId}
+                        className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <span className="font-medium text-white">{client.name}</span>
+                        <span className="text-white/80">{client.requests} reads</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-white/60">No data yet.</p>
+                  )}
+                </div>
               </div>
             </div>
-            <SectionActions className="justify-start sm:justify-end">
-              <button onClick={verifyDomain} className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80">
-                Verify domain
-              </button>
-            </SectionActions>
           </MarketingCard>
 
           <MarketingCard className="space-y-5 text-white">
             <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/70">
-              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">STEP 2 · Publish AI access rules</span>
+              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">Step 3 · Publish AI access rules</span>
             </div>
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold">Set what AIs can read and pay</h3>
+              <h3 className="text-lg font-semibold">Set what AI can read and pay</h3>
               <p className="text-sm text-white/70">
-                Choose which paths are open, throttled, or blocked and how much AIs pay per 1,000 reads.
+                Create simple rules for each path. Choose what’s open, what’s premium, and what stays private, then set the price for AI access.
               </p>
             </div>
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase text-white/50">Current rules</p>
-              <ul className="space-y-2 text-sm">
-                {domains
-                  .find((d) => d.id === selectedDomain)
-                  ?.policies.map((policy) => (
-                    <li key={policy.id} className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-white/80">
-                      <div className="font-semibold text-white">{policy.pathPattern}</div>
-                      <div className="text-white/70">
-                        {policy.allowAI ? 'Allows AI' : 'Blocks AI'} · {policy.pricePer1k}¢ / 1k · {policy.maxRps ? `${
-                          policy.maxRps
-                        } rps max` : 'No cap'}
-                      </div>
-                    </li>
-                  ))}
-              </ul>
+              {selectedPolicies.length === 0 ? (
+                <p className="text-sm text-white/70">No rules yet. Add a path rule to decide how AI can use this site.</p>
+              ) : (
+                <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-[560px] w-full text-left text-sm text-white/80">
+                      <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
+                        <tr>
+                          <th className="px-3 py-2">Path</th>
+                          <th className="px-3 py-2">Access type</th>
+                          <th className="px-3 py-2">Speed limit (req/sec)</th>
+                          <th className="px-3 py-2 text-right">Price per 1k requests</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {selectedPolicies.map((policy: any) => {
+                          const accessType = !policy.allowAI ? 'Blocked' : policy.pricePer1k > 0 ? 'Paid access' : 'Open';
+                          return (
+                            <tr key={policy.id}>
+                              <td className="px-3 py-2 font-semibold text-white">{policy.pathPattern}</td>
+                              <td className="px-3 py-2">{accessType}</td>
+                              <td className="px-3 py-2">{policy.maxRps ? `${policy.maxRps} req/sec` : '—'}</td>
+                              <td className="px-3 py-2 text-right">{policy.pricePer1k ? `${policy.pricePer1k}¢` : 'Free'}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
             <form onSubmit={addPolicy} className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="space-y-2">
@@ -317,59 +354,57 @@ export default function PublisherDashboard() {
                   value={policyForm.pathPattern}
                   onChange={(e) => setPolicyForm({ ...policyForm, pathPattern: e.target.value })}
                 />
-                <p className="text-xs text-white/60">Use wildcards like /blog/* or exact paths like /whitepaper.pdf.</p>
+                <p className="text-xs text-white/60">Use patterns like /blog/* or /premium/* to control groups of pages.</p>
               </div>
               <div className="space-y-3">
                 <p className="text-sm font-medium text-white">Access</p>
-                <div className="flex flex-wrap gap-3">
+                <div className="space-y-3">
                   {[
-                    { label: 'Blocked', value: 'blocked' },
-                    { label: 'Free access', value: 'free' },
-                    { label: 'Metered (paid)', value: 'metered' },
+                    { label: 'Open', value: 'open', description: 'AI can read this path for free.' },
+                    { label: 'Paid access', value: 'paid', description: 'AI can read this path, but each request is metered and billed.' },
+                    { label: 'Blocked', value: 'blocked', description: 'AI cannot read this path.' },
                   ].map((option) => {
-                    const accessState = !policyForm.allowAI
-                      ? 'blocked'
-                      : policyForm.pricePer1k > 0
-                        ? 'metered'
-                        : 'free';
+                    const accessState = !policyForm.allowAI ? 'blocked' : policyForm.pricePer1k > 0 ? 'paid' : 'open';
 
                     return (
                       <label
                         key={option.value}
-                        className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold ${
-                          accessState === option.value ? 'border-blue-400/70 bg-blue-500/10 text-white' : 'border-white/20 text-white/80'
+                        className={`flex flex-col gap-1 rounded-2xl border px-4 py-3 text-sm ${
+                          accessState === option.value ? 'border-blue-400/70 bg-blue-500/10 text-white' : 'border-white/15 text-white/80'
                         }`}
                       >
-                        <input
-                          type="radio"
-                          className="h-4 w-4 accent-blue-500"
-                          name="access-level"
-                          checked={accessState === option.value}
-                          onChange={() => {
-                            if (option.value === 'blocked') {
-                              setPolicyForm({ ...policyForm, allowAI: false, pricePer1k: policyForm.pricePer1k });
-                            }
-                            if (option.value === 'free') {
-                              setPolicyForm({ ...policyForm, allowAI: true, pricePer1k: 0 });
-                            }
-                            if (option.value === 'metered') {
-                              setPolicyForm({ ...policyForm, allowAI: true, pricePer1k: policyForm.pricePer1k || 1 });
-                            }
-                          }}
-                        />
-                        {option.label}
+                        <span className="flex items-center gap-2 font-semibold">
+                          <input
+                            type="radio"
+                            className="h-4 w-4 accent-blue-500"
+                            name="access-level"
+                            checked={accessState === option.value}
+                            onChange={() => {
+                              if (option.value === 'blocked') {
+                                setPolicyForm({ ...policyForm, allowAI: false });
+                              }
+                              if (option.value === 'open') {
+                                setPolicyForm({ ...policyForm, allowAI: true, pricePer1k: 0 });
+                              }
+                              if (option.value === 'paid') {
+                                setPolicyForm({ ...policyForm, allowAI: true, pricePer1k: policyForm.pricePer1k || 1 });
+                              }
+                            }}
+                          />
+                          {option.label}
+                        </span>
+                        <span className="text-xs text-white/70">{option.description}</span>
                       </label>
                     );
                   })}
                 </div>
-                <p className="text-xs text-white/60">Pick whether this path is blocked, free, or paid for AI crawlers.</p>
               </div>
               <div className="space-y-3">
                 <p className="text-sm font-medium text-white">Rate</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold text-white" title="Charge AI crawlers per 1,000 reads if you want metered access.">
-                      Price per 1,000 reads
+                    <label className="text-sm font-semibold text-white" title="Charge AI crawlers per 1,000 requests if you want metered access.">
+                      Price per 1,000 requests
                     </label>
                     <input
                       className={inputClasses}
@@ -377,10 +412,11 @@ export default function PublisherDashboard() {
                       value={policyForm.pricePer1k}
                       onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
                     />
+                    <p className="text-xs text-white/60">This is what AI teams pay when they access this path through FairCrawl.</p>
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-white" title="Speed limit for crawlers hitting this path.">
-                      Speed limit (requests per second)
+                      Speed limit (req/sec)
                     </label>
                     <input
                       className={inputClasses}
@@ -390,40 +426,38 @@ export default function PublisherDashboard() {
                     />
                   </div>
                 </div>
-                <p className="text-xs text-white/60">Set gentle speed limits and pricing for AI crawlers.</p>
               </div>
               <p className="text-xs text-white/70">
                 AI crawlers can read https://{domains.find((d) => d.id === selectedDomain)?.name ?? 'your-domain.com'}
-                {policyForm.pathPattern || '/*'} at up to {policyForm.maxRps || '—'} req/sec for ${policyForm.pricePer1k || 0} per 1,000 reads.
+                {policyForm.pathPattern || '/*'} at up to {policyForm.maxRps || '—'} req/sec for {policyForm.pricePer1k || 0}¢ per 1,000 requests.
               </p>
-              <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Examples</p>
-                <ul className="space-y-2 text-white/80">
-                  <li className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm">
-                    <span>/blog/*</span>
-                    <span className="rounded-full bg-blue-500/20 px-3 py-1 text-[11px] font-semibold text-blue-100">Metered</span>
-                    <span className="text-white/70">$1 / 1,000 reads · 5 req/sec</span>
-                  </li>
-                  <li className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm">
-                    <span>/drafts/*</span>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white">Blocked</span>
-                    <span className="text-white/70">—</span>
-                  </li>
-                  <li className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm">
-                    <span>/premium/*</span>
-                    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-[11px] font-semibold text-amber-100">Metered</span>
-                    <span className="text-white/70">$5 / 1,000 reads · 1 req/sec</span>
-                  </li>
-                </ul>
-              </div>
               <SectionActions className="justify-start sm:justify-end">
                 <button className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80" type="submit">
-                  Save rule
+                  Save rules
                 </button>
               </SectionActions>
             </form>
           </MarketingCard>
-        </section>
+          </section>
+          <MarketingCard className="mt-8 space-y-4 text-white">
+          <div className="space-y-1">
+            <h3 className="text-lg font-semibold">Earnings</h3>
+            <p className="text-sm text-white/70">
+              See how much you’ve earned from AI access to this site. Every paid read is logged and added to your balance.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Total reads</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{analytics[selectedDomain]?.totalRequests ?? 0}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Earnings to date</p>
+              <p className="mt-2 text-2xl font-semibold text-white">${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</p>
+            </div>
+          </div>
+          </MarketingCard>
+        </>
       )}
     </div>
   );

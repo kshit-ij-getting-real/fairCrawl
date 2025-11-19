@@ -5,16 +5,16 @@ import { MarketingCard } from '../../components/ui/MarketingCard';
 const HowItWorksPage = () => {
   const steps = [
     {
-      title: 'Crawler hits a wall',
-      body: 'An AI crawler tries to read your site. Instead of guessing your rules or scraping around blocks, it goes through the FairCrawl gateway.',
+      title: 'Crawler hits your site',
+      body: 'An AI crawler tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairCrawl gateway.',
     },
     {
       title: 'Request goes through FairCrawl',
-      body: 'The AI team signs up, gets an API key, and identifies itself on every request. We know who they are, how fast they crawl, and what they want to access.',
+      body: 'The AI team signs up, gets an API key, and identifies itself on every request. FairCrawl checks your rules to see what they can read, how fast they can crawl, and whether the path is paid.',
     },
     {
-      title: 'You set the rules',
-      body: 'You choose which paths are open, throttled, or blocked, and what each crawler pays. FairCrawl checks every request against those rules, logs it, and either serves the page or clearly blocks it.',
+      title: 'You set the rules — and get paid',
+      body: 'You choose which paths are open, premium, throttled, or blocked, and what each crawler pays. FairCrawl logs every access, returns content when allowed, and records the transaction so you can track earnings.',
     },
   ];
 
@@ -26,10 +26,10 @@ const HowItWorksPage = () => {
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Product flow</p>
             <h1 className="text-3xl font-semibold">How FairCrawl works</h1>
             <p className="text-base leading-relaxed text-white/80">
-              FairCrawl is the handshake between AI crawlers and the sites they need. Crawlers authenticate, you set the rules, and FairCrawl enforces them on every request.
+              FairCrawl sits between AI crawlers and the sites they read. Crawlers authenticate, you set the rules, and FairCrawl checks every request before content is returned.
             </p>
             <p className="text-base leading-relaxed text-white/80">
-              AI crawlers route through FairCrawl instead of scraping in the dark. You choose which paths are open, throttled, or blocked, and every request is logged so both sides see the same record.
+              AI crawlers go through FairCrawl instead of scraping in the dark. You decide which paths are open, premium, throttled, or blocked, and every request is logged so both sides see the same record.
             </p>
           </div>
         </div>

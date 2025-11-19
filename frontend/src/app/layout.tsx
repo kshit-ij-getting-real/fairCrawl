@@ -5,8 +5,8 @@ import { AuthActions } from '@/components/AuthActions';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Fair Crawl',
-  description: 'Marketplace and gateway for AI crawlers',
+  title: 'FairCrawl – Get paid when AI uses your content',
+  description: 'FairCrawl lets creators set AI access rules, meter usage, and get paid when AI teams use their work.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
