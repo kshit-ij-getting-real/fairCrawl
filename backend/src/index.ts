@@ -23,6 +23,7 @@ app.use('/api', policyRouter);
 app.use('/api', gatewayRouter);
 app.use('/api/publisher', authenticate, requireRole('PUBLISHER'), publisherRouter);
 app.use('/api/aiclient', authenticate, requireRole('AICLIENT'), aiClientRouter);
+app.use('/api/client', authenticate, requireRole('AICLIENT'), aiClientRouter);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

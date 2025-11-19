@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { apiFetch, clearSession, getRole } from '../../../lib/api';
 import { MarketingCard } from '../../../components/ui/MarketingCard';
 import { SectionActions } from '../../../components/ui/SectionActions';
+import { formatMicrosToCurrency, formatPricePerThousand } from '../../../lib/money';
 
 interface Domain {
   id: number;
@@ -13,15 +14,54 @@ interface Domain {
   policies: any[];
 }
 
+type AccessType = 'OPEN' | 'PAID' | 'BLOCKED';
+
+interface AccessRule {
+  id: number;
+  pathPattern: string;
+  accessType: AccessType;
+  priceMicros: number;
+  maxRps: number | null;
+}
+
+interface ReadEvent {
+  id: string;
+  url: string;
+  path: string;
+  accessType: AccessType;
+  priceMicros: number;
+  createdAt: string;
+  aiClient: { id: number; name: string };
+}
+
+interface EarningsSummary {
+  totalReads: number;
+  totalEarningsMicros: number;
+  paidReads: number;
+  paidEarningsMicros: number;
+  last7Days: { reads: number; earningsMicros: number };
+  last30Days: { reads: number; earningsMicros: number };
+  topClients: { aiClientId: number; name: string; reads: number; earningsMicros: number }[];
+}
+
 export default function PublisherDashboard() {
   const router = useRouter();
   const [domains, setDomains] = useState<Domain[]>([]);
   const [domainName, setDomainName] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [analytics, setAnalytics] = useState<Record<number, any>>({});
-  const [policyForm, setPolicyForm] = useState({ pathPattern: '/*', allowAI: true, pricePer1k: 0, maxRps: '' });
+  const [rules, setRules] = useState<AccessRule[]>([]);
+  const [readEvents, setReadEvents] = useState<ReadEvent[]>([]);
+  const [earningsSummary, setEarningsSummary] = useState<EarningsSummary | null>(null);
+  const [policyForm, setPolicyForm] = useState({
+    pathPattern: '/*',
+    accessType: 'OPEN' as AccessType,
+    pricePerThousand: '0',
+    maxRps: '',
+  });
   const [verificationToken, setVerificationToken] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
+  const [ruleError, setRuleError] = useState<string | null>(null);
 
   const inputClasses =
     'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
@@ -34,13 +74,59 @@ export default function PublisherDashboard() {
     loadDomains();
   }, [router]);
 
+  const loadAnalytics = async (domainId: number) => {
+    try {
+      const stats = await apiFetch(`/api/publisher/domains/${domainId}/analytics`);
+      setAnalytics((prev) => ({ ...prev, [domainId]: stats }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loadRules = async (domainId: number) => {
+    try {
+      const data: AccessRule[] = await apiFetch(`/api/publisher/domains/${domainId}/rules`);
+      setRules(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loadReadEvents = async (domainId: number) => {
+    try {
+      const events: ReadEvent[] = await apiFetch(`/api/publisher/domains/${domainId}/read-events?limit=50`);
+      setReadEvents(events);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loadEarningsSummary = async (domainId: number) => {
+    try {
+      const summary: EarningsSummary = await apiFetch(`/api/publisher/domains/${domainId}/earnings-summary`);
+      setEarningsSummary(summary);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const refreshDomainData = (domainId: number) => {
+    setRules([]);
+    setReadEvents([]);
+    setEarningsSummary(null);
+    loadAnalytics(domainId);
+    loadRules(domainId);
+    loadReadEvents(domainId);
+    loadEarningsSummary(domainId);
+  };
+
   const loadDomains = async () => {
     try {
       const result = await apiFetch('/api/publisher/domains');
       setDomains(result);
       if (result.length > 0) {
         setSelectedDomain(result[0].id);
-        loadAnalytics(result[0].id);
+        refreshDomainData(result[0].id);
       }
     } catch (err: any) {
       console.error(err);
@@ -48,15 +134,6 @@ export default function PublisherDashboard() {
         clearSession();
         router.replace('/login');
       }
-    }
-  };
-
-  const loadAnalytics = async (domainId: number) => {
-    try {
-      const stats = await apiFetch(`/api/publisher/domains/${domainId}/analytics`);
-      setAnalytics((prev) => ({ ...prev, [domainId]: stats }));
-    } catch (err) {
-      console.error(err);
     }
   };
 
@@ -70,14 +147,32 @@ export default function PublisherDashboard() {
   const addPolicy = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedDomain) return;
+    setRuleError(null);
+    const trimmedPattern = policyForm.pathPattern.trim();
+    if (!trimmedPattern) {
+      setRuleError('Path pattern is required.');
+      return;
+    }
+    const priceNumber = Number(policyForm.pricePerThousand);
+    if (policyForm.accessType === 'PAID' && (!priceNumber || priceNumber <= 0)) {
+      setRuleError('Paid rules require a price greater than $0.');
+      return;
+    }
+
     const payload = {
-      ...policyForm,
-      pricePer1k: Number(policyForm.pricePer1k),
+      pattern: trimmedPattern,
+      accessType: policyForm.accessType,
+      priceMicros: policyForm.accessType === 'PAID' ? Math.round(priceNumber * 1_000_000) : 0,
       maxRps: policyForm.maxRps ? Number(policyForm.maxRps) : null,
     };
-    await apiFetch(`/api/publisher/domains/${selectedDomain}/policies`, { method: 'POST', body: JSON.stringify(payload) });
-    setPolicyForm({ pathPattern: '/premium/*', allowAI: true, pricePer1k: 0, maxRps: '' });
-    loadDomains();
+
+    try {
+      await apiFetch(`/api/publisher/domains/${selectedDomain}/rules`, { method: 'POST', body: JSON.stringify(payload) });
+      setPolicyForm({ pathPattern: '/premium/*', accessType: policyForm.accessType, pricePerThousand: '0.25', maxRps: '' });
+      refreshDomainData(selectedDomain);
+    } catch (err: any) {
+      setRuleError(err?.message || 'Failed to save rule');
+    }
   };
 
   const fetchToken = async () => {
@@ -104,9 +199,7 @@ export default function PublisherDashboard() {
     }
   };
 
-  const selectedPolicies: any[] = selectedDomain
-    ? domains.find((d) => d.id === selectedDomain)?.policies ?? []
-    : [];
+  const selectedPolicies: AccessRule[] = rules;
 
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-12 lg:px-8">
@@ -193,7 +286,7 @@ export default function PublisherDashboard() {
                             className="font-semibold text-faircrawl-accent hover:text-faircrawl-accentSoft"
                             onClick={() => {
                               setSelectedDomain(domain.id);
-                              loadAnalytics(domain.id);
+                              refreshDomainData(domain.id);
                               document.getElementById('ai-rules')?.scrollIntoView({ behavior: 'smooth' });
                             }}
                           >
@@ -326,14 +419,15 @@ export default function PublisherDashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                        {selectedPolicies.map((policy: any) => {
-                          const accessType = !policy.allowAI ? 'Blocked' : policy.pricePer1k > 0 ? 'Paid access' : 'Open';
+                        {selectedPolicies.map((policy) => {
+                          const accessTypeLabel =
+                            policy.accessType === 'PAID' ? 'Paid access' : policy.accessType === 'BLOCKED' ? 'Blocked' : 'Open';
                           return (
                             <tr key={policy.id}>
                               <td className="px-3 py-2 font-semibold text-white">{policy.pathPattern}</td>
-                              <td className="px-3 py-2">{accessType}</td>
+                              <td className="px-3 py-2">{accessTypeLabel}</td>
                               <td className="px-3 py-2">{policy.maxRps ? `${policy.maxRps} req/sec` : '—'}</td>
-                              <td className="px-3 py-2 text-right">{policy.pricePer1k ? `${policy.pricePer1k}¢` : 'Free'}</td>
+                              <td className="px-3 py-2 text-right">{formatPricePerThousand(policy.priceMicros)}</td>
                             </tr>
                           );
                         })}
@@ -360,11 +454,11 @@ export default function PublisherDashboard() {
                 <p className="text-sm font-medium text-white">Access</p>
                 <div className="space-y-3">
                   {[
-                    { label: 'Open', value: 'open', description: 'AI can read this path for free.' },
-                    { label: 'Paid access', value: 'paid', description: 'AI can read this path, but each request is metered and billed.' },
-                    { label: 'Blocked', value: 'blocked', description: 'AI cannot read this path.' },
+                    { label: 'Open', value: 'OPEN', description: 'AI can read this path for free.' },
+                    { label: 'Paid access', value: 'PAID', description: 'AI can read this path, but each request is metered and billed.' },
+                    { label: 'Blocked', value: 'BLOCKED', description: 'AI cannot read this path.' },
                   ].map((option) => {
-                    const accessState = !policyForm.allowAI ? 'blocked' : policyForm.pricePer1k > 0 ? 'paid' : 'open';
+                    const accessState = policyForm.accessType;
 
                     return (
                       <label
@@ -380,15 +474,16 @@ export default function PublisherDashboard() {
                             name="access-level"
                             checked={accessState === option.value}
                             onChange={() => {
-                              if (option.value === 'blocked') {
-                                setPolicyForm({ ...policyForm, allowAI: false });
-                              }
-                              if (option.value === 'open') {
-                                setPolicyForm({ ...policyForm, allowAI: true, pricePer1k: 0 });
-                              }
-                              if (option.value === 'paid') {
-                                setPolicyForm({ ...policyForm, allowAI: true, pricePer1k: policyForm.pricePer1k || 1 });
-                              }
+                              setPolicyForm((prev) => ({
+                                ...prev,
+                                accessType: option.value as AccessType,
+                                pricePerThousand:
+                                  option.value === 'PAID'
+                                    ? prev.pricePerThousand && Number(prev.pricePerThousand) > 0
+                                      ? prev.pricePerThousand
+                                      : '0.25'
+                                    : '0',
+                              }));
                             }}
                           />
                           {option.label}
@@ -407,12 +502,16 @@ export default function PublisherDashboard() {
                       Price per 1,000 requests
                     </label>
                     <input
-                      className={inputClasses}
-                      placeholder="Price in cents"
-                      value={policyForm.pricePer1k}
-                      onChange={(e) => setPolicyForm({ ...policyForm, pricePer1k: Number(e.target.value) })}
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className={`${inputClasses} ${policyForm.accessType !== 'PAID' ? 'opacity-50' : ''}`}
+                      placeholder="e.g. 0.25"
+                      value={policyForm.pricePerThousand}
+                      disabled={policyForm.accessType !== 'PAID'}
+                      onChange={(e) => setPolicyForm({ ...policyForm, pricePerThousand: e.target.value })}
                     />
-                    <p className="text-xs text-white/60">This is what AI teams pay when they access this path through FairMarket.</p>
+                    <p className="text-xs text-white/60">Set the price in USD per 1,000 reads. Leave at $0 for open paths.</p>
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-white" title="Speed limit for crawlers hitting this path.">
@@ -429,8 +528,13 @@ export default function PublisherDashboard() {
               </div>
               <p className="text-xs text-white/70">
                 AI crawlers can read https://{domains.find((d) => d.id === selectedDomain)?.name ?? 'your-domain.com'}
-                {policyForm.pathPattern || '/*'} at up to {policyForm.maxRps || '—'} req/sec for {policyForm.pricePer1k || 0}¢ per 1,000 requests.
+                {policyForm.pathPattern || '/*'} at up to {policyForm.maxRps || '—'} req/sec for
+                {policyForm.accessType === 'PAID'
+                  ? ` $${Number(policyForm.pricePerThousand || 0).toFixed(2)}`
+                  : ' Free'}
+                per 1,000 requests.
               </p>
+              {ruleError && <p className="text-xs text-red-300">{ruleError}</p>}
               <SectionActions className="justify-start sm:justify-end">
                 <button className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80" type="submit">
                   Save rules
@@ -440,22 +544,107 @@ export default function PublisherDashboard() {
           </MarketingCard>
           </section>
           <MarketingCard className="mt-8 space-y-4 text-white">
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold">Earnings</h3>
-            <p className="text-sm text-white/70">
-              See how much you’ve earned from AI access to this site. Every paid read is logged and added to your balance.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Total reads</p>
-              <p className="mt-2 text-2xl font-semibold text-white">{analytics[selectedDomain]?.totalRequests ?? 0}</p>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">Usage insights</h3>
+              <p className="text-sm text-white/70">Real-time reads from AI clients appear here with access type and price.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Earnings to date</p>
-              <p className="mt-2 text-2xl font-semibold text-white">${analytics[selectedDomain]?.estimatedRevenue?.toFixed?.(2) ?? '0.00'}</p>
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+              <div className="overflow-x-auto">
+                <table className="min-w-[640px] w-full text-left text-sm text-white/80">
+                  <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
+                    <tr>
+                      <th className="px-3 py-2">Time</th>
+                      <th className="px-3 py-2">AI client</th>
+                      <th className="px-3 py-2">Path</th>
+                      <th className="px-3 py-2">Access</th>
+                      <th className="px-3 py-2 text-right">Price</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {readEvents.length === 0 ? (
+                      <tr>
+                        <td className="px-3 py-4 text-white/60" colSpan={5}>
+                          No reads logged yet. Once AI clients hit your rules, they’ll show up here instantly.
+                        </td>
+                      </tr>
+                    ) : (
+                      readEvents.map((event) => {
+                        const date = new Date(event.createdAt);
+                        const price = event.priceMicros ? formatMicrosToCurrency(event.priceMicros, 'Free') : 'Free';
+                        const accessLabel =
+                          event.accessType === 'PAID' ? 'Paid' : event.accessType === 'BLOCKED' ? 'Blocked' : 'Open';
+                        return (
+                          <tr key={event.id}>
+                            <td className="px-3 py-2 text-white">{date.toLocaleString()}</td>
+                            <td className="px-3 py-2">{event.aiClient.name}</td>
+                            <td className="px-3 py-2">
+                              <span className="font-mono text-white/90">{event.path}</span>
+                            </td>
+                            <td className="px-3 py-2">{accessLabel}</td>
+                            <td className="px-3 py-2 text-right">{price}</td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </MarketingCard>
+
+          <MarketingCard className="space-y-4 text-white">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">Transactions & earnings</h3>
+              <p className="text-sm text-white/70">
+                Track lifetime earnings, paid reads, and recent performance. These numbers update as soon as new reads are logged.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Total reads</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{earningsSummary?.totalReads ?? 0}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Paid reads</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{earningsSummary?.paidReads ?? 0}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Total earnings</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{formatMicrosToCurrency(earningsSummary?.totalEarningsMicros)}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Last 7 days</p>
+                <p className="mt-2 text-base text-white">
+                  {(earningsSummary?.last7Days.reads ?? 0).toLocaleString()} reads ·
+                  {formatMicrosToCurrency(earningsSummary?.last7Days.earningsMicros)}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Last 30 days</p>
+                <p className="mt-2 text-base text-white">
+                  {(earningsSummary?.last30Days.reads ?? 0).toLocaleString()} reads ·
+                  {formatMicrosToCurrency(earningsSummary?.last30Days.earningsMicros)}
+                </p>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/50">Top AI clients</p>
+              <div className="mt-2 space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
+                {earningsSummary?.topClients?.length ? (
+                  earningsSummary.topClients.map((client) => (
+                    <div key={client.aiClientId} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-semibold text-white">{client.name}</p>
+                        <p className="text-xs text-white/60">{client.reads} reads</p>
+                      </div>
+                      <span className="text-white/80">{formatMicrosToCurrency(client.earningsMicros)}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-white/60">No paid reads yet.</p>
+                )}
+              </div>
+            </div>
           </MarketingCard>
         </>
       )}
