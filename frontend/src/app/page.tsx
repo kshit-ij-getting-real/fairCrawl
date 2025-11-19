@@ -7,17 +7,17 @@ const heroHighlights = [
   {
     title: 'Control access',
     body:
-      'Choose which parts of your site AI can reach. Keep some pages open, mark others as premium (paid), and block anything sensitive. You stay in control.',
+      'Choose which parts of your site AI can reach. Keep some pages open, mark others as premium, and block anything sensitive.',
   },
   {
     title: 'Track usage',
     body:
-      'See what’s happening in real time. FairMarket shows you which AI teams accessed your content, what they looked at, and how often.',
+      'See who’s reading you in real time. FairMarket logs which AI teams access your content and how often.',
   },
   {
     title: 'Earn from your work',
     body:
-      'Turn your best content into a steady income stream. When an AI needs your premium material, it pays the price you set, and you see the earnings inside FairMarket.',
+      'Set a price on your premium content. When AI teams use it, FairMarket turns those reads into earnings.',
   },
 ];
 
@@ -31,17 +31,20 @@ export default function Page() {
               <div className="space-y-4">
                 <SectionEyebrow className="text-white/70">Paid AI access, on your terms</SectionEyebrow>
                 <h1 className="text-4xl font-bold leading-tight md:text-5xl">Get paid when AI uses your content</h1>
-                <p className="max-w-xl text-lg leading-relaxed text-white/80">
-                  FairMarket is a marketplace where creators license their paywalled and premium content to AI companies. You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
+                <p className="mt-4 max-w-xl text-base text-slate-200">
+                  FairMarket is a marketplace where creators license their paywalled and premium content to AI companies.
+                  <span className="block">
+                    You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
+                  </span>
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid gap-4 md:grid-cols-3">
                   {heroHighlights.map((item) => (
                     <div
                       key={item.title}
-                      className="flex min-h-[160px] flex-col rounded-2xl border border-white/10 bg-white/5 p-4"
+                      className="flex flex-col rounded-2xl bg-slate-900/60 p-4 text-sm leading-snug"
                     >
-                      <p className="text-sm font-semibold text-white">{item.title}</p>
-                      <p className="mt-2 text-sm text-white/70">{item.body}</p>
+                      <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
+                      <p className="text-slate-200 text-sm">{item.body}</p>
                     </div>
                   ))}
                 </div>
