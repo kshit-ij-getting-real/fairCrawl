@@ -104,7 +104,10 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
   }
 
   const dashboardHref = session.role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard';
-  const nameClass = variant === 'footer' ? 'hover:text-white' : 'text-sm text-white/80 hover:text-white';
+  const nameClass =
+    variant === 'footer'
+      ? 'inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-medium text-white/90 hover:border-white/30 hover:bg-white/15'
+      : 'inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white hover:border-white/40 hover:bg-white/20';
   const logoutClass =
     variant === 'footer'
       ? 'hover:text-white'
