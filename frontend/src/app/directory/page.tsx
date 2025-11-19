@@ -26,7 +26,7 @@ export default async function DirectoryPage() {
           <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Directory</p>
           <h1 className="text-3xl font-semibold text-white">Verified AI-ready sites</h1>
           <p className="text-base text-faircrawl-textMuted">
-            These domains have verified ownership and published AI access rules through FairCrawl. They’re good defaults when you want high-quality, permissioned training data with clear licensing terms.
+            These domains have verified ownership and published AI access rules through FairMarket. They’re good defaults when you want high-quality, permissioned training data with clear licensing terms.
           </p>
         </header>
       </div>
@@ -48,7 +48,7 @@ export default async function DirectoryPage() {
               <div className="flex flex-col gap-1">
                 <h3 className="text-lg font-semibold text-white">{domain.displayName ?? domainName}</h3>
                 <p className="text-xs text-white/60">
-                  Verified by {publisherName ?? 'site owner'}. AI rules published through FairCrawl.
+                  Verified by {publisherName ?? 'site owner'}. AI rules published through FairMarket.
                 </p>
               </div>
               <div className="flex justify-end">

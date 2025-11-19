@@ -17,7 +17,7 @@ const AiTeamsPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
           <div className="mx-auto max-w-3xl space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For AI teams</p>
-            <h1 className="text-3xl font-semibold">FairCrawl for AI teams</h1>
+            <h1 className="text-3xl font-semibold">FairMarket for AI teams</h1>
             <p className="text-base leading-relaxed text-white/80">
               Get clean, permissioned access to creator content through a single API, with clear rules and audit logs on every crawl.
             </p>
@@ -46,7 +46,7 @@ const AiTeamsPage = () => {
 
           <MarketingCard className="flex flex-col justify-between gap-4 min-h-[320px] text-white">
             <div className="space-y-3">
-              <h2 className="text-2xl font-semibold">Why AI teams use FairCrawl</h2>
+              <h2 className="text-2xl font-semibold">Why AI teams use FairMarket</h2>
               <ul className="space-y-3 text-sm text-white/80">
                 {benefits.map((item) => (
                   <li key={item} className="flex items-start gap-2">

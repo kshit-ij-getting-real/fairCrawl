@@ -26,5 +26,5 @@ app.use('/api/aiclient', authenticate, requireRole('AICLIENT'), aiClientRouter);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
-  console.log(`Fair Crawl backend listening on port ${port}`);
+  console.log(`FairMarket backend listening on port ${port}`);
 });

@@ -21,7 +21,7 @@ const CreatorsPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
           <div className="mx-auto max-w-3xl space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
-            <h1 className="text-3xl font-semibold">FairCrawl for creators &amp; publishers</h1>
+            <h1 className="text-3xl font-semibold">FairMarket for creators &amp; publishers</h1>
             <p className="text-base leading-relaxed text-white/80">
               Set rules per path, see which AI crawlers read your work, and turn AI training into income.
             </p>
@@ -66,7 +66,7 @@ const CreatorsPage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>When crawlers use FairCrawl, they get a controlled, logged feed instead of scraping around your site.</span>
+                  <span>When crawlers use FairMarket, they get a controlled, logged feed instead of scraping around your site.</span>
                 </li>
               </ul>
             </div>

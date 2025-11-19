@@ -6,15 +6,15 @@ const HowItWorksPage = () => {
   const steps = [
     {
       title: 'Crawler hits your site',
-      body: 'An AI crawler tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairCrawl gateway.',
+      body: 'An AI crawler tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairMarket gateway.',
     },
     {
-      title: 'Request goes through FairCrawl',
-      body: 'The AI team signs up, gets an API key, and identifies itself on every request. FairCrawl checks your rules to see what they can read, how fast they can crawl, and whether the path is paid.',
+      title: 'Request goes through FairMarket',
+      body: 'The AI team signs up, gets an API key, and identifies itself on every request. FairMarket checks your rules to see what they can read, how fast they can crawl, and whether the path is paid.',
     },
     {
       title: 'You set the rules — and get paid',
-      body: 'You choose which paths are open, premium, throttled, or blocked, and what each crawler pays. FairCrawl logs every access, returns content when allowed, and records the transaction so you can track earnings.',
+      body: 'You choose which paths are open, premium, throttled, or blocked, and what each crawler pays. FairMarket logs every access, returns content when allowed, and records the transaction so you can track earnings.',
     },
   ];
 
@@ -24,12 +24,12 @@ const HowItWorksPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
           <div className="mx-auto max-w-3xl space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Product flow</p>
-            <h1 className="text-3xl font-semibold">How FairCrawl works</h1>
+            <h1 className="text-3xl font-semibold">How FairMarket works</h1>
             <p className="text-base leading-relaxed text-white/80">
-              FairCrawl sits between AI crawlers and the sites they read. Crawlers authenticate, you set the rules, and FairCrawl checks every request before content is returned.
+              FairMarket sits between AI crawlers and the sites they read. Crawlers authenticate, you set the rules, and FairMarket checks every request before content is returned.
             </p>
             <p className="text-base leading-relaxed text-white/80">
-              AI crawlers go through FairCrawl instead of scraping in the dark. You decide which paths are open, premium, throttled, or blocked, and every request is logged so both sides see the same record.
+              AI crawlers go through FairMarket instead of scraping in the dark. You decide which paths are open, premium, throttled, or blocked, and every request is logged so both sides see the same record.
             </p>
           </div>
         </div>
