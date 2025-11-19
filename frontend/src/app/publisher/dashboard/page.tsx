@@ -6,6 +6,10 @@ import { apiFetch, clearSession, getRole } from '../../../lib/api';
 import { MarketingCard } from '../../../components/ui/MarketingCard';
 import { SectionActions } from '../../../components/ui/SectionActions';
 import { formatMicrosToCurrency, formatPricePerThousand } from '../../../lib/money';
+import { SectionEyebrow } from '../../../components/ui/SectionEyebrow';
+import { PrimaryButton, SecondaryButton } from '../../../components/ui/Buttons';
+import { UsageTable } from '../../../components/ui/UsageTable';
+import { MetricCard } from '../../../components/ui/MetricCard';
 
 interface Domain {
   id: number;
@@ -65,6 +69,15 @@ export default function PublisherDashboard() {
 
   const inputClasses =
     'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
+
+  const getDomainFromUrl = (url?: string) => {
+    if (!url) return '—';
+    try {
+      return new URL(url).hostname;
+    } catch {
+      return url.replace(/^https?:\/\//, '').split('/')[0] || '—';
+    }
+  };
 
   useEffect(() => {
     if (getRole() !== 'PUBLISHER') {
@@ -200,35 +213,71 @@ export default function PublisherDashboard() {
   };
 
   const selectedPolicies: AccessRule[] = rules;
+  const usageTableColumns = [
+    { label: 'Time' },
+    { label: 'Domain' },
+    { label: 'Path' },
+    { label: 'Access' },
+    { label: 'Price', align: 'right' as const },
+    { label: 'AI client' },
+  ];
+
+  const usageTableRows = readEvents.map((event) => {
+    const date = new Date(event.createdAt).toLocaleString();
+    const domain = getDomainFromUrl(event.url);
+    const price = event.priceMicros ? formatMicrosToCurrency(event.priceMicros, 'Free') : 'Free';
+    const accessLabel = event.accessType === 'PAID' ? 'Paid' : event.accessType === 'BLOCKED' ? 'Blocked' : 'Open';
+
+    return {
+      key: event.id,
+      cells: [
+        <span className="text-white" key="time">
+          {date}
+        </span>,
+        <span className="text-white/80" key="domain">
+          {domain}
+        </span>,
+        <span className="font-mono text-white/90" key="path">
+          {event.path}
+        </span>,
+        <span key="access">{accessLabel}</span>,
+        <span className="text-white" key="price">
+          {price}
+        </span>,
+        <span key="client">{event.aiClient.name}</span>,
+      ],
+    };
+  });
+
+  const hasEarnings = Boolean(earningsSummary && earningsSummary.paidReads > 0);
 
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-12 lg:px-8">
       <section className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-faircrawl-textMuted">Publisher controls</p>
+            <SectionEyebrow className="text-white/70">Publisher controls</SectionEyebrow>
             <h1 className="text-3xl font-semibold text-white">Creator control panel</h1>
             <p className="text-sm text-faircrawl-textMuted">
               Verify your sites, set AI access rules, and track paid access to your content.
             </p>
             <p className="text-xs text-white/70">Use this dashboard to manage your domains, rules, and earnings in one place.</p>
           </div>
-          <button
+          <SecondaryButton
             onClick={() => {
               clearSession();
               router.replace('/');
             }}
-            className="rounded-full bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20"
           >
             Log out
-          </button>
+          </SecondaryButton>
         </div>
       </section>
 
       <section className="space-y-4">
         <MarketingCard className="space-y-6">
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold text-white">Your sites</h2>
+            <h2 className="text-xl font-semibold text-white">Your sites</h2>
             <p className="text-sm text-white/70">Track the domains you’ve added and jump into their rules and stats.</p>
           </div>
           <form onSubmit={addDomain} className="space-y-2">
@@ -243,12 +292,9 @@ export default function PublisherDashboard() {
                 value={domainName}
                 onChange={(e) => setDomainName(e.target.value)}
               />
-              <button
-                className="rounded-xl bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
-                type="submit"
-              >
+              <PrimaryButton type="submit" className="px-6">
                 Add domain
-              </button>
+              </PrimaryButton>
             </div>
           </form>
           {domains.length === 0 ? (
@@ -311,11 +357,9 @@ export default function PublisherDashboard() {
         <>
           <section className="grid gap-8 lg:grid-cols-2" id="ai-rules">
           <MarketingCard className="space-y-5 text-white">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/70">
-              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">Step 1 · Verify ownership</span>
-            </div>
+            <SectionEyebrow className="text-white/70">Step 1 · Verify ownership</SectionEyebrow>
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold">Prove you own this site</h3>
+              <h3 className="text-xl font-semibold">Prove you own this site</h3>
               <p className="text-sm text-white/70">
                 Complete one of the steps below to verify that you control this domain. Once verified, you can publish AI access rules and start earning from AI usage.
               </p>
@@ -344,18 +388,14 @@ export default function PublisherDashboard() {
               </div>
             </div>
             <SectionActions className="justify-start sm:justify-end">
-              <button onClick={verifyDomain} className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80">
-                Check verification status
-              </button>
+              <PrimaryButton onClick={verifyDomain}>Check verification status</PrimaryButton>
             </SectionActions>
           </MarketingCard>
 
           <MarketingCard className="space-y-5 text-white">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/70">
-              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">Step 2 · Analytics (optional)</span>
-            </div>
+            <SectionEyebrow className="text-white/70">Step 2 · Analytics (optional)</SectionEyebrow>
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold">Analytics (optional)</h3>
+              <h3 className="text-xl font-semibold">Analytics (optional)</h3>
               <p className="text-sm text-white/70">
                 Connect your own analytics if you want extra insight into how AI and humans use your site. This is optional and doesn’t affect payouts.
               </p>
@@ -393,11 +433,9 @@ export default function PublisherDashboard() {
           </MarketingCard>
 
           <MarketingCard className="space-y-5 text-white">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-white/70">
-              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1">Step 3 · Publish AI access rules</span>
-            </div>
+            <SectionEyebrow className="text-white/70">Step 3 · Publish AI access rules</SectionEyebrow>
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold">Set what AI can read and pay</h3>
+              <h3 className="text-xl font-semibold">Set what AI can read and pay</h3>
               <p className="text-sm text-white/70">
                 Create simple rules for each path. Choose what’s open, what’s premium, and what stays private, then set the price for AI access.
               </p>
@@ -496,8 +534,8 @@ export default function PublisherDashboard() {
               </div>
               <div className="space-y-3">
                 <p className="text-sm font-medium text-white">Rate</p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1">
+                <div className="flex flex-col gap-4 md:flex-row">
+                  <div className="flex-1 space-y-1">
                     <label className="text-sm font-semibold text-white" title="Charge AI crawlers per 1,000 requests if you want metered access.">
                       Price per 1,000 requests
                     </label>
@@ -513,16 +551,20 @@ export default function PublisherDashboard() {
                     />
                     <p className="text-xs text-white/60">Set the price in USD per 1,000 reads. Leave at $0 for open paths.</p>
                   </div>
-                  <div className="space-y-1">
+                  <div className="flex-1 space-y-1">
                     <label className="text-sm font-semibold text-white" title="Speed limit for crawlers hitting this path.">
                       Speed limit (req/sec)
                     </label>
                     <input
+                      type="number"
+                      min="0"
+                      step="1"
                       className={inputClasses}
-                      placeholder="e.g. 1"
+                      placeholder="e.g. 5"
                       value={policyForm.maxRps}
                       onChange={(e) => setPolicyForm({ ...policyForm, maxRps: e.target.value })}
                     />
+                    <p className="text-xs text-white/60">Optional. Slow down crawlers on this path without blocking them.</p>
                   </div>
                 </div>
               </div>
@@ -536,101 +578,51 @@ export default function PublisherDashboard() {
               </p>
               {ruleError && <p className="text-xs text-red-300">{ruleError}</p>}
               <SectionActions className="justify-start sm:justify-end">
-                <button className="rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500/80" type="submit">
-                  Save rules
-                </button>
+                <PrimaryButton type="submit">Save rules</PrimaryButton>
               </SectionActions>
             </form>
           </MarketingCard>
           </section>
-          <MarketingCard className="mt-8 space-y-4 text-white">
+          <div className="mt-10 space-y-8">
+          <MarketingCard className="space-y-4 text-white">
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold">Usage insights</h3>
+              <h3 className="text-xl font-semibold">Usage insights</h3>
               <p className="text-sm text-white/70">Real-time reads from AI clients appear here with access type and price.</p>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-              <div className="overflow-x-auto">
-                <table className="min-w-[640px] w-full text-left text-sm text-white/80">
-                  <thead className="bg-white/[0.04] text-xs uppercase tracking-wide text-white/50">
-                    <tr>
-                      <th className="px-3 py-2">Time</th>
-                      <th className="px-3 py-2">AI client</th>
-                      <th className="px-3 py-2">Path</th>
-                      <th className="px-3 py-2">Access</th>
-                      <th className="px-3 py-2 text-right">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {readEvents.length === 0 ? (
-                      <tr>
-                        <td className="px-3 py-4 text-white/60" colSpan={5}>
-                          No reads logged yet. Once AI clients hit your rules, they’ll show up here instantly.
-                        </td>
-                      </tr>
-                    ) : (
-                      readEvents.map((event) => {
-                        const date = new Date(event.createdAt);
-                        const price = event.priceMicros ? formatMicrosToCurrency(event.priceMicros, 'Free') : 'Free';
-                        const accessLabel =
-                          event.accessType === 'PAID' ? 'Paid' : event.accessType === 'BLOCKED' ? 'Blocked' : 'Open';
-                        return (
-                          <tr key={event.id}>
-                            <td className="px-3 py-2 text-white">{date.toLocaleString()}</td>
-                            <td className="px-3 py-2">{event.aiClient.name}</td>
-                            <td className="px-3 py-2">
-                              <span className="font-mono text-white/90">{event.path}</span>
-                            </td>
-                            <td className="px-3 py-2">{accessLabel}</td>
-                            <td className="px-3 py-2 text-right">{price}</td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <UsageTable
+              columns={usageTableColumns}
+              rows={usageTableRows}
+              emptyMessage="No reads yet. Once AI clients hit your rules, they’ll show up here instantly."
+              minWidthClassName="min-w-[820px]"
+            />
           </MarketingCard>
 
           <MarketingCard className="space-y-4 text-white">
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold">Transactions & earnings</h3>
+              <h3 className="text-xl font-semibold">Transactions & earnings</h3>
               <p className="text-sm text-white/70">
                 Track lifetime earnings, paid reads, and recent performance. These numbers update as soon as new reads are logged.
               </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Total reads</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{earningsSummary?.totalReads ?? 0}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Paid reads</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{earningsSummary?.paidReads ?? 0}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Total earnings</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{formatMicrosToCurrency(earningsSummary?.totalEarningsMicros)}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Last 7 days</p>
-                <p className="mt-2 text-base text-white">
-                  {(earningsSummary?.last7Days.reads ?? 0).toLocaleString()} reads ·
-                  {formatMicrosToCurrency(earningsSummary?.last7Days.earningsMicros)}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Last 30 days</p>
-                <p className="mt-2 text-base text-white">
-                  {(earningsSummary?.last30Days.reads ?? 0).toLocaleString()} reads ·
-                  {formatMicrosToCurrency(earningsSummary?.last30Days.earningsMicros)}
-                </p>
-              </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <MetricCard label="Total reads" value={(earningsSummary?.totalReads ?? 0).toLocaleString()} />
+              <MetricCard label="Paid reads" value={(earningsSummary?.paidReads ?? 0).toLocaleString()} />
+              <MetricCard label="Total earnings" value={formatMicrosToCurrency(earningsSummary?.totalEarningsMicros)} />
+              <MetricCard
+                label="Last 7 days"
+                valueClassName="text-base font-semibold text-white"
+                value={`${(earningsSummary?.last7Days.reads ?? 0).toLocaleString()} reads · ${formatMicrosToCurrency(
+                  earningsSummary?.last7Days.earningsMicros,
+                )}`}
+                caption={`Last 30 days: ${(earningsSummary?.last30Days.reads ?? 0).toLocaleString()} reads · ${formatMicrosToCurrency(
+                  earningsSummary?.last30Days.earningsMicros,
+                )}`}
+              />
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-white/50">Top AI clients</p>
               <div className="mt-2 space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
-                {earningsSummary?.topClients?.length ? (
+                {hasEarnings && earningsSummary?.topClients?.length ? (
                   earningsSummary.topClients.map((client) => (
                     <div key={client.aiClientId} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                       <div>
@@ -641,11 +633,14 @@ export default function PublisherDashboard() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-white/60">No paid reads yet.</p>
+                  <p className="text-center text-sm text-white/60">
+                    No paid reads yet. As soon as AI teams license your content, you’ll see earnings here.
+                  </p>
                 )}
               </div>
             </div>
           </MarketingCard>
+          </div>
         </>
       )}
     </div>

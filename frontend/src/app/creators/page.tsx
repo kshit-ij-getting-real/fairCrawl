@@ -1,35 +1,22 @@
-import Link from 'next/link';
-import type { ReactNode } from 'react';
-
-const Button = ({ children, href, variant = 'primary' }: { children: ReactNode; href: string; variant?: 'primary' | 'secondary' }) => {
-  const baseClasses =
-    variant === 'secondary'
-      ? 'rounded-full bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10'
-      : 'rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white hover:bg-blue-400';
-
-  return (
-    <Link href={href} className={baseClasses}>
-      {children}
-    </Link>
-  );
-};
+import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
+import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
 
 const CreatorsPage = () => {
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16 space-y-10">
-      <section className="space-y-8 text-white">
-        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
+    <main className="mx-auto max-w-6xl space-y-10 px-6 py-16">
+      <section className="space-y-10 text-white">
+        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg lg:p-10">
           <div className="mx-auto max-w-3xl space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">For creators &amp; publishers</p>
-            <h1 className="text-3xl font-semibold">FairMarket for creators &amp; publishers</h1>
+            <SectionEyebrow className="text-white/70">For creators &amp; publishers</SectionEyebrow>
+            <h1 className="text-3xl font-semibold md:text-4xl">FairMarket for creators &amp; publishers</h1>
             <p className="text-base leading-relaxed text-white/80">
               Set rules per path, see which AI crawlers read your work, and turn AI training into income.
             </p>
           </div>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex min-h-[320px] flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 text-white md:p-8">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">What you control</h3>
               <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
@@ -52,50 +39,46 @@ const CreatorsPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
+          <div className="flex min-h-[320px] flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 text-white md:p-8">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">Turn crawlers into paid feeds</h3>
-              <ul className="space-y-3 text-sm text-white/80">
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Stop AIs reading your work for free.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Use one rule set to decide what’s open, what’s premium, and what each AI team pays.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>When crawlers use FairMarket, they get a controlled, logged feed instead of scraping around your site.</span>
-                </li>
+              <ul className="space-y-2 text-sm text-white/80">
+                {[ 
+                  'Stop AIs reading your work for free.',
+                  'Use one rule set to decide what’s open, what’s premium, and what each AI team pays.',
+                  'When crawlers use FairMarket, they get a controlled, logged feed instead of scraping around your site.',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
-          <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-6 md:p-8 flex flex-col text-white">
-            <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
-              <ul className="space-y-3 text-sm text-white/80">
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>See which crawlers hit which paths, how often, and what they read.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Use a shared log as the source of truth for audits, payouts, and disputes.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                  <span>Give AI teams and publishers the same record of how your work was used.</span>
-                </li>
+          <div className="flex min-h-[320px] flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 text-white md:p-8">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
+              <ul className="space-y-2 text-sm text-white/80">
+                {[ 
+                  'See which crawlers hit which paths, how often, and what they read.',
+                  'Use a shared log as the source of truth for audits, payouts, and disputes.',
+                  'Give AI teams and publishers the same record of how your work was used.',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 flex justify-end gap-4">
-          <Button href="/signup?role=publisher">Get started as a creator</Button>
-          <Button href="/directory" variant="secondary">
-            Browse AI-ready sites
-          </Button>
+        <div className="flex flex-wrap justify-end gap-4">
+          <PrimaryButton href="/signup?role=publisher">Get started as a creator</PrimaryButton>
+          <SecondaryButton href="/directory">Browse AI-ready sites</SecondaryButton>
         </div>
       </section>
     </main>
