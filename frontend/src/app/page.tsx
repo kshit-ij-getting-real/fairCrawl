@@ -23,9 +23,9 @@ const heroHighlights = [
 
 export default function Page() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <section className="rounded-[32px] bg-slate-950/80 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
-        <div className="mx-auto max-w-6xl space-y-10 lg:space-y-12">
+    <div className="py-12 lg:py-16">
+      <section className="px-4 py-10 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-6xl rounded-[32px] border border-slate-800/70 bg-slate-950/80 px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 space-y-10 lg:space-y-12">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-start">
             <div className="space-y-6">
               <div className="space-y-3">
@@ -105,66 +105,68 @@ export default function Page() {
       </section>
 
       <section className="mt-16">
-        <div className="grid gap-8 md:grid-cols-2">
-          <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
-            <div className="space-y-3">
-              <SectionEyebrow className="text-blue-200">For creators &amp; publishers</SectionEyebrow>
-              <h2 className="text-xl font-semibold">Create for AI, stay in control</h2>
-              <p className="text-sm text-white/70">
-                Choose what AI can read, keep the rest private, and charge for the parts that matter. FairFetch turns your paywalled and premium content into a licensed feed for AI teams.
-              </p>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <PrimaryButton href="/creators" className="px-4">
-                Learn more
-              </PrimaryButton>
-            </div>
-          </MarketingCard>
+        <div className="mx-auto max-w-6xl px-4 lg:px-8">
+          <div className="grid gap-8 md:grid-cols-2">
+            <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
+              <div className="space-y-3">
+                <SectionEyebrow className="text-blue-200">For creators &amp; publishers</SectionEyebrow>
+                <h2 className="text-xl font-semibold">Create for AI, stay in control</h2>
+                <p className="text-sm text-white/70">
+                  Choose what AI can read, keep the rest private, and charge for the parts that matter. FairFetch turns your paywalled and premium content into a licensed feed for AI teams.
+                </p>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <PrimaryButton href="/creators" className="px-4">
+                  Learn more
+                </PrimaryButton>
+              </div>
+            </MarketingCard>
 
-          <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
-            <div className="space-y-3">
-              <SectionEyebrow className="text-blue-200">For AI teams</SectionEyebrow>
-              <h2 className="text-xl font-semibold">Source the best data, without guesswork</h2>
-              <p className="text-sm text-white/70">
-                Use one gateway where every site’s access rules and pricing are clear. Get predictable, licensed access to high-quality content instead of scraping around random blocks.
-              </p>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <PrimaryButton href="/ai-teams" className="px-4">
-                Learn more
-              </PrimaryButton>
-            </div>
-          </MarketingCard>
+            <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
+              <div className="space-y-3">
+                <SectionEyebrow className="text-blue-200">For AI teams</SectionEyebrow>
+                <h2 className="text-xl font-semibold">Source the best data, without guesswork</h2>
+                <p className="text-sm text-white/70">
+                  Use one gateway where every site’s access rules and pricing are clear. Get predictable, licensed access to high-quality content instead of scraping around random blocks.
+                </p>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <PrimaryButton href="/ai-teams" className="px-4">
+                  Learn more
+                </PrimaryButton>
+              </div>
+            </MarketingCard>
 
-          <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
-            <div className="space-y-3">
-              <SectionEyebrow className="text-blue-200">Vision</SectionEyebrow>
-              <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
-              <p className="text-sm text-white/70">
-                AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
-              </p>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <PrimaryButton href="/vision" className="px-4">
-                Read the vision
-              </PrimaryButton>
-            </div>
-          </MarketingCard>
+            <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
+              <div className="space-y-3">
+                <SectionEyebrow className="text-blue-200">Vision</SectionEyebrow>
+                <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
+                <p className="text-sm text-white/70">
+                  AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
+                </p>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <PrimaryButton href="/vision" className="px-4">
+                  Read the vision
+                </PrimaryButton>
+              </div>
+            </MarketingCard>
 
-          <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
-            <div className="space-y-3">
-              <SectionEyebrow className="text-blue-200">Directory</SectionEyebrow>
-              <h2 className="text-xl font-semibold">Verified AI-ready sites</h2>
-              <p className="text-sm text-white/70">
-                Browse sites that have verified ownership and published AI access rules through FairFetch. They’re safe defaults when you want high-quality, permissioned training data.
-              </p>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <PrimaryButton href="/directory" className="px-4">
-                View directory
-              </PrimaryButton>
-            </div>
-          </MarketingCard>
+            <MarketingCard className="flex h-full min-h-[260px] flex-col justify-between">
+              <div className="space-y-3">
+                <SectionEyebrow className="text-blue-200">Directory</SectionEyebrow>
+                <h2 className="text-xl font-semibold">Verified AI-ready sites</h2>
+                <p className="text-sm text-white/70">
+                  Browse sites that have verified ownership and published AI access rules through FairFetch. They’re safe defaults when you want high-quality, permissioned training data.
+                </p>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <PrimaryButton href="/directory" className="px-4">
+                  View directory
+                </PrimaryButton>
+              </div>
+            </MarketingCard>
+          </div>
         </div>
       </section>
     </div>
