@@ -69,7 +69,7 @@ const buildUsageSummary = async (aiClientId: number) => {
 
 router.get('/me', async (req: AuthRequest, res) => {
   try {
-    const aiClient = await getAIClient(req.user!.userId);
+    const aiClient = await getAIClient(req.user!.id);
     return res.json(aiClient);
   } catch (err) {
     console.error(err);
@@ -79,7 +79,7 @@ router.get('/me', async (req: AuthRequest, res) => {
 
 router.post('/apikeys', async (req: AuthRequest, res) => {
   try {
-    const aiClient = await getAIClient(req.user!.userId);
+    const aiClient = await getAIClient(req.user!.id);
     if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
     const plainKey = crypto.randomBytes(32).toString('base64');
     const keyHash = hashKey(plainKey);
@@ -89,24 +89,11 @@ router.post('/apikeys', async (req: AuthRequest, res) => {
     console.error(err);
     return res.status(500).json({ error: 'Failed to create API key' });
   }
-
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const aiClient = await prisma.aIClient.findUnique({
-      where: { userId: req.user!.userId },
-      include: { apiKeys: true },
-    });
-    return res.json(aiClient?.apiKeys || []);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to list keys' });
-  }
 });
 
 router.post('/apikeys/:id/revoke', async (req: AuthRequest, res) => {
   try {
-    const aiClient = await getAIClient(req.user!.userId);
+    const aiClient = await getAIClient(req.user!.id);
     if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
     const id = Number(req.params.id);
     await prisma.aPIKey.updateMany({ where: { id, aiClientId: aiClient.id }, data: { revokedAt: new Date() } });
@@ -118,7 +105,7 @@ router.post('/apikeys/:id/revoke', async (req: AuthRequest, res) => {
 
 router.get('/read-events', async (req: AuthRequest, res) => {
   try {
-    const aiClient = await getAIClient(req.user!.userId);
+    const aiClient = await getAIClient(req.user!.id);
     if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
     const limit = Math.min(Number(req.query.limit) || 50, 200);
     const events = await prisma.readEvent.findMany({
@@ -148,7 +135,7 @@ router.get('/read-events', async (req: AuthRequest, res) => {
 
 router.get('/usage-summary', async (req: AuthRequest, res) => {
   try {
-    const aiClient = await getAIClient(req.user!.userId);
+    const aiClient = await getAIClient(req.user!.id);
     if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
     const summary = await buildUsageSummary(aiClient.id);
     return res.json(summary);
@@ -160,7 +147,7 @@ router.get('/usage-summary', async (req: AuthRequest, res) => {
 
 router.get('/usage', async (req: AuthRequest, res) => {
   try {
-    const aiClient = await getAIClient(req.user!.userId);
+    const aiClient = await getAIClient(req.user!.id);
     if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
     const summary = await buildUsageSummary(aiClient.id);
     return res.json({

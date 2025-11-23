@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { AccessType } from '@prisma/client';
 import prisma from '../db';
 import { AuthRequest } from '../middleware/auth';
@@ -52,7 +52,7 @@ const normalizeRulePayload = (body: any) => {
 
 const createRuleHandler = async (req: AuthRequest, res: any) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -98,7 +98,7 @@ router.get('/domains/:domainId/analytics', async (req: AuthRequest, res: Respons
 router.get('/domains', async (req: AuthRequest, res) => {
   try {
     const publisher = await prisma.publisher.findUnique({
-      where: { userId: req.user!.userId },
+      where: { userId: req.user!.id },
       include: { domains: { include: { policies: true } } },
     });
     return res.json(publisher?.domains || []);
@@ -113,7 +113,7 @@ router.post('/domains/:domainId/policies', createRuleHandler);
 
 router.get('/domains/:domainId/rules', async (req: AuthRequest, res) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -132,7 +132,7 @@ router.get('/domains/:domainId/rules', async (req: AuthRequest, res) => {
 
 router.get('/domains/:domainId/verification-token', async (req: AuthRequest, res) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -146,7 +146,7 @@ router.get('/domains/:domainId/verification-token', async (req: AuthRequest, res
 
 router.get('/domains/:domainId/read-events', async (req: AuthRequest, res) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -181,7 +181,7 @@ router.get('/domains/:domainId/read-events', async (req: AuthRequest, res) => {
 
 router.get('/domains/:domainId/earnings-summary', async (req: AuthRequest, res) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -257,7 +257,7 @@ router.get('/domains/:domainId/earnings-summary', async (req: AuthRequest, res) 
 
 router.post('/domains/:domainId/verify', async (req: AuthRequest, res) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -282,7 +282,7 @@ router.post('/domains/:domainId/verify', async (req: AuthRequest, res) => {
 
 router.get('/domains/:domainId/analytics', async (req: AuthRequest, res) => {
   try {
-    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.userId } });
+    const publisher = await prisma.publisher.findUnique({ where: { userId: req.user!.id } });
     if (!publisher) return res.status(404).json({ error: 'Publisher not found' });
     const domainId = Number(req.params.domainId);
     const domain = await domainOwnedBy(domainId, publisher.id);
@@ -313,6 +313,8 @@ router.get('/domains/:domainId/analytics', async (req: AuthRequest, res) => {
     const firstPolicy = domain.policies[0];
     const priceMicros = firstPolicy ? firstPolicy.priceMicros ?? firstPolicy.pricePer1k * 10000 : 0;
     const estimatedRevenue = ((total._count._all || 0) / 1000) * (priceMicros / 1_000_000);
+    const totalRequests = total._count._all || 0;
+    const totalBytes = total._sum.bytesSent || 0;
 
     return res.json({
       totalRequests,
