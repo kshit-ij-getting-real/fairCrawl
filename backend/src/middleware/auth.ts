@@ -6,6 +6,15 @@ import { Role } from '@prisma/client';
 dotenv.config();
 
 export interface AuthRequest extends Request {
+  /**
+   * Express Request already includes these properties, but explicitly
+   * redeclaring them ensures TypeScript recognizes them when the request
+   * type is narrowed to AuthRequest.
+   */
+  headers: Request['headers'];
+  params: Request['params'];
+  query: Request['query'];
+  body: Request['body'];
   user?: {
     id: number;
     role: Role;
