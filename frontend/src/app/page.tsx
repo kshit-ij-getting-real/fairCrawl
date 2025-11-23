@@ -50,60 +50,57 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-white/10 bg-white/5 px-6 py-6 sm:px-7 sm:py-7 lg:px-8 lg:py-8">
-                <div className="flex h-full w-full flex-col gap-6 text-white">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Gateway snapshot</h2>
-                    <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">
-                      Live monitor
-                    </span>
+              <MarketingCard className="flex h-full flex-col gap-6 text-white">
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="text-lg font-semibold">Gateway snapshot</h2>
+                  <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">
+                    Live monitor
+                  </span>
+                </div>
+                <p className="text-sm text-slate-200">
+                  Every AI request goes through FairFetch, is checked against your rules, and comes back with a clear “allow”,
+                  “paid”, or “block”.
+                </p>
+                <div className="space-y-4">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between text-sm text-white">
+                      <span className="font-semibold">Allowed paths: /blog/*</span>
+                      <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-200">
+                        allowed
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-slate-300">AI crawler atlas-research.ai · Allowed at 5 req/sec</p>
                   </div>
-                  <p className="text-sm text-white/70">
-                    Every AI request goes through FairFetch, is checked against your rules, and comes back with a clear “allow”,
-                    “paid”, or “block”.
-                  </p>
-                  <div className="space-y-3">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between text-sm text-white/80">
-                        <span className="font-semibold">Allowed paths: /blog/*</span>
-                        <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-200">
-                          allowed
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs text-white/60">AI crawler atlas-research.ai · Allowed at 5 req/sec</p>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between text-sm text-white">
+                      <span className="font-semibold">Blocked: /drafts/*</span>
+                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                        blocked
+                      </span>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between text-sm text-white/80">
-                        <span className="font-semibold">Blocked: /drafts/*</span>
-                        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                          blocked
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs text-white/60">AI crawler unknown · Blocked by publisher rules</p>
+                    <p className="mt-2 text-xs text-slate-300">AI crawler unknown · Blocked by publisher rules</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between text-sm text-white">
+                      <span className="font-semibold">Metered: /premium/*</span>
+                      <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-100">
+                        metered
+                      </span>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between text-sm text-white/80">
-                        <span className="font-semibold">Metered: /premium/*</span>
-                        <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-100">
-                          metered
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs text-white/60">AI crawler lumenai · Requests logged for payouts</p>
-                    </div>
+                    <p className="mt-2 text-xs text-slate-300">AI crawler lumenai · Requests logged for payouts</p>
                   </div>
                 </div>
-              </div>
+              </MarketingCard>
             </div>
 
             <div className="grid gap-5 md:grid-cols-3">
               {heroHighlights.map((item) => (
-                <div
-                  key={item.title}
-                  className="flex h-full flex-col rounded-3xl border border-white/10 bg-gradient-to-r from-[#05081b] to-[#071539] px-6 py-6 shadow-[0_0_0_1px_rgba(255,255,255,0.05)]"
-                >
-                  <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
-                  <p className="text-sm text-slate-200">{item.body}</p>
-                </div>
+                <MarketingCard key={item.title} className="flex h-full flex-col">
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                    <p className="text-sm text-slate-200">{item.body}</p>
+                  </div>
+                </MarketingCard>
               ))}
             </div>
           </div>
