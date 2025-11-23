@@ -25,6 +25,7 @@
     ],
     "baseUrl": ".",
     "paths": {
+      "@vercel/analytics/react": ["./src/lib/vercel-analytics"],
       "@/*": ["./src/*"]
     }
   },
