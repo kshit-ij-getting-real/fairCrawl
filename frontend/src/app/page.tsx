@@ -26,8 +26,8 @@ export default function Page() {
     <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section>
         <div className="rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 text-white shadow-lg lg:p-10">
-          <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
-            <div className="flex flex-1 flex-col gap-6">
+          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
+            <div className="space-y-6">
               <div className="space-y-4">
                 <SectionEyebrow className="text-white/70">Paid AI access, on your terms</SectionEyebrow>
                 <h1 className="text-4xl font-bold leading-tight md:text-5xl">Get paid when AI uses your content</h1>
@@ -37,21 +37,21 @@ export default function Page() {
                     You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
                   </span>
                 </p>
-                <div className="mt-6 grid gap-4 md:grid-cols-3">
-                  {heroHighlights.map((item) => (
-                    <div
-                      key={item.title}
-                      className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-snug"
-                    >
-                      <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
-                      <p className="text-slate-200 text-sm">{item.body}</p>
-                    </div>
-                  ))}
-                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                {heroHighlights.map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-snug"
+                  >
+                    <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
+                    <p className="text-slate-200 text-sm">{item.body}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="flex flex-1 items-stretch lg:mt-8">
+            <div className="flex flex-1 items-stretch lg:mt-10">
               <div className="flex h-full w-full flex-col gap-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 p-6 text-white lg:p-7">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Gateway snapshot</h2>
