@@ -26,8 +26,8 @@ export default function Page() {
     <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section>
         <div className="rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 text-white shadow-lg lg:p-10">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
-            <div className="flex flex-1 flex-col justify-between gap-6">
+          <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
+            <div className="flex flex-1 flex-col gap-6">
               <div className="space-y-4">
                 <SectionEyebrow className="text-white/70">Paid AI access, on your terms</SectionEyebrow>
                 <h1 className="text-4xl font-bold leading-tight md:text-5xl">Get paid when AI uses your content</h1>
@@ -49,14 +49,9 @@ export default function Page() {
                   ))}
                 </div>
               </div>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <PrimaryButton href="/signup">Get started</PrimaryButton>
-                <SecondaryButton href="/how-it-works">See how FairFetch works</SecondaryButton>
-              </div>
             </div>
 
-            <div className="flex flex-1 items-stretch">
+            <div className="flex flex-1 items-stretch lg:mt-8">
               <div className="flex h-full w-full flex-col gap-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 p-6 text-white lg:p-7">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Gateway snapshot</h2>
@@ -64,40 +59,46 @@ export default function Page() {
                     Live monitor
                   </span>
                 </div>
-              <p className="text-sm text-white/70">
-                Every AI request goes through FairFetch, is checked against your rules, and comes back with a clear “allow”, “paid”, or “block”.
-              </p>
-              <div className="space-y-3">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex items-center justify-between text-sm text-white/80">
-                    <span className="font-semibold">Allowed paths: /blog/*</span>
-                    <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-200">
-                      allowed
-                    </span>
+                <p className="text-sm text-white/70">
+                  Every AI request goes through FairFetch, is checked against your rules, and comes back with a clear “allow”,
+                  “paid”, or “block”.
+                </p>
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between text-sm text-white/80">
+                      <span className="font-semibold">Allowed paths: /blog/*</span>
+                      <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-200">
+                        allowed
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-white/60">AI crawler atlas-research.ai · Allowed at 5 req/sec</p>
                   </div>
-                  <p className="mt-2 text-xs text-white/60">AI crawler atlas-research.ai · Allowed at 5 req/sec</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex items-center justify-between text-sm text-white/80">
-                    <span className="font-semibold">Blocked: /drafts/*</span>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                      blocked
-                    </span>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between text-sm text-white/80">
+                      <span className="font-semibold">Blocked: /drafts/*</span>
+                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                        blocked
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-white/60">AI crawler unknown · Blocked by publisher rules</p>
                   </div>
-                  <p className="mt-2 text-xs text-white/60">AI crawler unknown · Blocked by publisher rules</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex items-center justify-between text-sm text-white/80">
-                    <span className="font-semibold">Metered: /premium/*</span>
-                    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-100">
-                      metered
-                    </span>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between text-sm text-white/80">
+                      <span className="font-semibold">Metered: /premium/*</span>
+                      <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-100">
+                        metered
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-white/60">AI crawler lumenai · Requests logged for payouts</p>
                   </div>
-                  <p className="mt-2 text-xs text-white/60">AI crawler lumenai · Requests logged for payouts</p>
                 </div>
               </div>
             </div>
-            </div>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center gap-4 justify-start lg:justify-end">
+            <PrimaryButton href="/signup">Get started</PrimaryButton>
+            <SecondaryButton href="/how-it-works">See how FairFetch works</SecondaryButton>
           </div>
         </div>
       </section>
