@@ -24,35 +24,29 @@ const heroHighlights = [
 export default function Page() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <section>
-        <div className="rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 text-white shadow-lg lg:p-10">
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
+      <section className="rounded-[32px] bg-slate-950/80 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+        <div className="mx-auto max-w-6xl space-y-10 lg:space-y-12">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-start">
             <div className="space-y-6">
-              <div className="space-y-4">
-                <SectionEyebrow className="text-white/70">Paid AI access, on your terms</SectionEyebrow>
-                <h1 className="text-4xl font-bold leading-tight md:text-5xl">Get paid when AI uses your content</h1>
-                <p className="mt-4 max-w-xl text-base text-slate-200">
+              <div className="space-y-3">
+                <SectionEyebrow className="text-sky-400">Paid AI access, on your terms</SectionEyebrow>
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl lg:text-[40px]">Get paid when AI uses your content</h1>
+                <p className="max-w-xl text-sm leading-relaxed text-slate-200/90">
                   FairFetch is a marketplace where creators license their paywalled and premium content to AI companies.
                   <span className="block">
                     You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
                   </span>
                 </p>
               </div>
-              <div className="grid gap-4 md:grid-cols-3">
-                {heroHighlights.map((item) => (
-                  <div
-                    key={item.title}
-                    className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-snug"
-                  >
-                    <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
-                    <p className="text-slate-200 text-sm">{item.body}</p>
-                  </div>
-                ))}
+
+              <div className="flex flex-wrap gap-4 justify-start sm:justify-start lg:justify-start">
+                <PrimaryButton href="/signup">Get started</PrimaryButton>
+                <SecondaryButton href="/how-it-works">See how FairFetch works</SecondaryButton>
               </div>
             </div>
 
-            <div className="flex flex-1 items-stretch lg:mt-10">
-              <div className="flex h-full w-full flex-col gap-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 p-6 text-white lg:p-7">
+            <div className="rounded-3xl bg-slate-950/80 p-6 sm:p-7 lg:p-8 border border-slate-800">
+              <div className="flex h-full w-full flex-col gap-6 text-white">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Gateway snapshot</h2>
                   <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">
@@ -96,9 +90,16 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4 justify-start lg:justify-end">
-            <PrimaryButton href="/signup">Get started</PrimaryButton>
-            <SecondaryButton href="/how-it-works">See how FairFetch works</SecondaryButton>
+          <div className="grid gap-5 md:grid-cols-3">
+            {heroHighlights.map((item) => (
+              <div
+                key={item.title}
+                className="flex h-full flex-col rounded-3xl border border-slate-800 bg-slate-900/60 p-6"
+              >
+                <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
+                <p className="text-sm text-slate-200">{item.body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
