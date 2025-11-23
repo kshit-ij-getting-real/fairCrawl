@@ -25,7 +25,18 @@ export default function Page() {
   return (
     <div className="py-12 lg:py-16">
       <section className="px-4 py-10 sm:px-6 lg:px-10">
-        <div className="mx-auto max-w-6xl rounded-[32px] border border-slate-800/70 bg-slate-950/80 px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 space-y-10 lg:space-y-12">
+        <div
+          className="
+            mx-auto max-w-6xl
+            rounded-[32px]
+            border border-slate-800/70
+            bg-slate-950/85
+            px-6 py-8
+            sm:px-8 sm:py-10
+            lg:px-12 lg:py-12
+            space-y-10 lg:space-y-12
+          "
+        >
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-start">
             <div className="space-y-6">
               <div className="space-y-3">
@@ -39,13 +50,13 @@ export default function Page() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-4 justify-start sm:justify-start lg:justify-start">
+              <div className="flex flex-wrap gap-4 pt-2">
                 <PrimaryButton href="/signup">Get started</PrimaryButton>
                 <SecondaryButton href="/how-it-works">See how FairFetch works</SecondaryButton>
               </div>
             </div>
 
-            <div className="rounded-3xl bg-slate-950/80 p-6 sm:p-7 lg:p-8 border border-slate-800">
+            <div className="rounded-3xl bg-slate-950/90 border border-slate-800 px-6 py-6 sm:px-7 sm:py-7 lg:px-8 lg:py-8">
               <div className="flex h-full w-full flex-col gap-6 text-white">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Gateway snapshot</h2>
@@ -94,7 +105,7 @@ export default function Page() {
             {heroHighlights.map((item) => (
               <div
                 key={item.title}
-                className="flex h-full flex-col rounded-3xl border border-slate-800 bg-slate-900/60 p-6"
+                className="flex h-full flex-col rounded-3xl border border-slate-800 bg-slate-900/70 px-6 py-6"
               >
                 <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
                 <p className="text-sm text-slate-200">{item.body}</p>
