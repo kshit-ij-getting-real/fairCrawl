@@ -1,88 +1,47 @@
-import { Router } from 'express';
-import crypto from 'crypto';
-import prisma from '../db';
-import { AuthRequest } from '../middleware/auth';
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { Role } from '@prisma/client';
 
-const router = Router();
+dotenv.config();
 
-const hashKey = (key: string) => crypto.createHash('sha256').update(key).digest('hex');
+export interface AuthRequest extends Request {
+  user?: {
+    id: number;
+    role: Role;
+  };
+}
 
-router.get('/me', async (req: AuthRequest, res) => {
-  try {
-    const aiClient = await prisma.aIClient.findUnique({ where: { userId: req.user!.userId } });
-    return res.json(aiClient);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to load profile' });
+export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Missing Authorization header' });
   }
-});
 
-router.post('/apikeys', async (req: AuthRequest, res) => {
+  const token = authHeader.split(' ')[1];
+
   try {
-    const aiClient = await prisma.aIClient.findUnique({ where: { userId: req.user!.userId } });
-    if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
-    const plainKey = crypto.randomBytes(32).toString('base64');
-    const keyHash = hashKey(plainKey);
-    const apiKey = await prisma.aPIKey.create({ data: { aiClientId: aiClient.id, keyHash } });
-    return res.json({ id: apiKey.id, key: plainKey, createdAt: apiKey.createdAt });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as {
+      userId: number;
+      role: Role;
+    };
+
+    req.user = {
+      id: decoded.userId,
+      role: decoded.role,
+    };
+
+    return next();
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to create API key' });
+    return res.status(401).json({ error: 'Invalid token' });
   }
-});
+};
 
-router.get('/apikeys', async (req: AuthRequest, res) => {
-  try {
-    const aiClient = await prisma.aIClient.findUnique({
-      where: { userId: req.user!.userId },
-      include: { apiKeys: true },
-    });
-    return res.json(aiClient?.apiKeys || []);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to list keys' });
-  }
-});
-
-router.post('/apikeys/:id/revoke', async (req: AuthRequest, res) => {
-  try {
-    const aiClient = await prisma.aIClient.findUnique({ where: { userId: req.user!.userId } });
-    if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
-    const id = Number(req.params.id);
-    await prisma.aPIKey.updateMany({ where: { id, aiClientId: aiClient.id }, data: { revokedAt: new Date() } });
-    return res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to revoke key' });
-  }
-});
-
-router.get('/usage', async (req: AuthRequest, res) => {
-  try {
-    const aiClient = await prisma.aIClient.findUnique({ where: { userId: req.user!.userId } });
-    if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
-
-    const totals = await prisma.requestLog.groupBy({
-      by: ['domainId'],
-      where: { aiClientId: aiClient.id },
-      _count: { _all: true },
-    });
-
-    const domainIds = totals.map((t) => t.domainId);
-    const domains = await prisma.domain.findMany({ where: { id: { in: domainIds } } });
-
-    const usageByDomain = totals.map((row) => ({
-      domain: domains.find((d) => d.id === row.domainId)?.name || 'Unknown',
-      requests: row._count._all,
-    }));
-
-    const totalRequests = totals.reduce((sum, row) => sum + row._count._all, 0);
-
-    return res.json({ totalRequests, usageByDomain });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to load usage' });
-  }
-});
-
-export default router;
+export const requireRole = (role: Role) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    return next();
+  };
+};
