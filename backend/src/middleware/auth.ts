@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Role } from '@prisma/client';
 
 dotenv.config();
 
-export interface AuthRequest extends Request {
+export interface AuthRequest
+  extends Request<ParamsDictionary, any, any, ParsedQs> {
   user?: {
     id: number;
     role: Role;
