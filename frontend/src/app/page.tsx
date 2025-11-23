@@ -12,12 +12,12 @@ const heroHighlights = [
   {
     title: 'Track usage',
     body:
-      'See who’s reading you in real time. FairMarket logs which AI teams access your content and how often.',
+      'See who’s reading you in real time. FairFetch logs which AI teams access your content and how often.',
   },
   {
     title: 'Earn from your work',
     body:
-      'Set a price on your premium content. When AI teams use it, FairMarket turns those reads into earnings.',
+      'Set a price on your premium content. When AI teams use it, FairFetch turns those reads into earnings.',
   },
 ];
 
@@ -32,7 +32,7 @@ export default function Page() {
                 <SectionEyebrow className="text-white/70">Paid AI access, on your terms</SectionEyebrow>
                 <h1 className="text-4xl font-bold leading-tight md:text-5xl">Get paid when AI uses your content</h1>
                 <p className="mt-4 max-w-xl text-base text-slate-200">
-                  FairMarket is a marketplace where creators license their paywalled and premium content to AI companies.
+                  FairFetch is a marketplace where creators license their paywalled and premium content to AI companies.
                   <span className="block">
                     You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.
                   </span>
@@ -41,7 +41,7 @@ export default function Page() {
                   {heroHighlights.map((item) => (
                     <div
                       key={item.title}
-                      className="flex flex-col rounded-2xl bg-slate-900/60 p-4 text-sm leading-snug"
+                      className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-snug"
                     >
                       <h3 className="mb-1 font-semibold text-slate-50">{item.title}</h3>
                       <p className="text-slate-200 text-sm">{item.body}</p>
@@ -52,7 +52,7 @@ export default function Page() {
 
               <div className="flex flex-wrap items-center gap-4">
                 <PrimaryButton href="/signup">Get started</PrimaryButton>
-                <SecondaryButton href="/how-it-works">See how FairMarket works</SecondaryButton>
+                <SecondaryButton href="/how-it-works">See how FairFetch works</SecondaryButton>
               </div>
             </div>
 
@@ -65,7 +65,7 @@ export default function Page() {
                   </span>
                 </div>
               <p className="text-sm text-white/70">
-                Every AI request goes through FairMarket, is checked against your rules, and comes back with a clear “allow”, “paid”, or “block”.
+                Every AI request goes through FairFetch, is checked against your rules, and comes back with a clear “allow”, “paid”, or “block”.
               </p>
               <div className="space-y-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -109,7 +109,7 @@ export default function Page() {
               <SectionEyebrow className="text-blue-200">For creators &amp; publishers</SectionEyebrow>
               <h2 className="text-xl font-semibold">Create for AI, stay in control</h2>
               <p className="text-sm text-white/70">
-                Choose what AI can read, keep the rest private, and charge for the parts that matter. FairMarket turns your paywalled and premium content into a licensed feed for AI teams.
+                Choose what AI can read, keep the rest private, and charge for the parts that matter. FairFetch turns your paywalled and premium content into a licensed feed for AI teams.
               </p>
             </div>
             <div className="mt-6 flex justify-end">
@@ -139,7 +139,7 @@ export default function Page() {
               <SectionEyebrow className="text-blue-200">Vision</SectionEyebrow>
               <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
               <p className="text-sm text-white/70">
-                AI is becoming the web’s main reader. FairMarket turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
+                AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
               </p>
             </div>
             <div className="mt-6 flex justify-end">
@@ -154,7 +154,7 @@ export default function Page() {
               <SectionEyebrow className="text-blue-200">Directory</SectionEyebrow>
               <h2 className="text-xl font-semibold">Verified AI-ready sites</h2>
               <p className="text-sm text-white/70">
-                Browse sites that have verified ownership and published AI access rules through FairMarket. They’re safe defaults when you want high-quality, permissioned training data.
+                Browse sites that have verified ownership and published AI access rules through FairFetch. They’re safe defaults when you want high-quality, permissioned training data.
               </p>
             </div>
             <div className="mt-6 flex justify-end">

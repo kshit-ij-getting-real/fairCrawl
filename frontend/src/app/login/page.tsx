@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="px-4 py-16">
       <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
         <h1 className="text-2xl font-semibold text-white mb-2">Login</h1>
-        <p className="text-sm text-white/70 mb-6">FairMarket keeps AI access transparent.</p>
+        <p className="text-sm text-white/70 mb-6">FairFetch keeps AI access transparent.</p>
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-1">
             <label className="block text-sm font-medium text-white">Email</label>

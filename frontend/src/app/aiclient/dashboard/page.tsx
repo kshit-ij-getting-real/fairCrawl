@@ -152,7 +152,7 @@ export default function AIClientDashboard() {
         <SectionEyebrow className="text-white/70">Step 1 · API keys</SectionEyebrow>
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-white">Create keys for your crawlers</h2>
-          <p className="text-sm text-white/60">Create or revoke API keys for each crawler. Every request through FairMarket must use a valid key so publishers can see who is reading their content.</p>
+          <p className="text-sm text-white/60">Create or revoke API keys for each crawler. Every request through FairFetch must use a valid key so publishers can see who is reading their content.</p>
         </div>
         {newKey && (
           <div className="space-y-1 rounded-2xl border border-blue-400/40 bg-blue-500/10 p-4 text-sm">
@@ -268,7 +268,7 @@ export default function AIClientDashboard() {
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-white">Track reads and spend</h2>
           <p className="text-sm text-white/60">
-            Every request through FairMarket is logged with domain, path, and access type. Monitor your total spend and dig into each read.
+            Every request through FairFetch is logged with domain, path, and access type. Monitor your total spend and dig into each read.
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -306,7 +306,7 @@ export default function AIClientDashboard() {
         <UsageTable
           columns={usageTableColumns}
           rows={usageTableRows}
-          emptyMessage="No reads yet. Once your crawler uses FairMarket, your logs will show up here."
+          emptyMessage="No reads yet. Once your crawler uses FairFetch, your logs will show up here."
           minWidthClassName="min-w-[760px]"
         />
       </MarketingCard>

@@ -1,6 +1,6 @@
-# FairMarket
+# FairFetch
 
-FairMarket is a marketplace where creators license their paywalled and premium content to AI companies. It is a minimal marketplace and gateway where publishers expose AI-friendly content policies and AI builders access verified domains through a single authenticated proxy.
+FairFetch is a marketplace where creators license their paywalled and premium content to AI companies. It is a minimal marketplace and gateway where publishers expose AI-friendly content policies and AI builders access verified domains through a single authenticated proxy.
 
 ## Features
 - Publisher onboarding with domain registration, policy controls, verification flow, and analytics snapshot.
@@ -51,17 +51,17 @@ Open http://localhost:3000 to access the UI.
 ### Example gateway call (local development)
 ```bash
 curl "http://localhost:4000/api/gateway/fetch?url=https://example.com/path" \
-  -H "X-API-Key: YOUR_FAIRMARKET_KEY"
+  -H "X-API-Key: YOUR_FAIRFETCH_KEY"
 ```
 Replace the URL with an approved domain/path and provide a valid API key from the AI client dashboard.
 
 <!-- In production, replace localhost with your deployed backend URL, for example: -->
-<!-- https://fairmarket.onrender.com/api/gateway/fetch?url=... -->
+<!-- https://fairfetch.onrender.com/api/gateway/fetch?url=... -->
 
 ## Deployment notes
 
 - The database examples now point to the `fairmarket` database. Existing deployments that previously used `faircrawl` should either rename their database manually or provision a new one before applying migrations.
-- Deployment dashboards such as Vercel or Render may still need manual renaming; the config in this repo now references FairMarket but cloud UI names have to be updated separately.
+- Deployment dashboards such as Vercel or Render may still need manual renaming; the config in this repo now references FairFetch but cloud UI names have to be updated separately.
 
 ## Repository structure
 ```

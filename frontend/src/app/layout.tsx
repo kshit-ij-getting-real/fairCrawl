@@ -6,8 +6,8 @@ import { AuthActions } from '@/components/AuthActions';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'FairMarket – Get paid when AI uses your content',
-  description: 'FairMarket lets creators set AI access rules, meter usage, and get paid when AI teams use their work.',
+  title: 'FairFetch – Get paid when AI uses your content',
+  description: 'FairFetch lets creators set AI access rules, meter usage, and get paid when AI teams use their work.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,9 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="w-full border-b border-slate-800 bg-[#020617]">
             <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap lg:px-8">
               <div className="flex items-center gap-2">
-                <Link href="/" aria-label="FairMarket home" className="flex items-center gap-2">
+                <Link href="/" aria-label="FairFetch home" className="flex items-center gap-2">
                   <Logo size={32} />
-                  <span className="text-[18px] font-semibold tracking-[0.08em] text-slate-50">FairMarket</span>
+                  <span className="text-[18px] font-semibold tracking-[0.08em] text-slate-50">FairFetch</span>
                 </Link>
               </div>
 
@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <footer className="border-t border-white/10 bg-faircrawl-surface">
             <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-8 text-sm text-faircrawl-textMuted sm:flex-row sm:items-center sm:justify-between">
-              <span>FairMarket keeps AI access transparent.</span>
+              <span>FairFetch keeps AI access transparent.</span>
               <AuthActions variant="footer" />
             </div>
           </footer>

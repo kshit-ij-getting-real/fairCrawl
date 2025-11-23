@@ -11,7 +11,7 @@ const VisionPage = () => {
             <SectionEyebrow className="text-white/70">Vision</SectionEyebrow>
             <h1 className="text-3xl font-semibold md:text-4xl">Our vision: a fair web for AI</h1>
             <p className="max-w-3xl text-base leading-relaxed text-white/80">
-              AI is becoming the web’s main reader. FairMarket turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models.
+              AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models.
             </p>
           </div>
         </div>
@@ -22,13 +22,13 @@ const VisionPage = () => {
               label: 'AI as a user',
               title: 'AI as a first-class web user',
               body:
-                'Most of the web was built for human browsers. FairMarket treats AI crawlers as first-class users so they can access content without breaking sites, and creators can set clear terms for that access.',
+                'Most of the web was built for human browsers. FairFetch treats AI crawlers as first-class users so they can access content without breaking sites, and creators can set clear terms for that access.',
             },
             {
               label: 'Consent & speed',
               title: 'Consent, speed and money built in',
               body:
-                'Every AI request should carry identity, rate limits, and a way to account for value. FairMarket bakes identity, pacing, and metering into the request path, so consent and payments are part of the protocol, not an afterthought.',
+                'Every AI request should carry identity, rate limits, and a way to account for value. FairFetch bakes identity, pacing, and metering into the request path, so consent and payments are part of the protocol, not an afterthought.',
             },
             {
               label: 'Standard',
