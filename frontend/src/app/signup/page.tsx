@@ -50,8 +50,8 @@ function SignupContent() {
     <div className="px-4 py-16">
       <div className="mx-auto max-w-md space-y-6 rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold text-white">Create your FairMarket account</h1>
-          <p className="text-sm text-white/70">FairMarket keeps AI access transparent.</p>
+          <h1 className="text-2xl font-semibold text-white">Create your FairFetch account</h1>
+          <p className="text-sm text-white/70">FairFetch keeps AI access transparent.</p>
         </div>
         {role === 'PUBLISHER' ? (
           <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
@@ -72,7 +72,7 @@ function SignupContent() {
               <p className="font-medium">After you create an account, you&apos;ll:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Generate an API key.</li>
-                <li>Call the FairMarket gateway with your key and target URL.</li>
+                <li>Call the FairFetch gateway with your key and target URL.</li>
                 <li>See usage and estimated spend in your dashboard.</li>
               </ul>
             </div>

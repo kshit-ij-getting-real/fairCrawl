@@ -86,7 +86,7 @@ router.get('/gateway/fetch', async (req, res) => {
     const targetUrl = new URL(urlParam);
     const domain = await prisma.domain.findUnique({ where: { name: targetUrl.hostname }, include: { policies: true } });
     if (!domain || !domain.verified) {
-      return res.status(403).json({ error: 'Domain not available via FairMarket' });
+      return res.status(403).json({ error: 'Domain not available via FairFetch' });
     }
 
     const rule = resolveRule(domain, targetUrl.pathname);
@@ -166,7 +166,7 @@ router.get('/client/check', authenticate, requireRole('AICLIENT'), async (req: A
 
     const domain = await prisma.domain.findUnique({ where: { name: targetUrl.hostname }, include: { policies: true } });
     if (!domain || !domain.verified) {
-      return res.status(404).json({ error: 'Domain not available via FairMarket' });
+      return res.status(404).json({ error: 'Domain not available via FairFetch' });
     }
 
     const rule = resolveRule(domain, targetUrl.pathname);

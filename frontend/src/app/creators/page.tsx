@@ -8,7 +8,7 @@ const CreatorsPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg lg:p-10">
           <div className="mx-auto max-w-3xl space-y-2">
             <SectionEyebrow className="text-white/70">For creators &amp; publishers</SectionEyebrow>
-            <h1 className="text-3xl font-semibold md:text-4xl">FairMarket for creators &amp; publishers</h1>
+            <h1 className="text-3xl font-semibold md:text-4xl">FairFetch for creators &amp; publishers</h1>
             <p className="text-base leading-relaxed text-white/80">
               Set rules per path, see which AI crawlers read your work, and turn AI training into income.
             </p>
@@ -46,7 +46,7 @@ const CreatorsPage = () => {
                 {[ 
                   'Stop AIs reading your work for free.',
                   'Use one rule set to decide what’s open, what’s premium, and what each AI team pays.',
-                  'When crawlers use FairMarket, they get a controlled, logged feed instead of scraping around your site.',
+                  'When crawlers use FairFetch, they get a controlled, logged feed instead of scraping around your site.',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />

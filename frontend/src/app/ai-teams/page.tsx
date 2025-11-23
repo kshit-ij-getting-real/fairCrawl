@@ -22,7 +22,7 @@ const AiTeamsPage = () => {
         <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg lg:p-10">
           <div className="mx-auto max-w-3xl space-y-2">
             <SectionEyebrow className="text-white/70">For AI teams</SectionEyebrow>
-            <h1 className="text-3xl font-semibold md:text-4xl">FairMarket for AI teams</h1>
+            <h1 className="text-3xl font-semibold md:text-4xl">FairFetch for AI teams</h1>
             <p className="text-base leading-relaxed text-white/80">
               Get clean, permissioned access to creator content through a single API, with clear rules and audit logs on every crawl.
             </p>
@@ -50,7 +50,7 @@ const AiTeamsPage = () => {
 
           <MarketingCard className="flex min-h-[320px] flex-col justify-between gap-4 text-white">
             <div className="space-y-3">
-              <h2 className="text-2xl font-semibold">Why AI teams use FairMarket</h2>
+              <h2 className="text-2xl font-semibold">Why AI teams use FairFetch</h2>
               <ul className="list-disc space-y-2 pl-5 text-sm text-white/80">
                 {benefits.map((item) => (
                   <li key={item}>{item}</li>
