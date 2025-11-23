@@ -17,8 +17,10 @@ async function main() {
 
   for (const group of groups) {
     const domain = domains.find((d) => d.id === group.domainId);
-    const pricePer1k = domain?.policies[0]?.pricePer1k || 0;
-    const chargeCents = Math.round(((group._count._all || 0) * pricePer1k) / 1000);
+    const policy = domain?.policies[0];
+    const priceMicros = policy ? policy.priceMicros ?? policy.pricePer1k * 10000 : 0;
+    const chargeUsd = ((group._count._all || 0) / 1000) * (priceMicros / 1_000_000);
+    const chargeCents = Math.round(chargeUsd * 100);
 
     await prisma.usageAggregate.create({
       data: {

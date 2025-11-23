@@ -22,7 +22,12 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@vercel/analytics/react": ["./src/lib/vercel-analytics"],
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "next-env.d.ts",

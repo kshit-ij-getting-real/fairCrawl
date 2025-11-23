@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API_BASE } from '../../lib/config';
 import { setSession, Role } from '../../lib/api';
+import { SectionActions } from '../../components/ui/SectionActions';
 
 function SignupContent() {
   const router = useRouter();
@@ -14,6 +15,9 @@ function SignupContent() {
   const [role, setRole] = useState<Role>('PUBLISHER');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const fieldClasses =
+    'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
 
   useEffect(() => {
     const roleParam = params.get('role');
@@ -43,63 +47,77 @@ function SignupContent() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow rounded p-8 space-y-4">
-      <h1 className="text-2xl font-semibold">Create your Fair Crawl account</h1>
-      {role === 'PUBLISHER' ? (
-        <div className="bg-slate-50 border border-slate-200 rounded p-3 text-sm text-slate-700 space-y-2">
-          <p className="font-semibold">You&apos;re signing up as a Publisher.</p>
-          <div>
-            <p className="font-medium">After you create an account, you&apos;ll:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Add a domain you control.</li>
-              <li>Prove you own it by serving a small verification file.</li>
-              <li>Set crawl policies and see which AI clients access your site.</li>
-            </ul>
+    <div className="px-4 py-16">
+      <div className="mx-auto max-w-md space-y-6 rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold text-white">Create your FairFetch account</h1>
+          <p className="text-sm text-white/70">FairFetch keeps AI access transparent.</p>
+        </div>
+        {role === 'PUBLISHER' ? (
+          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
+            <p className="font-semibold text-white">You&apos;re signing up as a Publisher.</p>
+            <div className="space-y-1">
+              <p className="font-medium">After you create an account, you&apos;ll:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Add a domain you control.</li>
+                <li>Prove you own it by serving a small verification file.</li>
+                <li>Set crawl policies and see which AI crawlers access your site.</li>
+              </ul>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="bg-slate-50 border border-slate-200 rounded p-3 text-sm text-slate-700 space-y-2">
-          <p className="font-semibold">You&apos;re signing up as an AI Client.</p>
-          <div>
-            <p className="font-medium">After you create an account, you&apos;ll:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Generate an API key.</li>
-              <li>Call the Fair Crawl gateway with your key and target URL.</li>
-              <li>See usage and estimated spend in your dashboard.</li>
-            </ul>
+        ) : (
+          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
+            <p className="font-semibold text-white">You&apos;re signing up as an AI team.</p>
+            <div className="space-y-1">
+              <p className="font-medium">After you create an account, you&apos;ll:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Generate an API key.</li>
+                <li>Call the FairFetch gateway with your key and target URL.</li>
+                <li>See usage and estimated spend in your dashboard.</li>
+              </ul>
+            </div>
           </div>
-        </div>
-      )}
-      <form onSubmit={submit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input className="mt-1 w-full border rounded px-3 py-2" value={name} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input className="mt-1 w-full border rounded px-3 py-2" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Password</label>
-          <input
-            type="password"
-            className="mt-1 w-full border rounded px-3 py-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Role</label>
-          <select className="mt-1 w-full border rounded px-3 py-2" value={role} onChange={(e) => setRole(e.target.value as Role)}>
-            <option value="PUBLISHER">Publisher</option>
-            <option value="AICLIENT">AI Client</option>
-          </select>
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button type="submit" disabled={loading} className="w-full bg-indigo-600 text-white py-2 rounded font-semibold">
-          {loading ? 'Creating account…' : 'Sign up'}
-        </button>
-      </form>
+        )}
+        <form onSubmit={submit} className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-white">Name</label>
+            <input className={fieldClasses} value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-white">Email</label>
+            <input className={fieldClasses} value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-white">Password</label>
+            <input type="password" className={fieldClasses} value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-white">Role</label>
+            <select
+              className={`${fieldClasses} appearance-none text-white`}
+              value={role}
+              onChange={(e) => setRole(e.target.value as Role)}
+            >
+              <option value="PUBLISHER" className="bg-[#101424] text-white">
+                Publisher
+              </option>
+              <option value="AICLIENT" className="bg-[#101424] text-white">
+                AI team
+              </option>
+            </select>
+          </div>
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          <SectionActions>
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft disabled:opacity-70"
+            >
+              {loading ? 'Creating account…' : 'Sign up'}
+            </button>
+          </SectionActions>
+        </form>
+      </div>
     </div>
   );
 }
