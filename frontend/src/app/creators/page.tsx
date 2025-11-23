@@ -15,7 +15,7 @@ const CreatorsPage = () => {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-stretch">
           <div className="flex min-h-[320px] flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 text-white md:p-8">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">What you control</h3>
@@ -39,36 +39,36 @@ const CreatorsPage = () => {
             </div>
           </div>
 
-          <div className="flex min-h-[320px] flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 text-white md:p-8">
+          <div className="flex h-full flex-col justify-center rounded-3xl border border-slate-800 bg-slate-900/60 p-8 text-white">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">Turn crawlers into paid feeds</h3>
-              <ul className="space-y-2 text-sm text-white/80">
-                {[ 
+              <ul className="mt-4 space-y-3">
+                {[
                   'Stop AIs reading your work for free.',
                   'Use one rule set to decide what’s open, what’s premium, and what each AI team pays.',
                   'When crawlers use FairFetch, they get a controlled, logged feed instead of scraping around your site.',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                    <span>{item}</span>
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
+                    <p className="text-sm text-slate-200">{item}</p>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
 
-          <div className="flex min-h-[320px] flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 text-white md:p-8">
+          <div className="flex h-full flex-col justify-center rounded-3xl border border-slate-800 bg-slate-900/60 p-8 text-white">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
-              <ul className="space-y-2 text-sm text-white/80">
-                {[ 
+              <ul className="mt-4 space-y-3">
+                {[
                   'See which crawlers hit which paths, how often, and what they read.',
                   'Use a shared log as the source of truth for audits, payouts, and disputes.',
                   'Give AI teams and publishers the same record of how your work was used.',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-blue-400" />
-                    <span>{item}</span>
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
+                    <p className="text-sm text-slate-200">{item}</p>
                   </li>
                 ))}
               </ul>
