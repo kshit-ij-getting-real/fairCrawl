@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Analytics } from '@vercel/analytics/react';
 import { Logo } from '@/components/Logo';
 import { AuthActions } from '@/components/AuthActions';
 import './globals.css';
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <AuthActions variant="footer" />
             </div>
           </footer>
+          <Analytics />
         </div>
       </body>
     </html>
