@@ -47,7 +47,7 @@ export default function Page() {
                     </p>
                   </div>
 
-                  <div className="mt-auto flex justify-end gap-3">
+                  <div className="flex flex-wrap justify-end gap-3">
                     <PrimaryButton href="/signup" className="px-4 py-2 text-sm">
                       Get started
                     </PrimaryButton>
