@@ -6,14 +6,12 @@ import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
 const VisionPage = () => {
   return (
     <MarketingSection>
-      <MarketingCard className="space-y-4 bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white">
-        <div className="space-y-2">
-          <SectionEyebrow className="text-white/70">Vision</SectionEyebrow>
-          <h1 className="text-3xl font-semibold md:text-4xl">Our vision: a fair web for AI</h1>
-          <p className="max-w-3xl text-base leading-relaxed text-white/80">
-            AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models.
-          </p>
-        </div>
+      <MarketingCard className="flex flex-col gap-4 bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white">
+        <SectionEyebrow className="text-white/70">Vision</SectionEyebrow>
+        <h1 className="text-3xl font-semibold md:text-4xl">Our vision: a fair web for AI</h1>
+        <p className="text-base leading-relaxed text-white/80">
+          AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models.
+        </p>
       </MarketingCard>
 
       <div className="grid gap-6 md:grid-cols-3">
