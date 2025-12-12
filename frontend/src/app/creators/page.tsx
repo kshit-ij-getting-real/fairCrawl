@@ -6,18 +6,16 @@ import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
 const CreatorsPage = () => {
   return (
     <MarketingSection>
-      <MarketingCard className="space-y-4 bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white">
-        <div className="mx-auto max-w-3xl space-y-2">
-          <SectionEyebrow className="text-white/70">For creators &amp; publishers</SectionEyebrow>
-          <h1 className="text-3xl font-semibold md:text-4xl">FairFetch for creators &amp; publishers</h1>
-          <p className="text-base leading-relaxed text-white/80">
-            Set rules per path, see which AI crawlers read your work, and turn AI training into income.
-          </p>
-        </div>
+      <MarketingCard className="flex flex-col gap-4 bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo text-white">
+        <SectionEyebrow className="text-white/70">For creators &amp; publishers</SectionEyebrow>
+        <h1 className="text-3xl font-semibold md:text-4xl">FairFetch for creators &amp; publishers</h1>
+        <p className="text-base leading-relaxed text-white/80">
+          Set rules per path, see which AI crawlers read your work, and turn AI training into income.
+        </p>
       </MarketingCard>
 
-      <div className="grid items-stretch gap-6 md:grid-cols-3">
-        <MarketingCard className="flex min-h-[320px] flex-col text-white">
+      <div className="grid gap-6 md:grid-cols-3">
+        <MarketingCard className="flex h-full flex-col text-white">
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-slate-50">What you control</h3>
             <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
