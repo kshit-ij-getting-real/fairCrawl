@@ -34,6 +34,7 @@ export default async function DirectoryPage() {
       <div className="space-y-4">
         {displayDomains.map((domain) => {
           const domainName = domain.domain || domain.host || domain.name;
+          const visitUrl = domain.publicUrl || (domainName ? `https://${domainName}` : '#');
           const publisherName =
             domain.ownerName ||
             (typeof domain.publisher === 'object'
@@ -52,7 +53,7 @@ export default async function DirectoryPage() {
                 </p>
               </div>
               <div className="flex justify-end">
-                <SecondaryButton href={`https://${domainName}`} target="_blank" rel="noreferrer">
+                <SecondaryButton href={visitUrl} target="_blank" rel="noreferrer">
                   Visit site
                 </SecondaryButton>
               </div>

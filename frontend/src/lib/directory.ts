@@ -5,6 +5,7 @@ type PublicDomain = {
   name: string;
   domain?: string;
   host?: string;
+  publicUrl?: string;
   verified?: boolean;
   isVerified?: boolean;
   verifiedAt?: string | null;
