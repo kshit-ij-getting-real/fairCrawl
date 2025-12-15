@@ -27,21 +27,21 @@ export default function Page() {
     <div className="min-h-screen bg-[#020617] text-slate-50">
       <MarketingSection>
         <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)]">
-          <MarketingCard className="flex h-full flex-col gap-6 bg-gradient-to-r from-[#05081b] to-[#071539] text-white">
-            <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] sm:text-xs">
-              FairFetch for creators &amp; publishers
-            </div>
-            <div className="space-y-3">
-              <SectionEyebrow className="text-sky-200">Paid AI access, on your terms</SectionEyebrow>
-              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-[40px]">
+          <MarketingCard className="flex h-full flex-col rounded-[32px] bg-gradient-to-r from-[#05081b] to-[#071539] px-6 py-8 text-white md:px-10 md:py-12 lg:px-12 lg:py-14">
+            <div className="max-w-3xl space-y-4 md:space-y-5">
+              <SectionEyebrow>FairFetch for creators &amp; publishers</SectionEyebrow>
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/60">
+                Paid AI access, on your terms
+              </p>
+              <h1 className="text-3xl font-semibold leading-tight text-white md:text-4xl lg:text-5xl">
                 Get paid when AI uses your content
               </h1>
-              <p className="max-w-xl text-sm leading-relaxed text-slate-200/90">
+              <p className="max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
                 FairFetch is a marketplace where creators license their paywalled and premium content to AI companies.
                 <span className="block">You choose what AI can see on your site, set your own prices, and get paid whenever your work is used.</span>
               </p>
             </div>
-            <div className="flex flex-wrap justify-end gap-3 pt-2">
+            <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
               <PrimaryButton href="/signup" className="px-4 py-2 text-sm">
                 Get started
               </PrimaryButton>
