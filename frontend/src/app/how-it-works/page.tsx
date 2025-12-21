@@ -1,6 +1,6 @@
+import { SubpageHero } from '../../components/marketing/SubpageHero';
 import { MarketingCard } from '../../components/ui/MarketingCard';
 import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
-import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
 
 const HowItWorksPage = () => {
   const steps = [
@@ -21,18 +21,20 @@ const HowItWorksPage = () => {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <section className="text-white">
-        <div className="space-y-4 rounded-3xl bg-gradient-to-br from-faircrawl-heroFrom to-faircrawl-heroTo p-8 shadow-lg">
-          <div className="mx-auto max-w-3xl space-y-2">
-            <SectionEyebrow className="text-white/70">Product flow</SectionEyebrow>
-            <h1 className="text-3xl font-semibold">How FairFetch works</h1>
-            <p className="text-base leading-relaxed text-white/80">
-              FairFetch sits between AI crawlers and the sites they read. Crawlers authenticate, you set the rules, and FairFetch checks every request before content is returned.
-            </p>
-            <p className="text-base leading-relaxed text-white/80">
-              AI crawlers go through FairFetch instead of scraping in the dark. You decide which paths are open, premium, throttled, or blocked, and every request is logged so both sides see the same record.
-            </p>
-          </div>
-        </div>
+        <SubpageHero
+          eyebrow="Product flow"
+          title="How FairFetch works"
+          description={
+            <>
+              <p>
+                FairFetch sits between AI crawlers and the sites they read. Crawlers authenticate, you set the rules, and FairFetch checks every request before content is returned.
+              </p>
+              <p>
+                AI crawlers go through FairFetch instead of scraping in the dark. You decide which paths are open, premium, throttled, or blocked, and every request is logged so both sides see the same record.
+              </p>
+            </>
+          }
+        />
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {steps.map((step) => (
