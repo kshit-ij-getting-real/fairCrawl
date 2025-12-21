@@ -1,4 +1,4 @@
-import { API_BASE } from './config';
+import { API_BASE_URL } from './apiBase';
 
 type PublicDomain = {
   id?: string | number;
@@ -43,7 +43,7 @@ const ctaDirectoryEntry: DirectoryEntry = {
 
 export async function fetchPublicDomains(): Promise<PublicDomain[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/public/domains`, { cache: 'no-store' });
+    const res = await fetch(`${API_BASE_URL}/api/public/domains`, { cache: 'no-store' });
     if (!res.ok) return [];
     const data: PublicDomain[] = await res.json();
     return data.map((domain) => ({

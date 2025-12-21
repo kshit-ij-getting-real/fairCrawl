@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiFetch, clearSession, getRole } from '../../../lib/api';
-import { API_BASE } from '../../../lib/config';
+import { API_BASE_URL } from '@/lib/apiBase';
+import { apiFetch } from '@/lib/http';
+import { clearSession, getRole } from '@/lib/session';
 import { MarketingCard } from '../../../components/ui/MarketingCard';
 import { formatMicrosToCurrency } from '../../../lib/money';
 import { SectionEyebrow } from '../../../components/ui/SectionEyebrow';
@@ -245,7 +246,7 @@ export default function AIClientDashboard() {
         <p className="text-white/70">Call this endpoint with your API key and the URL you’d like to read.</p>
         <div className="space-y-3 rounded-2xl border border-white/10 bg-black/60 p-4 text-xs font-mono text-blue-100">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-white/70">Request</p>
-          <pre className="overflow-x-auto whitespace-pre rounded-xl bg-black/70 p-4 text-white">{`curl "${API_BASE}/api/gateway/fetch?url=https://example.com/premium/article" \\
+          <pre className="overflow-x-auto whitespace-pre rounded-xl bg-black/70 p-4 text-white">{`curl "${API_BASE_URL}/api/gateway/fetch?url=https://example.com/premium/article" \\
   -H "X-API-Key: YOUR_KEY"`}</pre>
         </div>
         <div className="space-y-2 rounded-2xl border border-white/10 bg-black/60 p-4 text-xs font-mono text-blue-100">

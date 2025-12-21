@@ -2,7 +2,7 @@ import { SubpageHero } from '../../components/marketing/SubpageHero';
 import { MarketingCard } from '../../components/ui/MarketingCard';
 import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
 import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
-import { API_BASE } from '../../lib/config';
+import { API_BASE_URL } from '../../lib/apiBase';
 
 const AiTeamsPage = () => {
   const benefits = [
@@ -40,7 +40,7 @@ const AiTeamsPage = () => {
                   </span>
                 ))}
               </div>
-              <pre className="overflow-x-auto whitespace-pre rounded-xl bg-black/70 p-4 text-xs text-white">{`curl "${API_BASE}/api/gateway/fetch?url=https://site.com/blog/ai" \\
+              <pre className="overflow-x-auto whitespace-pre rounded-xl bg-black/70 p-4 text-xs text-white">{`curl "${API_BASE_URL}/api/gateway/fetch?url=https://site.com/blog/ai" \\
   -H "X-API-Key: YOUR_KEY"`}</pre>
             </div>
           </MarketingCard>
