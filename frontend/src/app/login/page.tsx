@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_BASE } from '../../lib/config';
-import { setSession } from '../../lib/api';
+import { apiFetch } from '@/lib/http';
+import { setSession } from '@/lib/session';
 import { SectionActions } from '../../components/ui/SectionActions';
 
 export default function LoginPage() {
@@ -18,13 +18,10 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
+      const data = await apiFetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      if (!res.ok) throw new Error('Login failed');
-      const data = await res.json();
       setSession(data.token, data.role);
       router.push(data.role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
     } catch (err: any) {

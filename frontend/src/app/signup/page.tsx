@@ -2,8 +2,8 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { API_BASE } from '../../lib/config';
-import { setSession, Role } from '../../lib/api';
+import { apiFetch } from '@/lib/http';
+import { setSession, Role } from '@/lib/session';
 import { SectionActions } from '../../components/ui/SectionActions';
 
 function SignupContent() {
@@ -30,13 +30,10 @@ function SignupContent() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/signup`, {
+      const data = await apiFetch('/api/auth/signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, role, name }),
       });
-      if (!res.ok) throw new Error('Signup failed');
-      const data = await res.json();
       setSession(data.token, role);
       router.push(role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
     } catch (err: any) {

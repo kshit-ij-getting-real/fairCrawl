@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiFetch, clearSession, getRole } from '../../../lib/api';
+import { apiFetch, clearSession, getRole } from '@/lib/api';
 import { MarketingCard } from '../../../components/ui/MarketingCard';
 import { SectionActions } from '../../../components/ui/SectionActions';
 import { formatMicrosToCurrency, formatPricePerThousand } from '../../../lib/money';

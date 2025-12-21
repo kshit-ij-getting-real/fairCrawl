@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { API_BASE } from '@/lib/config';
+import { API_BASE_URL } from '@/lib/apiBase';
 import { Role, clearSession, getRole, getToken } from '@/lib/api';
 
 type SessionState =
@@ -18,7 +18,7 @@ type AuthActionsProps = {
 
 const fetchProfileName = async (role: Role, token: string) => {
   const path = role === 'PUBLISHER' ? 'publisher' : 'aiclient';
-  const res = await fetch(`${API_BASE}/api/${path}/me`, {
+  const res = await fetch(`${API_BASE_URL}/api/${path}/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
