@@ -3,7 +3,17 @@
 import { API_BASE_URL } from './apiBase';
 import { getToken } from './session';
 
-export async function apiFetch(path: string, init: RequestInit = {}) {
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+export async function apiFetch<T = any>(path: string, init: RequestInit = {}): Promise<T> {
   const token = getToken();
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
@@ -14,12 +24,31 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, { ...init, headers });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(err.error || 'Request failed');
+  const requestUrl = `${API_BASE_URL}${path}`;
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[apiFetch] ${init.method || 'GET'} ${requestUrl}`);
   }
 
-  return response.json();
+  let response: Response;
+  try {
+    response = await fetch(requestUrl, { ...init, headers });
+  } catch {
+    throw new Error('Network error: unable to reach FairFetch API. Check CORS and NEXT_PUBLIC_API_BASE_URL.');
+  }
+
+  const textBody = await response.text();
+  const isJson = response.headers.get('content-type')?.includes('application/json');
+  const parsedBody = textBody && isJson ? JSON.parse(textBody) : null;
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[apiFetch] ${response.status} ${requestUrl}`, parsedBody ?? textBody);
+  }
+
+  if (!response.ok) {
+    const body = parsedBody as { error?: string; message?: string } | null;
+    const message = body?.error || body?.message || textBody || `Request failed (${response.status})`;
+    throw new ApiError(message, response.status);
+  }
+
+  return (parsedBody ?? {}) as T;
 }
