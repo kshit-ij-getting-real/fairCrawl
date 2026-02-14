@@ -19,7 +19,7 @@ FairFetch is a marketplace where creators license their paywalled and premium co
 ```bash
 cp .env.example .env
 ```
-Adjust values if necessary.
+Adjust values if necessary, especially `CORS_ALLOWED_ORIGINS` for frontend origins that are allowed to call the API.
 
 ### Start PostgreSQL
 ```bash
@@ -33,7 +33,7 @@ npm install
 npx prisma migrate dev
 npm run dev
 ```
-This starts the Express API on port `4000` by default.
+This starts the Express API on port `4000` by default. Health checks are available at `/health` and `/api/health`.
 
 Run the aggregation job manually when needed:
 ```bash

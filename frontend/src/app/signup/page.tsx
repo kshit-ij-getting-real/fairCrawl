@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { apiFetch } from '@/lib/http';
+import { ApiError, apiFetch } from '@/lib/http';
 import { setSession, Role } from '@/lib/session';
 import { SectionActions } from '../../components/ui/SectionActions';
 
@@ -36,8 +36,14 @@ function SignupContent() {
       });
       setSession(data.token, role);
       router.push(role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Unexpected error while creating account');
+      }
     } finally {
       setLoading(false);
     }

@@ -10,7 +10,7 @@ const logBaseUrl = (baseUrl: string) => {
 const resolveBaseUrl = () => {
   const value = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!value) throw new Error('Missing NEXT_PUBLIC_API_BASE_URL');
-  const normalized = value.replace(/\/+$/, '');
+  const normalized = value.trim().replace(/\/+$/, '');
   logBaseUrl(normalized);
   return normalized;
 };
