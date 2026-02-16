@@ -1,74 +1,140 @@
 # FairFetch
 
-FairFetch is a marketplace where creators license their paywalled and premium content to AI companies. It is a minimal marketplace and gateway where publishers expose AI-friendly content policies and AI builders access verified domains through a single authenticated proxy.
+FairFetch is a marketplace where creators license premium content to AI companies. This MVP now supports both direct gateway fetches and TollBit-style signed token spends via publisher subdomains.
 
-## Features
-- Publisher onboarding with domain registration, policy controls, verification flow, and analytics snapshot.
-- AI client workspace for managing API keys, usage, and gateway instructions.
-- Gateway endpoint that enforces publisher policies, authenticates API clients, proxies requests, and logs usage.
-- Background usage aggregation job to estimate charges per client/domain pair.
-- Next.js frontend for signup/login and both role dashboards.
+## What ships in this MVP
 
-## Getting started
+### Path 1: Single gateway fetch
+`GET /api/gateway/fetch?url=<origin_url>&license_type=<summary|display>&format=<markdown|json>&max_price_micros=<int>`
+
+Header: `X-API-Key: <developer key>`
+
+Behavior:
+- Validates API key.
+- Canonicalizes URL.
+- Deterministically resolves price from pricing rule hierarchy.
+- Writes an idempotent ledger transaction.
+- Fetches origin HTML and extracts AI-friendly content.
+- Returns content + metadata + transaction id.
+
+### Path 2: Publisher subdomain token flow
+1) Mint token
+
+`POST /api/token`
+
+Header: `X-API-Key`
+
+Body:
+```json
+{
+  "url": "https://publisher.com/article",
+  "license_type": "display",
+  "user_agent": "my-bot/1.0",
+  "format": "markdown",
+  "max_price_micros": 500000
+}
+```
+
+Response:
+```json
+{
+  "token": "<jwt>",
+  "token_id": "<uuid>",
+  "price_micros": 250000,
+  "platform_fee_micros": 25000,
+  "total_micros": 275000,
+  "expires_at": "2026-01-01T00:00:00.000Z"
+}
+```
+
+2) Spend token against publisher subdomain
+
+`GET https://fairfetch.<publisher-domain>/<path>`
+
+Headers:
+- `Fairfetch-Org-Id: <developer org id>`
+- `Fairfetch-Token: <token>`
+- `User-Agent: <same user agent used for mint>`
+
+For local backend testing, host-rewrite middleware maps subdomain requests into `/api/fairfetch/*`.
+
+## Deterministic pricing precedence
+1. `BOT` (user-agent regex)
+2. `PAGE` (exact URL/path rule)
+3. `KEYWORD` (schema-ready)
+4. `FRESHNESS` (schema-ready)
+5. `DIRECTORY` / `GLOBAL` (longest-prefix wins for directory)
+
+If no rule matches: deterministic `403 UNPRICED` JSON.
+
+## Deterministic deny/error shape
+```json
+{
+  "code": "UNPRICED",
+  "message": "No matching pricing rule",
+  "request_id": "...",
+  "help": "Create a pricing rule"
+}
+```
+
+## Publisher dashboard additions
+- Domain onboarding + DNS TXT verification.
+- CNAME mapping display (`fairfetch.<domain> -> edge.fairfetch.com`).
+- Pricing rule CRUD.
+- Transaction listing with domain/dev/license/date filters.
+
+## Developer dashboard additions
+- Agent identity and allowed user-agent regex.
+- API key management.
+- Usage and spend views by domain and by day.
+
+## Local dev
 
 ### Prerequisites
 - Node.js 18+
-- Docker (for PostgreSQL)
+- Docker (Postgres)
 
 ### Environment
 ```bash
 cp .env.example .env
 ```
-Adjust values if necessary.
+Set:
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `FAIRFETCH_TOKEN_SECRET`
+- `NEXT_PUBLIC_API_BASE_URL`
 
-### Start PostgreSQL
+### Start services
 ```bash
 docker-compose up -d
+cd backend && npm install && npx prisma migrate dev && npm run dev
+cd frontend && npm install && npm run dev
 ```
 
-### Backend setup
+Backend runs on `:4000`, frontend on `:3000`.
+
+## cURL examples
+
+### Mint token
 ```bash
-cd backend
-npm install
-npx prisma migrate dev
-npm run dev
+curl -X POST "http://localhost:4000/api/token" \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com/news/1","license_type":"display","user_agent":"my-bot/1.0","format":"markdown","max_price_micros":500000}'
 ```
-This starts the Express API on port `4000` by default.
 
-Run the aggregation job manually when needed:
+### Gateway fetch
 ```bash
-npm run aggregate
+curl "http://localhost:4000/api/gateway/fetch?url=https://example.com/news/1&license_type=display&format=markdown&max_price_micros=500000" \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "X-Request-Id: req-123"
 ```
 
-### Frontend setup
+### Subdomain token spend (local simulation)
 ```bash
-cd frontend
-npm install
-npm run dev
-```
-Open http://localhost:3000 to access the UI.
-
-Set the frontend API base URL (required):
-- Local development: `NEXT_PUBLIC_API_BASE_URL=http://localhost:4000`
-- Production: `NEXT_PUBLIC_API_BASE_URL=https://faircrawl-mk.onrender.com`
-
-### Example gateway call (local development)
-```bash
-curl "http://localhost:4000/api/gateway/fetch?url=https://example.com/path" \
-  -H "X-API-Key: YOUR_FAIRFETCH_KEY"
-```
-Replace the URL with an approved domain/path and provide a valid API key from the AI client dashboard.
-
-<!-- In production, replace localhost with your deployed backend URL, for example: -->
-<!-- https://fairfetch.onrender.com/api/gateway/fetch?url=... -->
-
-## Deployment notes
-
-- The database examples now point to the `fairmarket` database. Existing deployments that previously used `faircrawl` should either rename their database manually or provision a new one before applying migrations.
-- Deployment dashboards such as Vercel or Render may still need manual renaming; the config in this repo now references FairFetch but cloud UI names have to be updated separately.
-
-## Repository structure
-```
-backend/   # Express + Prisma API, jobs, routes
-frontend/  # Next.js app router UI
+curl "http://localhost:4000/news/1" \
+  -H "Host: fairfetch.example.com" \
+  -H "Fairfetch-Org-Id: 1" \
+  -H "Fairfetch-Token: <token>" \
+  -H "User-Agent: my-bot/1.0"
 ```

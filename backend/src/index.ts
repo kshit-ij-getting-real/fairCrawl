@@ -18,6 +18,16 @@ app.use(morgan('dev'));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
+
+app.use((req, _res, next) => {
+  const host = (req.headers.host || '').split(':')[0].toLowerCase();
+  if (host.startsWith('fairfetch.') && !req.path.startsWith('/api/')) {
+    const query = req.url.includes('?') ? `?${req.url.split('?')[1]}` : '';
+    req.url = `/api/fairfetch${req.path}${query}`;
+  }
+  next();
+});
+
 app.use('/api/auth', authRouter);
 app.use('/api', policyRouter);
 app.use('/api', gatewayRouter);
