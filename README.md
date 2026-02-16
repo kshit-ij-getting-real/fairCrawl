@@ -157,6 +157,8 @@ npx prisma migrate dev
 npm run dev
 ```
 
+> `npm install` now runs `prisma generate` automatically (via `postinstall`), so local TypeScript types and deploy builds stay aligned with `prisma/schema.prisma`.
+
 Backend runs at: `http://localhost:4000`
 
 Health check:
@@ -175,6 +177,66 @@ npm run dev
 ```
 
 Frontend runs at: `http://localhost:3000`
+
+---
+
+## Render + Vercel workflow (while developing locally)
+
+Use this setup so you can keep coding locally and deploy consistently:
+
+### Render (backend)
+
+1. **Render service root**: set Root Directory to `backend`.
+2. **Build command**:
+   ```bash
+   npm install && npm run build
+   ```
+   (`npm run build` runs `prisma generate && tsc`.)
+3. **Start command**:
+   ```bash
+   npm run start
+   ```
+4. **Environment variables** (Render dashboard):
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+   - `FAIRFETCH_TOKEN_SECRET`
+   - `PORT` (Render usually injects this; keep app reading `process.env.PORT`)
+5. **Database migrations on deploy**: run once per schema change before/after deploy:
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+### Vercel (frontend)
+
+1. **Vercel project root**: set Root Directory to `frontend`.
+2. **Build command** (default is fine):
+   ```bash
+   npm run build
+   ```
+3. **Environment variable**:
+   - `NEXT_PUBLIC_API_BASE_URL=https://<your-render-backend-domain>`
+4. Redeploy frontend whenever backend domain/env changes.
+
+### Local-first development loop
+
+1. Run backend locally:
+   ```bash
+   cd backend
+   npm install
+   npx prisma migrate dev
+   npm run dev
+   ```
+2. Run frontend locally:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+3. When schema changes:
+   - Commit `prisma/schema.prisma` and migration files.
+   - Push branch.
+   - Render build picks up generated client automatically from build script.
+   - Run `npx prisma migrate deploy` against Render DB.
 
 ### 6) Access points locally
 - Marketing pages: `http://localhost:3000`
