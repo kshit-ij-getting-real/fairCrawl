@@ -18,6 +18,25 @@ enum AccessType {
   BLOCKED
 }
 
+enum LicenseType {
+  SUMMARY
+  DISPLAY
+}
+
+enum ContentFormat {
+  MARKDOWN
+  JSON
+}
+
+enum PriceRuleScope {
+  BOT
+  PAGE
+  KEYWORD
+  FRESHNESS
+  DIRECTORY
+  GLOBAL
+}
+
 model User {
   id           Int        @id @default(autoincrement())
   email        String     @unique
@@ -49,6 +68,9 @@ model AIClient {
   usages       UsageAggregate[]
   readEvents   ReadEvent[]
   clientBalance ClientBalance?
+  agents       AgentIdentity[]
+  mintedTokens SpendToken[]
+  ledgerTransactions LedgerTransaction[]
   createdAt    DateTime        @default(now())
 }
 
@@ -63,7 +85,98 @@ model Domain {
   requests    RequestLog[]
   usages      UsageAggregate[]
   readEvents  ReadEvent[]
+  pricingRules PricingRule[]
+  contentFilters ContentFilter[]
+  mintedTokens SpendToken[]
+  ledgerTransactions LedgerTransaction[]
+  subdomainCnameTarget String?
+  subdomainHost String?
+  verificationMethod String @default("DNS_TXT")
   createdAt   DateTime         @default(now())
+}
+
+model AgentIdentity {
+  id                 Int      @id @default(autoincrement())
+  aiClientId         Int
+  agentId            String
+  allowedUserAgentRe String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  aiClient           AIClient @relation(fields: [aiClientId], references: [id])
+
+  @@unique([aiClientId, agentId])
+}
+
+model PricingRule {
+  id                Int            @id @default(autoincrement())
+  domainId          Int
+  scope             PriceRuleScope
+  pathPattern       String?
+  exactUrl          String?
+  userAgentRegex    String?
+  keywordExpression String?
+  freshnessWindowMins Int?
+  licenseType       LicenseType?
+  priceMicros       Int
+  priority          Int            @default(100)
+  enabled           Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  domain            Domain         @relation(fields: [domainId], references: [id])
+}
+
+model ContentFilter {
+  id               Int      @id @default(autoincrement())
+  domainId         Int
+  blockedPathRegex String?
+  cssStripSelectors String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  domain           Domain   @relation(fields: [domainId], references: [id])
+}
+
+model SpendToken {
+  id                String        @id @default(cuid())
+  aiClientId        Int
+  domainId          Int
+  canonicalHost     String
+  canonicalPath     String
+  canonicalFullUrl  String
+  licenseType       LicenseType
+  format            ContentFormat
+  userAgent         String
+  priceMicros       Int
+  platformFeeMicros Int
+  totalMicros       Int
+  tokenHash         String        @unique
+  expiresAt         DateTime
+  spentAt           DateTime?
+  createdAt         DateTime      @default(now())
+  aiClient          AIClient      @relation(fields: [aiClientId], references: [id])
+  domain            Domain        @relation(fields: [domainId], references: [id])
+  ledgerTransaction LedgerTransaction?
+}
+
+model LedgerTransaction {
+  id                    String        @id @default(cuid())
+  aiClientId            Int
+  domainId              Int
+  tokenId               String?       @unique
+  idempotencyKey        String        @unique
+  source                String
+  url                   String
+  path                  String
+  licenseType           LicenseType
+  format                ContentFormat
+  publisherAmountMicros Int
+  platformFeeMicros     Int
+  totalMicros           Int
+  currency              String        @default("USD")
+  matchedRuleId         Int?
+  createdAt             DateTime      @default(now())
+  aiClient              AIClient      @relation(fields: [aiClientId], references: [id])
+  domain                Domain        @relation(fields: [domainId], references: [id])
+  token                 SpendToken?   @relation(fields: [tokenId], references: [id])
 }
 
 model AIPolicy {
