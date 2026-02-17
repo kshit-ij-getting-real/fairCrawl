@@ -4,9 +4,9 @@ services:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_USER: fairmarket
-      POSTGRES_PASSWORD: fairmarket
-      POSTGRES_DB: fairmarket
+      POSTGRES_USER: fairfetch
+      POSTGRES_PASSWORD: fairfetch
+      POSTGRES_DB: fairfetch
     ports:
       - "5432:5432"
     volumes:

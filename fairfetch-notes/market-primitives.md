@@ -91,7 +91,7 @@ cp frontend/.env.example frontend/.env.local
 
 Set in `.env`:
 ```dotenv
-DATABASE_URL=postgresql://fairmarket:fairmarket@localhost:5432/fairmarket
+DATABASE_URL=postgresql://fairfetch:fairfetch@localhost:5432/fairfetch
 JWT_SECRET=<long-random-string>
 FAIRFETCH_TOKEN_SECRET=<long-random-string>
 PORT=4000

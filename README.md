@@ -1,308 +1,159 @@
-# FairFetch
+# Fairfetch
 
-FairFetch is a two-sided marketplace where publishers monetize licensed content access for AI teams. The platform supports direct gateway fetches and a tokenized, publisher-subdomain spend flow inspired by TollBit.
+Fairfetch is a two-service platform for licensed content access: an Express + Prisma backend API and a Next.js frontend dashboard for publishers and AI clients.
 
-## Current architecture
+## Repository layout
 
-### Monorepo layout
-- `backend/`: Express + Prisma API for auth, pricing, token minting/spending, and reporting.
-- `frontend/`: Next.js dashboard/UI for publishers and AI clients.
-- `fairfetch-notes/`: product and market notes.
-- `docker-compose.yml`: local Postgres service for development.
+- `backend/` — API server, auth, pricing, token mint/spend, usage reporting
+- `frontend/` — dashboard UI
+- `docker-compose.yml` — local PostgreSQL service
 
-### Backend (Express + Prisma)
-Core API entrypoint: `backend/src/index.ts`.
+## Requirements
 
-#### Auth + role model
-- `POST /api/auth/signup` creates users as either `PUBLISHER` or `AICLIENT`.
-- `POST /api/auth/login` returns JWTs used by protected dashboard endpoints.
-- Protected route groups:
-  - `/api/publisher/*` (publisher role)
-  - `/api/aiclient/*` and `/api/client/*` (AI client role alias)
+- Node.js **22.x** (recommended for Render parity)
+- npm 10+
+- Docker (for local PostgreSQL) or an external PostgreSQL instance
 
-#### Publisher APIs
-- Domain onboarding (`POST /api/publisher/domains`)
-- DNS token retrieval (`GET /api/publisher/domains/:domainId/verification-token`)
-- DNS verification (`POST /api/publisher/domains/:domainId/verify-dns`)
-- Pricing rules CRUD (`GET/POST /api/publisher/domains/:domainId/pricing-rules`)
-- Transaction reporting (`GET /api/publisher/transactions`)
+## Local development (copy/paste)
 
-#### AI client APIs
-- API key lifecycle (`GET/POST /api/aiclient/apikeys`, revoke endpoint)
-- Agent identity/user-agent controls (`GET/POST /api/aiclient/agents`)
-- Usage + spend breakdown (`GET /api/aiclient/usage-spend`)
+### 1) Clone and install dependencies
 
-#### Content monetization APIs
-
-1) **Gateway fetch path**
-
-`GET /api/gateway/fetch?url=<origin_url>&license_type=<summary|display>&format=<markdown|json>&max_price_micros=<int>`
-
-Headers:
-- `X-API-Key: <developer key>`
-- optional `X-Request-Id`
-
-Behavior:
-- Validates API key.
-- Canonicalizes URL.
-- Resolves pricing deterministically from rule precedence.
-- Fetches and extracts origin content.
-- Writes idempotent ledger transaction.
-- Returns content + metadata + transaction totals.
-
-2) **Tokenized subdomain spend path**
-
-Step A: mint short-lived token
-
-`POST /api/token`
-
-Headers:
-- `X-API-Key: <developer key>`
-
-Body:
-```json
-{
-  "url": "https://publisher.com/article",
-  "license_type": "display",
-  "user_agent": "my-bot/1.0",
-  "format": "markdown",
-  "max_price_micros": 500000
-}
+```bash
+git clone <your-repo-url>
+cd fairfetch
+npm --prefix backend ci
+npm --prefix frontend ci
 ```
 
-Step B: spend token against publisher subdomain
-
-`GET https://fairfetch.<publisher-domain>/<path>`
-
-Headers:
-- `Fairfetch-Org-Id: <developer org id>`
-- `Fairfetch-Token: <minted token>`
-- `User-Agent: <same UA used during mint>`
-
-Backend host rewrite middleware maps incoming `fairfetch.*` host requests to `/api/fairfetch/*`.
-
-### Deterministic pricing precedence
-1. `BOT` (user-agent regex)
-2. `PAGE` (exact URL/path)
-3. `KEYWORD` (schema-ready)
-4. `FRESHNESS` (schema-ready)
-5. `DIRECTORY` / `GLOBAL` (longest prefix for directories)
-
-If no rule matches, APIs return a deterministic `403 UNPRICED` payload.
-
-### Persistence model highlights
-Prisma schema tracks:
-- user/role entities (`User`, `Publisher`, `AIClient`)
-- monetization configuration (`Domain`, `PricingRule`, `ContentFilter`)
-- key/token auth artifacts (`APIKey`, `SpendToken`, `AgentIdentity`)
-- billing/usage records (`LedgerTransaction`, `UsageAggregate`, `RequestLog`)
-
-### Frontend (Next.js)
-Primary app routes:
-- `/login`, `/signup`
-- `/publisher/dashboard`: domain onboarding, DNS verification, pricing rules, transactions
-- `/aiclient/dashboard`: API keys, agent identity, usage/spend insights
-
-Frontend API base URL is centralized via `NEXT_PUBLIC_API_BASE_URL`.
-
----
-
-## Run everything locally
-
-### 1) Prerequisites
-- Node.js 18+
-- npm 9+
-- Docker (or compatible container runtime)
-
 ### 2) Configure environment variables
-From repo root:
 
 ```bash
 cp .env.example .env
 cp frontend/.env.example frontend/.env.local
 ```
 
-Recommended `.env` values for local development:
+Required backend environment variables in `.env`:
+
+- `DATABASE_URL` (secret): PostgreSQL connection string
+- `JWT_SECRET` (secret): signing key for auth tokens
+- `PORT` (optional): backend HTTP port (defaults to `4000`)
+- `FAIRFETCH_TOKEN_SECRET` (secret recommended): spend token secret (falls back to dev default if omitted)
+
+Example local `.env`:
 
 ```dotenv
-DATABASE_URL=postgresql://fairmarket:fairmarket@localhost:5432/fairmarket
+DATABASE_URL=postgresql://fairfetch:fairfetch@localhost:5432/fairfetch
 JWT_SECRET=replace-with-a-long-random-secret
-FAIRFETCH_TOKEN_SECRET=replace-with-another-long-random-secret
+FAIRFETCH_TOKEN_SECRET=replace-with-a-different-long-random-secret
 PORT=4000
 ```
 
-`frontend/.env.local` should include:
-
-```dotenv
-NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
-```
-
-> `FAIRFETCH_TOKEN_SECRET` currently falls back to `dev-secret` if unset, but you should always set it explicitly in production.
-
-### 3) Start Postgres
+### 3) Start PostgreSQL
 
 ```bash
 docker compose up -d
 ```
 
-### 4) Install dependencies
-
-```bash
-npm --prefix backend install
-npm --prefix frontend install
-```
-
-### 5) Run database migrations
+### 4) Run Prisma migration and client generation
 
 ```bash
 npm --prefix backend run prisma:migrate
+npm --prefix backend run prisma:generate
 ```
 
-### 6) Start backend + frontend
-In separate terminals:
+### 5) Start services
+
+Backend:
 
 ```bash
 npm --prefix backend run dev
+```
+
+Frontend (new terminal):
+
+```bash
 npm --prefix frontend run dev
 ```
 
-### 7) Local access points
+### 6) Validate locally
+
 - Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:4000/api`
-- Health check: `http://localhost:4000/api/health`
+- Healthcheck: `http://localhost:4000/api/health`
 
----
+## Production setup (Render-first, generic)
 
-## Production setup (current toolchain: Render + Vercel)
+## Backend service (Render web service)
 
-This repo is structured to deploy as **two services**:
-- **Backend API on Render** (root directory `backend`)
-- **Frontend on Vercel** (root directory `frontend`)
+- **Root directory:** `backend`
+- **Build command:** `npm ci && npm run build`
+- **Start command:** `npm run start`
 
-If the website is “not being hosted according to plan”, it is usually one of these issues:
-1. Frontend deployed without `NEXT_PUBLIC_API_BASE_URL` pointing to Render.
-2. Backend deployed without required env vars (`DATABASE_URL`, `JWT_SECRET`, `FAIRFETCH_TOKEN_SECRET`).
-3. DNS/domain records point at the wrong provider.
-4. Database migrations were not applied in production.
+Required production backend environment variables:
 
-### A) Deploy backend on Render
+- `DATABASE_URL` (secret)
+- `JWT_SECRET` (secret)
+- `FAIRFETCH_TOKEN_SECRET` (secret strongly recommended)
+- `PORT` (Render injects automatically; keep app bound to `process.env.PORT`)
 
-1. Create a new **Web Service** from this repo.
-2. Set **Root Directory** to `backend`.
-3. Build command:
-   ```bash
-   npm install && npm run build
-   ```
-4. Start command:
-   ```bash
-   npm run start
-   ```
-5. Add environment variables in Render:
-   - `DATABASE_URL` (Render Postgres or external Postgres)
-   - `JWT_SECRET`
-   - `FAIRFETCH_TOKEN_SECRET`
-   - `PORT` (Render usually injects this automatically)
+Database expectations:
 
-After each Prisma schema change, run migrations against production DB:
+- Provision PostgreSQL before first deploy
+- Apply migrations during deploy/release process:
 
 ```bash
 cd backend
 npx prisma migrate deploy
 ```
 
-Verify backend:
+Healthcheck endpoint:
 
-```bash
-curl https://<your-render-service>/api/health
-```
+- `GET /api/health`
 
-### B) Deploy frontend on Vercel
+## Frontend service (Render static/Node, Vercel, or other)
 
-1. Create a Vercel project from this repo.
-2. Set **Root Directory** to `frontend`.
-3. Build command (default):
-   ```bash
-   npm run build
-   ```
-4. Add environment variable:
-   - `NEXT_PUBLIC_API_BASE_URL=https://<your-render-service>`
+- **Root directory:** `frontend`
+- **Build command:** `npm ci && npm run build`
+- **Start command:** `npm run start` (if deploying as Next.js server)
 
-Redeploy frontend whenever backend domain changes.
+Required frontend environment variable:
 
-### C) Domain and DNS checklist (important)
+- `NEXT_PUBLIC_API_BASE_URL` (non-secret): URL of backend API origin (example: `https://api.<your-domain>`)
 
-If you are using a custom domain, split traffic by responsibility:
+## Recommended scripts
 
-- `app.<your-domain>` (or apex site) -> **Vercel frontend**
-- `api.<your-domain>` -> **Render backend**
+### Backend (`backend/package.json`)
 
-Then set:
+- `npm run build`
+- `npm run start`
+- `npm run dev`
+- `npm run test`
+- `npm run prisma:migrate`
+- `npm run prisma:generate`
+- `npm run aggregate`
 
-```dotenv
-NEXT_PUBLIC_API_BASE_URL=https://api.<your-domain>
-```
+### Frontend (`frontend/package.json`)
 
-For the tokenized host flow, requests like `https://fairfetch.<publisher-domain>/<path>` must reach the backend service because host-based rewrite happens in Express middleware. If that hostname points to Vercel, token spend routes will fail.
+- `npm run build`
+- `npm run start`
+- `npm run dev`
+- `npm run lint`
 
-### D) Production readiness checklist
+## Troubleshooting
 
-- [ ] Render backend healthy at `/api/health`
-- [ ] Vercel frontend builds successfully
-- [ ] Frontend env uses the Render/API domain
-- [ ] Backend env includes `DATABASE_URL`, `JWT_SECRET`, `FAIRFETCH_TOKEN_SECRET`
-- [ ] `prisma migrate deploy` has run on production DB
-- [ ] DNS records point frontend hostnames to Vercel and API/token hosts to Render
+- **`Missing required environment variable(s)`**
+  - Ensure `.env` exists and includes `DATABASE_URL` and `JWT_SECRET` for backend startup.
+- **Prisma database connection errors (`PrismaClientInitializationError`, `ECONNREFUSED`, timeout)**
+  - Confirm DB host/port/credentials in `DATABASE_URL`.
+  - Confirm database is running and reachable from the backend runtime.
+- **App not reachable in production**
+  - Confirm service binds to `process.env.PORT`.
+  - Confirm healthcheck path is `/api/health`.
+- **Frontend can’t call API**
+  - Check `NEXT_PUBLIC_API_BASE_URL` points to backend API origin.
 
-### E) One-command local restart flow
+## Naming consistency
 
-```bash
-docker compose up -d
-npm --prefix backend run prisma:migrate
-npm --prefix backend run dev
-npm --prefix frontend run dev
-```
+Project naming is standardized as **Fairfetch** (service identifiers use lowercase `fairfetch`).
 
----
-
-## Local API smoke examples
-
-### Signup / Login
-
-```bash
-curl -X POST http://localhost:4000/api/auth/signup \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"pub@example.com","password":"Pass123!","role":"PUBLISHER","name":"Publisher One"}'
-```
-
-```bash
-curl -X POST http://localhost:4000/api/auth/signup \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"ai@example.com","password":"Pass123!","role":"AICLIENT","name":"Agentic Labs"}'
-```
-
-### Gateway fetch
-
-```bash
-curl "http://localhost:4000/api/gateway/fetch?url=https://example.com/news/1&license_type=display&format=markdown&max_price_micros=500000" \
-  -H "X-API-Key: YOUR_KEY" \
-  -H "X-Request-Id: req-123"
-```
-
-### Mint token
-
-```bash
-curl -X POST "http://localhost:4000/api/token" \
-  -H "X-API-Key: YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"url":"https://example.com/news/1","license_type":"display","user_agent":"my-bot/1.0","format":"markdown","max_price_micros":500000}'
-```
-
-### Spend token (local host-header simulation)
-
-```bash
-curl "http://localhost:4000/news/1" \
-  -H "Host: fairfetch.example.com" \
-  -H "Fairfetch-Org-Id: 1" \
-  -H "Fairfetch-Token: <token>" \
-  -H "User-Agent: my-bot/1.0"
-```
+Legacy naming may still exist in non-runtime places (for example UI class/token names or historical schema text) where renaming is not required for correctness.
