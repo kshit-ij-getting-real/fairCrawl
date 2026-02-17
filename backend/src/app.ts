@@ -12,7 +12,7 @@ import { isDatabaseHealthy } from './db';
 const createRequestId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
 
-const isDatabaseUnavailableError = (error: Error) => {
+export const isDatabaseUnavailableError = (error: Error) => {
   const message = error.message.toLowerCase();
   return (
     error.name.includes('PrismaClientInitializationError')
