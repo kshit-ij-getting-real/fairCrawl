@@ -83,6 +83,10 @@ npm --prefix frontend run dev
 
 ## Production setup (Render-first, generic)
 
+## Tokenized host routing requirement
+
+For publisher-domain tokenized host flows, configure DNS so `fairfetch.<publisher-domain>` points to the **backend Express service** (Render), not the frontend host (for example Vercel). The backend host-rewrite middleware routes these requests correctly before handing responses back to clients.
+
 ## Backend service (Render web service)
 
 - **Root directory:** `backend`
