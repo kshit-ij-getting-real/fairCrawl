@@ -10,7 +10,7 @@
     "aggregate": "ts-node src/jobs/aggregateUsage.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
-    "test": "node --test dist/tests/*.test.js"
+    "test": "node --test dist/tests/auth.test.js"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",

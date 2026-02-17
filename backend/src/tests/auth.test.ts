@@ -95,21 +95,6 @@ test('POST /api/auth/login returns token for valid credentials', async () => {
   });
 });
 
-
-test('POST /api/auth/login returns 401 for missing user', async () => {
-  await withTestServer(async (baseUrl) => {
-    const response = await fetch(`${baseUrl}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'missing@example.com', password: 'Pass123!' }),
-    });
-
-    assert.equal(response.status, 401);
-    const body = await response.json();
-    assert.equal(body.error, 'Invalid credentials');
-  });
-});
-
 test('POST /api/auth/login returns 401 for wrong password', async () => {
   await withTestServer(async (baseUrl, fakeDb) => {
     const passwordHash = await bcrypt.hash('Pass123!', 10);

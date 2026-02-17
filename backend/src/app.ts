@@ -11,17 +11,6 @@ import { isDatabaseHealthy } from './db';
 
 const createRequestId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
-
-export const isDatabaseUnavailableError = (error: Error) => {
-  const message = error.message.toLowerCase();
-  return (
-    error.name.includes('PrismaClientInitializationError')
-    || message.includes("can't reach database server")
-    || message.includes('database server')
-    || message.includes('environment variable not found: database_url')
-  );
-};
-
 export const createApp = () => {
   const app = express();
 
@@ -77,10 +66,6 @@ export const createApp = () => {
 
     if (req.path === '/api/health') {
       return res.status(500).json({ ok: false, db: 'down' });
-    }
-
-    if (isDatabaseUnavailableError(normalizedError)) {
-      return res.status(503).json({ error: 'Service temporarily unavailable' });
     }
 
     return res.status(500).json({ error: 'Internal server error' });
