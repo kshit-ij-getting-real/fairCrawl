@@ -4,6 +4,10 @@ import { API_BASE_URL } from './apiBase';
 import { getToken } from './session';
 
 export async function apiFetch(path: string, init: RequestInit = {}) {
+  if (!API_BASE_URL) {
+    throw new Error('Missing NEXT_PUBLIC_API_BASE_URL');
+  }
+
   const token = getToken();
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
