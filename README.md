@@ -91,7 +91,7 @@ For publisher-domain tokenized host flows, configure DNS so `fairfetch.<publishe
 
 - **Root directory:** `backend`
 - **Build command:** `npm ci && npm run build`
-- **Start command:** `npm run start`
+- **Start command:** `npx prisma migrate deploy && npm run start`
 
 Required production backend environment variables:
 
@@ -102,13 +102,9 @@ Required production backend environment variables:
 
 Database expectations:
 
-- Provision PostgreSQL before first deploy
-- Apply migrations during deploy/release process:
-
-```bash
-cd backend
-npx prisma migrate deploy
-```
+- Provision PostgreSQL before first deploy.
+- The service start command should run `npx prisma migrate deploy` on boot before launching the API.
+- If a migration fails on a brand-new project database, the simplest recovery is to create a new Render Postgres database, then update `DATABASE_URL` to that new instance.
 
 Healthcheck endpoint:
 
