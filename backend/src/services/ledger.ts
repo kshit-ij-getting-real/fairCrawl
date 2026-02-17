@@ -56,7 +56,7 @@ export const writeLedgerTransaction = async (input: WriteTransactionInput) => {
     });
 
     if (input.tokenId) {
-      await tx.spendToken.update({ where: { id: input.tokenId }, data: { spentAt: new Date() } });
+      await tx.spendToken.update({ where: { id: input.tokenId }, data: { spentAt: new Date(), status: 'SPENT' } });
     }
 
     return created;

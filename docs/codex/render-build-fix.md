@@ -1,8 +1,8 @@
-# Render build fix report
+# deployment service build fix report
 
-## What failed on Render
+## What failed on deployment service
 
-Render build failed with:
+deployment service build failed with:
 
 ```text
 src/tests/app.test.ts(3,10): error TS2305: Module '"../app"' has no exported member 'isDatabaseUnavailableError'.
@@ -49,7 +49,7 @@ Standardized package and local setup naming to `fairfetch` where safe:
   - `.env.example`
   - `docker-compose.yml`
   - `fairfetch-notes/market-primitives.md`
-- Rewrote root `README.md` around Fairfetch naming and Render-first deployment flow
+- Rewrote root `README.md` around Fairfetch naming and deployment service-first deployment flow
 
 ## Open issues
 

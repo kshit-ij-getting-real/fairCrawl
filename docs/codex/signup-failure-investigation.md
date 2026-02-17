@@ -34,7 +34,7 @@
     - Rationale: keep error explicit and actionable at request time instead of crashing during module import.
 
 - Open issues / external checks (each item: what to check, where, expected vs actual, how it could break signup)
-  - Check `NEXT_PUBLIC_API_BASE_URL` in deployment environment (e.g., Vercel project settings).
+  - Check `NEXT_PUBLIC_API_BASE_URL` in deployment environment (e.g., deployment host project settings).
     - Where read: `frontend/src/lib/apiBase.ts`.
     - Expected: absolute URL to backend origin (e.g. `https://<backend-domain>`).
     - Actual in this sandbox: unset by default.

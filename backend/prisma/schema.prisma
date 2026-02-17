@@ -28,6 +28,12 @@ enum ContentFormat {
   JSON
 }
 
+enum SpendTokenStatus {
+  ACTIVE
+  SPENT
+  EXPIRED
+}
+
 enum PriceRuleScope {
   BOT
   PAGE
@@ -87,8 +93,10 @@ model Domain {
   readEvents  ReadEvent[]
   pricingRules PricingRule[]
   contentFilters ContentFilter[]
+  licenses      License[]
   mintedTokens SpendToken[]
   ledgerTransactions LedgerTransaction[]
+  webhooks      PublisherWebhook[]
   subdomainCnameTarget String?
   subdomainHost String?
   verificationMethod String @default("DNS_TXT")
@@ -117,12 +125,27 @@ model PricingRule {
   keywordExpression String?
   freshnessWindowMins Int?
   licenseType       LicenseType?
+  licenseId         Int?
   priceMicros       Int
   priority          Int            @default(100)
   enabled           Boolean        @default(true)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   domain            Domain         @relation(fields: [domainId], references: [id])
+  license           License?       @relation(fields: [licenseId], references: [id])
+}
+
+model License {
+  id           Int           @id @default(autoincrement())
+  domainId     Int
+  code         String
+  terms        String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  domain       Domain        @relation(fields: [domainId], references: [id])
+  pricingRules PricingRule[]
+
+  @@unique([domainId, code])
 }
 
 model ContentFilter {
@@ -145,16 +168,31 @@ model SpendToken {
   licenseType       LicenseType
   format            ContentFormat
   userAgent         String
+  agentIdentity     String?
+  maxPriceMicros    Int?
   priceMicros       Int
   platformFeeMicros Int
   totalMicros       Int
   tokenHash         String        @unique
   expiresAt         DateTime
   spentAt           DateTime?
+  status            SpendTokenStatus @default(ACTIVE)
   createdAt         DateTime      @default(now())
   aiClient          AIClient      @relation(fields: [aiClientId], references: [id])
   domain            Domain        @relation(fields: [domainId], references: [id])
   ledgerTransaction LedgerTransaction?
+}
+
+model PublisherWebhook {
+  id          Int      @id @default(autoincrement())
+  domainId    Int
+  url         String
+  eventType   String
+  secret      String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  domain      Domain   @relation(fields: [domainId], references: [id])
 }
 
 model LedgerTransaction {

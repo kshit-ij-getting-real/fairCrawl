@@ -69,16 +69,16 @@ export default function Page() {
                     allowed
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-slate-300">AI crawler atlas-research.ai · Allowed at 5 req/sec</p>
+                <p className="mt-2 text-xs text-slate-300">AI client atlas-research.ai · Allowed at 5 req/sec</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between text-sm text-white">
-                  <span className="font-semibold">Blocked: /drafts/*</span>
+                  <span className="font-semibold">Not listed: /drafts/*</span>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                    blocked
+                    not listed
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-slate-300">AI crawler unknown · Blocked by publisher rules</p>
+                <p className="mt-2 text-xs text-slate-300">AI client unknown · Not listed by publisher rules</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between text-sm text-white">
@@ -87,7 +87,7 @@ export default function Page() {
                     metered
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-slate-300">AI crawler lumenai · Requests logged for payouts</p>
+                <p className="mt-2 text-xs text-slate-300">AI client lumenai · Requests logged for payouts</p>
               </div>
             </div>
           </MarketingCard>
@@ -123,7 +123,7 @@ export default function Page() {
               <SectionEyebrow className="text-blue-200">For AI teams</SectionEyebrow>
               <h2 className="text-xl font-semibold">Source the best data, without guesswork</h2>
               <p className="text-sm text-white/70">
-                Use one gateway where every site’s access rules and pricing are clear. Get predictable, licensed access to high-quality content instead of scraping around random blocks.
+                Use one gateway where every site’s access rules and pricing are clear. Get predictable, licensed access to high-quality content instead of requesting around random blocks.
               </p>
             </div>
             <div className="flex justify-end gap-3 pt-4">

@@ -1,159 +1,57 @@
-# Fairfetch
+# FairFetch
 
-Fairfetch is a two-service platform for licensed content access: an Express + Prisma backend API and a Next.js frontend dashboard for publishers and AI clients.
+FairFetch is an opt-in marketplace for paid access to paywalled content.
 
-## Repository layout
+## Repo layout
+- `backend/` Express + Prisma API
+- `frontend/` Next.js app (marketing, dashboard, docs)
 
-- `backend/` — API server, auth, pricing, token mint/spend, usage reporting
-- `frontend/` — dashboard UI
-- `docker-compose.yml` — local PostgreSQL service
-
-## Requirements
-
-- Node.js **22.x** (recommended for Render parity)
-- npm 10+
-- Docker (for local PostgreSQL) or an external PostgreSQL instance
-
-## Local development (copy/paste)
-
-### 1) Clone and install dependencies
-
+## Local setup
 ```bash
-git clone <your-repo-url>
-cd fairfetch
 npm --prefix backend ci
 npm --prefix frontend ci
-```
-
-### 2) Configure environment variables
-
-```bash
+docker compose up -d
 cp .env.example .env
 cp frontend/.env.example frontend/.env.local
-```
-
-Required backend environment variables in `.env`:
-
-- `DATABASE_URL` (secret): PostgreSQL connection string
-- `JWT_SECRET` (secret): signing key for auth tokens
-- `PORT` (optional): backend HTTP port (defaults to `4000`)
-- `FAIRFETCH_TOKEN_SECRET` (secret recommended): spend token secret (falls back to dev default if omitted)
-
-Example local `.env`:
-
-```dotenv
-DATABASE_URL=postgresql://fairfetch:fairfetch@localhost:5432/fairfetch
-JWT_SECRET=replace-with-a-long-random-secret
-FAIRFETCH_TOKEN_SECRET=replace-with-a-different-long-random-secret
-PORT=4000
-```
-
-### 3) Start PostgreSQL
-
-```bash
-docker compose up -d
-```
-
-### 4) Run Prisma migration and client generation
-
-```bash
 npm --prefix backend run prisma:migrate
 npm --prefix backend run prisma:generate
+npm --prefix backend run seed
 ```
 
-### 5) Start services
+Backend `.env` keys:
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `FAIRFETCH_TOKEN_SECRET`
+- `PORT` (optional)
 
-Backend:
-
+## Run
 ```bash
 npm --prefix backend run dev
-```
-
-Frontend (new terminal):
-
-```bash
 npm --prefix frontend run dev
 ```
 
-### 6) Validate locally
+## Build checks
+```bash
+npm --prefix backend run build
+npm --prefix frontend run build
+```
 
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:4000/api`
-- Healthcheck: `http://localhost:4000/api/health`
+## Paid lane flow
+1. Publisher creates property and rates.
+2. AI client calls `GET /api/rates?url=...`.
+3. AI client mints token with `POST /api/tokens`.
+4. AI client fetches content with `GET /api/content?url=...` and `x-fairfetch-token`.
+5. Transaction is visible at `GET /api/publisher/transactions` and `GET /api/aiclient/transactions`.
 
-## Production setup (Render-first, generic)
+## Seed data
+The seed script creates:
+- 1 publisher user
+- 1 AI client user
+- 1 verified property
+- 2 licenses
+- 2 rates
 
-## Tokenized host routing requirement
-
-For publisher-domain tokenized host flows, configure DNS so `fairfetch.<publisher-domain>` points to the **backend Express service** (Render), not the frontend host (for example Vercel). The backend host-rewrite middleware routes these requests correctly before handing responses back to clients.
-
-## Backend service (Render web service)
-
-- **Root directory:** `backend`
-- **Build command:** `npm ci && npm run build`
-- **Start command:** `npx prisma migrate deploy && npm run start`
-
-Required production backend environment variables:
-
-- `DATABASE_URL` (secret)
-- `JWT_SECRET` (secret)
-- `FAIRFETCH_TOKEN_SECRET` (secret strongly recommended)
-- `PORT` (Render injects automatically; keep app bound to `process.env.PORT`)
-
-Database expectations:
-
-- Provision PostgreSQL before first deploy.
-- The service start command should run `npx prisma migrate deploy` on boot before launching the API.
-- If a migration fails on a brand-new project database, the simplest recovery is to create a new Render Postgres database, then update `DATABASE_URL` to that new instance.
-
-Healthcheck endpoint:
-
-- `GET /api/health`
-
-## Frontend service (Render static/Node, Vercel, or other)
-
-- **Root directory:** `frontend`
-- **Build command:** `npm ci && npm run build`
-- **Start command:** `npm run start` (if deploying as Next.js server)
-
-Required frontend environment variable:
-
-- `NEXT_PUBLIC_API_BASE_URL` (non-secret): URL of backend API origin (example: `https://api.<your-domain>`)
-
-## Recommended scripts
-
-### Backend (`backend/package.json`)
-
-- `npm run build`
-- `npm run start`
-- `npm run dev`
-- `npm run test`
-- `npm run prisma:migrate`
-- `npm run prisma:generate`
-- `npm run aggregate`
-
-### Frontend (`frontend/package.json`)
-
-- `npm run build`
-- `npm run start`
-- `npm run dev`
-- `npm run lint`
-
-## Troubleshooting
-
-- **`Missing required environment variable(s)`**
-  - Ensure `.env` exists and includes `DATABASE_URL` and `JWT_SECRET` for backend startup.
-- **Prisma database connection errors (`PrismaClientInitializationError`, `ECONNREFUSED`, timeout)**
-  - Confirm DB host/port/credentials in `DATABASE_URL`.
-  - Confirm database is running and reachable from the backend runtime.
-- **App not reachable in production**
-  - Confirm service binds to `process.env.PORT`.
-  - Confirm healthcheck path is `/api/health`.
-- **Frontend can’t call API**
-  - Check `NEXT_PUBLIC_API_BASE_URL` points to backend API origin.
-
-## Naming consistency
-
-Project naming is standardized as **Fairfetch** (service identifiers use lowercase `fairfetch`).
-
-Legacy naming may still exist in non-runtime places (for example UI class/token names or historical schema text) where renaming is not required for correctness.
+Run:
+```bash
+npm --prefix backend run seed
+```

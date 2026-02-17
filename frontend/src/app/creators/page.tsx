@@ -9,7 +9,7 @@ const CreatorsPage = () => {
         <SubpageHero
           eyebrow="For creators & publishers"
           title="FairFetch for creators & publishers"
-          description="Set rules per path, see which AI crawlers read your work, and turn AI training into income."
+          description="Set rules per path, see which AI clients read your work, and turn AI training into income."
         />
 
         <div className="grid items-stretch gap-6 md:grid-cols-3">
@@ -31,19 +31,19 @@ const CreatorsPage = () => {
                 </div>
               </div>
               <p className="text-sm text-white/70">
-                Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AI can read and how fast each crawler can go.
+                Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AI can read and how fast each client can go.
               </p>
             </div>
           </MarketingCard>
 
           <MarketingCard className="flex h-full flex-col justify-center text-white">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-50">Turn crawlers into paid feeds</h3>
+              <h3 className="text-lg font-semibold text-slate-50">Turn clients into paid feeds</h3>
               <ul className="space-y-3">
                 {[
                   'Stop AIs reading your work for free.',
                   'Use one rule set to decide what’s open, what’s premium, and what each AI team pays.',
-                  'When crawlers use FairFetch, they get a controlled, logged feed instead of scraping around your site.',
+                  'When clients use FairFetch, they get a controlled, logged feed instead of requesting around your site.',
                 ].map((item) => (
                   <li key={item} className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
@@ -59,7 +59,7 @@ const CreatorsPage = () => {
               <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
               <ul className="space-y-3">
                 {[
-                  'See which crawlers hit which paths, how often, and what they read.',
+                  'See which clients hit which paths, how often, and what they read.',
                   'Use a shared log as the source of truth for audits, payouts, and disputes.',
                   'Give AI teams and publishers the same record of how your work was used.',
                 ].map((item) => (

@@ -19,7 +19,7 @@ const VisionPage = () => {
               label: 'AI as a user',
               title: 'AI as a first-class web user',
               body:
-                'Most of the web was built for human browsers. FairFetch treats AI crawlers as first-class users so they can access content without breaking sites, and creators can set clear terms for that access.',
+                'Most of the web was built for human browsers. FairFetch treats AI clients as first-class users so they can access content without breaking sites, and creators can set clear terms for that access.',
             },
             {
               label: 'Consent & speed',
