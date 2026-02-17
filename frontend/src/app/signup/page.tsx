@@ -58,7 +58,7 @@ function SignupContent() {
               <ul className="list-disc list-inside space-y-1">
                 <li>Add a domain you control.</li>
                 <li>Prove you own it by serving a small verification file.</li>
-                <li>Set crawl policies and see which AI crawlers access your site.</li>
+                <li>Set crawl policies and see which AI clients access your site.</li>
               </ul>
             </div>
           </div>

@@ -15,7 +15,7 @@ const AboutPage = () => {
             <MarketingCard className="text-white">
               <h3 className="text-lg font-semibold">AI as a first-class web user</h3>
               <p className="mt-2 text-sm leading-relaxed text-white/70">
-                Most of the web’s infrastructure was built for human browsers. AIs behave differently: they read at scale, remix content, and never sleep. We assume this, and design FairFetch as infrastructure for the web’s new user, not a bolt-on scraper.
+                Most of the web’s infrastructure was built for human browsers. AIs behave differently: they read at scale, remix content, and never sleep. We assume this, and design FairFetch as infrastructure for the web’s new user, not a bolt-on client.
               </p>
             </MarketingCard>
             <MarketingCard className="text-white">

@@ -7,6 +7,8 @@ import { FairFetchError } from '../utils/errors';
 const secret = process.env.FAIRFETCH_TOKEN_SECRET || 'dev-secret';
 
 export type TokenPayload = {
+  agent_identity?: string;
+  max_price_micros?: number;
   token_id: string;
   developer_org_id: number;
   property_id: number;
@@ -40,6 +42,8 @@ export const mintToken = async (payload: TokenPayload) => {
       totalMicros: payload.price_micros + payload.platform_fee_micros,
       tokenHash,
       expiresAt: new Date(exp * 1000),
+      agentIdentity: payload.agent_identity || null,
+      maxPriceMicros: payload.max_price_micros ?? null,
     },
   });
   return { token, exp };

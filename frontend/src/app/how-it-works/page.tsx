@@ -6,7 +6,7 @@ const HowItWorksPage = () => {
   const steps = [
     {
       title: 'Crawler hits your site',
-      body: 'An AI crawler tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairFetch gateway.',
+      body: 'An AI client tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairFetch gateway.',
     },
     {
       title: 'Request goes through FairFetch',
@@ -14,7 +14,7 @@ const HowItWorksPage = () => {
     },
     {
       title: 'You set the rules — and get paid',
-      body: 'You choose which paths are open, premium, throttled, or blocked, and what each crawler pays. FairFetch logs every access, returns content when allowed, and records the transaction so you can track earnings.',
+      body: 'You choose which paths are open, premium, throttled, or not listed, and what each client pays. FairFetch logs every access, returns content when allowed, and records the transaction so you can track earnings.',
     },
   ];
 
@@ -27,10 +27,10 @@ const HowItWorksPage = () => {
           description={
             <>
               <p>
-                FairFetch sits between AI crawlers and the sites they read. Crawlers authenticate, you set the rules, and FairFetch checks every request before content is returned.
+                FairFetch sits between AI clients and the sites they read. Clients authenticate, you set the rules, and FairFetch checks every request before content is returned.
               </p>
               <p>
-                AI crawlers go through FairFetch instead of scraping in the dark. You decide which paths are open, premium, throttled, or blocked, and every request is logged so both sides see the same record.
+                AI clients go through FairFetch instead of requesting in the dark. You decide which paths are open, premium, throttled, or not listed, and every request is logged so both sides see the same record.
               </p>
             </>
           }
