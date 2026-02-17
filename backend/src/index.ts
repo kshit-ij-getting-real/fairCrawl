@@ -1,41 +1,21 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
-import authRouter from './routes/auth';
-import publisherRouter from './routes/publisher';
-import aiClientRouter from './routes/aiclient';
-import policyRouter from './routes/policy';
-import gatewayRouter from './routes/gateway';
-import { authenticate, requireRole } from './middleware/auth';
+import { createApp } from './app';
+import { connectToDatabase } from './db';
+import { assertRequiredEnv } from './config';
 
-dotenv.config();
+const startServer = async () => {
+  assertRequiredEnv();
+  await connectToDatabase();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
+  const app = createApp();
+  const port = process.env.PORT || 4000;
 
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+  app.listen(port, () => {
+    console.log(`FairFetch backend listening on port ${port}`);
+  });
+};
 
-
-app.use((req, _res, next) => {
-  const host = (req.headers.host || '').split(':')[0].toLowerCase();
-  if (host.startsWith('fairfetch.') && !req.path.startsWith('/api/')) {
-    const query = req.url.includes('?') ? `?${req.url.split('?')[1]}` : '';
-    req.url = `/api/fairfetch${req.path}${query}`;
-  }
-  next();
-});
-
-app.use('/api/auth', authRouter);
-app.use('/api', policyRouter);
-app.use('/api', gatewayRouter);
-app.use('/api/publisher', authenticate, requireRole('PUBLISHER'), publisherRouter);
-app.use('/api/aiclient', authenticate, requireRole('AICLIENT'), aiClientRouter);
-app.use('/api/client', authenticate, requireRole('AICLIENT'), aiClientRouter);
-
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`FairFetch backend listening on port ${port}`);
+startServer().catch((error) => {
+  const normalizedError = error instanceof Error ? error : new Error('Failed to start server');
+  console.error(normalizedError.message);
+  process.exit(1);
 });
