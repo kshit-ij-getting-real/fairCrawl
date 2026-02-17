@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import { Role } from '@prisma/client';
-
-dotenv.config();
+import { getJwtSecret } from '../config';
 
 export interface AuthRequest extends Request {
   /**
@@ -30,7 +28,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as {
+    const decoded = jwt.verify(token, getJwtSecret()) as {
       userId: number;
       role: Role;
     };
