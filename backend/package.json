@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "aggregate": "ts-node src/jobs/aggregateUsage.ts",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "test": "node --test dist/tests/auth.test.js"
   },

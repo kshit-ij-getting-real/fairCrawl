@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: fairfetch-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fairfetch-postgres
+          property: internalConnectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: FAIRFETCH_TOKEN_SECRET
+        sync: false
+
+databases:
+  - name: fairfetch-postgres
