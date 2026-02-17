@@ -111,7 +111,7 @@ Frontend API base URL is centralized via `NEXT_PUBLIC_API_BASE_URL`.
 
 ### 1) Prerequisites
 - Node.js 18+
-- npm
+- npm 9+
 - Docker (or compatible container runtime)
 
 ### 2) Configure environment variables
@@ -119,9 +119,10 @@ From repo root:
 
 ```bash
 cp .env.example .env
+cp frontend/.env.example frontend/.env.local
 ```
 
-Recommended `.env` values:
+Recommended `.env` values for local development:
 
 ```dotenv
 DATABASE_URL=postgresql://fairmarket:fairmarket@localhost:5432/fairmarket
@@ -130,120 +131,136 @@ FAIRFETCH_TOKEN_SECRET=replace-with-another-long-random-secret
 PORT=4000
 ```
 
-For frontend:
-
-```bash
-cp frontend/.env.example frontend/.env.local
-```
-
 `frontend/.env.local` should include:
 
 ```dotenv
 NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 ```
 
+> `FAIRFETCH_TOKEN_SECRET` currently falls back to `dev-secret` if unset, but you should always set it explicitly in production.
+
 ### 3) Start Postgres
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
-### 4) Install + start backend
+### 4) Install dependencies
 
 ```bash
-cd backend
-npm install
-npx prisma migrate dev
-npm run dev
+npm --prefix backend install
+npm --prefix frontend install
 ```
 
-> `npm install` now runs `prisma generate` automatically (via `postinstall`), so local TypeScript types and deploy builds stay aligned with `prisma/schema.prisma`.
-
-Backend runs at: `http://localhost:4000`
-
-Health check:
+### 5) Run database migrations
 
 ```bash
-curl http://localhost:4000/api/health
+npm --prefix backend run prisma:migrate
 ```
 
-### 5) Install + start frontend
-In a second terminal:
+### 6) Start backend + frontend
+In separate terminals:
 
 ```bash
-cd frontend
-npm install
-npm run dev
+npm --prefix backend run dev
+npm --prefix frontend run dev
 ```
 
-Frontend runs at: `http://localhost:3000`
+### 7) Local access points
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:4000/api`
+- Health check: `http://localhost:4000/api/health`
 
 ---
 
-## Render + Vercel workflow (while developing locally)
+## Production setup (current toolchain: Render + Vercel)
 
-Use this setup so you can keep coding locally and deploy consistently:
+This repo is structured to deploy as **two services**:
+- **Backend API on Render** (root directory `backend`)
+- **Frontend on Vercel** (root directory `frontend`)
 
-### Render (backend)
+If the website is “not being hosted according to plan”, it is usually one of these issues:
+1. Frontend deployed without `NEXT_PUBLIC_API_BASE_URL` pointing to Render.
+2. Backend deployed without required env vars (`DATABASE_URL`, `JWT_SECRET`, `FAIRFETCH_TOKEN_SECRET`).
+3. DNS/domain records point at the wrong provider.
+4. Database migrations were not applied in production.
 
-1. **Render service root**: set Root Directory to `backend`.
-2. **Build command**:
+### A) Deploy backend on Render
+
+1. Create a new **Web Service** from this repo.
+2. Set **Root Directory** to `backend`.
+3. Build command:
    ```bash
    npm install && npm run build
    ```
-   (`npm run build` runs `prisma generate && tsc`.)
-3. **Start command**:
+4. Start command:
    ```bash
    npm run start
    ```
-4. **Environment variables** (Render dashboard):
-   - `DATABASE_URL`
+5. Add environment variables in Render:
+   - `DATABASE_URL` (Render Postgres or external Postgres)
    - `JWT_SECRET`
    - `FAIRFETCH_TOKEN_SECRET`
-   - `PORT` (Render usually injects this; keep app reading `process.env.PORT`)
-5. **Database migrations on deploy**: run once per schema change before/after deploy:
-   ```bash
-   npx prisma migrate deploy
-   ```
+   - `PORT` (Render usually injects this automatically)
 
-### Vercel (frontend)
+After each Prisma schema change, run migrations against production DB:
 
-1. **Vercel project root**: set Root Directory to `frontend`.
-2. **Build command** (default is fine):
+```bash
+cd backend
+npx prisma migrate deploy
+```
+
+Verify backend:
+
+```bash
+curl https://<your-render-service>/api/health
+```
+
+### B) Deploy frontend on Vercel
+
+1. Create a Vercel project from this repo.
+2. Set **Root Directory** to `frontend`.
+3. Build command (default):
    ```bash
    npm run build
    ```
-3. **Environment variable**:
-   - `NEXT_PUBLIC_API_BASE_URL=https://<your-render-backend-domain>`
-4. Redeploy frontend whenever backend domain/env changes.
+4. Add environment variable:
+   - `NEXT_PUBLIC_API_BASE_URL=https://<your-render-service>`
 
-### Local-first development loop
+Redeploy frontend whenever backend domain changes.
 
-1. Run backend locally:
-   ```bash
-   cd backend
-   npm install
-   npx prisma migrate dev
-   npm run dev
-   ```
-2. Run frontend locally:
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-3. When schema changes:
-   - Commit `prisma/schema.prisma` and migration files.
-   - Push branch.
-   - Render build picks up generated client automatically from build script.
-   - Run `npx prisma migrate deploy` against Render DB.
+### C) Domain and DNS checklist (important)
 
-### 6) Access points locally
-- Marketing pages: `http://localhost:3000`
-- Signup/login: `http://localhost:3000/signup`, `http://localhost:3000/login`
-- Publisher dashboard: `http://localhost:3000/publisher/dashboard`
-- AI client dashboard: `http://localhost:3000/aiclient/dashboard`
-- Backend API base: `http://localhost:4000/api`
+If you are using a custom domain, split traffic by responsibility:
+
+- `app.<your-domain>` (or apex site) -> **Vercel frontend**
+- `api.<your-domain>` -> **Render backend**
+
+Then set:
+
+```dotenv
+NEXT_PUBLIC_API_BASE_URL=https://api.<your-domain>
+```
+
+For the tokenized host flow, requests like `https://fairfetch.<publisher-domain>/<path>` must reach the backend service because host-based rewrite happens in Express middleware. If that hostname points to Vercel, token spend routes will fail.
+
+### D) Production readiness checklist
+
+- [ ] Render backend healthy at `/api/health`
+- [ ] Vercel frontend builds successfully
+- [ ] Frontend env uses the Render/API domain
+- [ ] Backend env includes `DATABASE_URL`, `JWT_SECRET`, `FAIRFETCH_TOKEN_SECRET`
+- [ ] `prisma migrate deploy` has run on production DB
+- [ ] DNS records point frontend hostnames to Vercel and API/token hosts to Render
+
+### E) One-command local restart flow
+
+```bash
+docker compose up -d
+npm --prefix backend run prisma:migrate
+npm --prefix backend run dev
+npm --prefix frontend run dev
+```
 
 ---
 
