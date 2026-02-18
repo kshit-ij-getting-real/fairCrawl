@@ -18,6 +18,11 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  const demoSecret = process.env.NEXT_PUBLIC_DEMO_SECRET;
+  if (path.startsWith('/api/demo') && demoSecret) {
+    headers['x-demo-secret'] = demoSecret;
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, { ...init, headers });
 
   if (!response.ok) {

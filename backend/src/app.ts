@@ -6,6 +6,7 @@ import publisherRouter from './routes/publisher';
 import aiClientRouter from './routes/aiclient';
 import policyRouter from './routes/policy';
 import gatewayRouter from './routes/gateway';
+import demoRouter from './routes/demo';
 import { authenticate, requireRole } from './middleware/auth';
 import { isDatabaseHealthy } from './db';
 
@@ -69,6 +70,7 @@ export const createApp = () => {
   app.use('/api/publisher', authenticate, requireRole('PUBLISHER'), publisherRouter);
   app.use('/api/aiclient', authenticate, requireRole('AICLIENT'), aiClientRouter);
   app.use('/api/client', authenticate, requireRole('AICLIENT'), aiClientRouter);
+  app.use('/api/demo', authenticate, requireRole('PUBLISHER'), demoRouter);
 
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     const requestId = (req as Request & { requestId?: string }).requestId || 'unknown';

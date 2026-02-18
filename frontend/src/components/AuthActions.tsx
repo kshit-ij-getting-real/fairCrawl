@@ -6,10 +6,7 @@ import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '@/lib/apiBase';
 import { Role, clearSession, getRole, getToken } from '@/lib/api';
 
-type SessionState =
-  | { status: 'loading' }
-  | { status: 'guest' }
-  | { status: 'authenticated'; name: string; role: Role };
+type SessionState = { status: 'guest' } | { status: 'authenticated'; name: string; role: Role };
 
 type AuthActionsProps = {
   className?: string;
@@ -34,7 +31,9 @@ const fetchProfileName = async (role: Role, token: string) => {
 
 export function AuthActions({ className, variant = 'header' }: AuthActionsProps) {
   const router = useRouter();
-  const [session, setSession] = useState<SessionState>({ status: 'loading' });
+  const token = getToken();
+  const role = getRole();
+  const [session, setSession] = useState<SessionState>(token && role ? { status: 'authenticated', name: 'Dashboard', role } : { status: 'guest' });
 
   useEffect(() => {
     let active = true;
@@ -75,15 +74,6 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
 
   const containerClass =
     className || (variant === 'footer' ? 'flex items-center gap-4 text-sm' : 'flex items-center gap-4');
-
-  if (session.status === 'loading') {
-    const loadingTextClass = variant === 'footer' ? 'text-faircrawl-textMuted' : 'text-sm text-white/70';
-    return (
-      <div className={containerClass}>
-        <span className={loadingTextClass}>Loading...</span>
-      </div>
-    );
-  }
 
   if (session.status === 'guest') {
     const loginClass = variant === 'footer' ? 'hover:text-white' : 'text-sm text-white/70 hover:text-white';
