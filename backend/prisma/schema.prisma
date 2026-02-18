@@ -34,12 +34,6 @@ enum SpendTokenStatus {
   EXPIRED
 }
 
-enum DemoPriorityType {
-  AICLIENT
-  PATH_PREFIX
-  GLOBAL
-}
-
 enum PriceRuleScope {
   BOT
   PAGE
@@ -54,7 +48,6 @@ model User {
   email        String     @unique
   passwordHash String
   role         Role
-  demo         Boolean    @default(false)
   createdAt    DateTime   @default(now())
   publisher    Publisher?
   aiClient     AIClient?
@@ -68,9 +61,7 @@ model Publisher {
   domains    Domain[]
   readEvents ReadEvent[]
   balance    PublisherBalance?
-  transactions Transaction[]
   createdAt  DateTime          @default(now())
-  demo       Boolean           @default(false)
 }
 
 model AIClient {
@@ -86,11 +77,7 @@ model AIClient {
   agents       AgentIdentity[]
   mintedTokens SpendToken[]
   ledgerTransactions LedgerTransaction[]
-  transactions Transaction[]
-  usageAggDaily UsageAggDaily[]
-  usageAggDomain UsageAggDomain[]
   createdAt    DateTime        @default(now())
-  demo         Boolean         @default(false)
 }
 
 model Domain {
@@ -98,8 +85,6 @@ model Domain {
   publisherId Int
   name        String           @unique
   verified    Boolean          @default(false)
-  demoVerified Boolean          @default(false)
-  demo        Boolean           @default(false)
   verifyToken String           @default(uuid())
   publisher   Publisher        @relation(fields: [publisherId], references: [id])
   policies    AIPolicy[]
@@ -112,10 +97,6 @@ model Domain {
   mintedTokens SpendToken[]
   ledgerTransactions LedgerTransaction[]
   webhooks      PublisherWebhook[]
-  contentItems   ContentItem[]
-  transactions   Transaction[]
-  usageAggDaily  UsageAggDaily[]
-  usageAggDomain UsageAggDomain[]
   subdomainCnameTarget String?
   subdomainHost String?
   verificationMethod String @default("DNS_TXT")
@@ -129,7 +110,6 @@ model AgentIdentity {
   allowedUserAgentRe String
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
-  demo               Boolean  @default(false)
   aiClient           AIClient @relation(fields: [aiClientId], references: [id])
 
   @@unique([aiClientId, agentId])
@@ -149,12 +129,6 @@ model PricingRule {
   priceMicros       Int
   priority          Int            @default(100)
   enabled           Boolean        @default(true)
-  priorityType      DemoPriorityType?
-  matchValue        String?
-  summarizePriceMicros Int?
-  displayPriceMicros Int?
-  active            Boolean        @default(true)
-  demo              Boolean        @default(false)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   domain            Domain         @relation(fields: [domainId], references: [id])
@@ -237,7 +211,6 @@ model LedgerTransaction {
   totalMicros           Int
   currency              String        @default("USD")
   matchedRuleId         Int?
-  demo                  Boolean        @default(false)
   createdAt             DateTime      @default(now())
   aiClient              AIClient      @relation(fields: [aiClientId], references: [id])
   domain                Domain        @relation(fields: [domainId], references: [id])
@@ -263,7 +236,6 @@ model APIKey {
   keyHash    String           @unique
   createdAt  DateTime         @default(now())
   revokedAt  DateTime?
-  demo       Boolean          @default(false)
   aiClient   AIClient         @relation(fields: [aiClientId], references: [id])
   requests   RequestLog[]
   usages     UsageAggregate[]
@@ -327,60 +299,4 @@ model ClientBalance {
   balanceMicros Int      @default(0)
   updatedAt     DateTime @default(now())
   aiClient      AIClient @relation(fields: [clientId], references: [id])
-}
-
-
-model ContentItem {
-  id        Int      @id @default(autoincrement())
-  domainId  Int
-  path      String
-  title     String
-  demo      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  domain    Domain   @relation(fields: [domainId], references: [id])
-
-  @@unique([domainId, path])
-}
-
-model Transaction {
-  id          Int         @id @default(autoincrement())
-  domainId    Int
-  publisherId Int
-  aiClientId  Int
-  path        String
-  licenseType LicenseType
-  priceMicros Int
-  status      String      @default("SETTLED")
-  demo        Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  domain      Domain      @relation(fields: [domainId], references: [id])
-  publisher   Publisher   @relation(fields: [publisherId], references: [id])
-  aiClient    AIClient    @relation(fields: [aiClientId], references: [id])
-}
-
-model UsageAggDaily {
-  id         Int      @id @default(autoincrement())
-  date       DateTime
-  domainId   Int
-  aiClientId Int
-  requests   Int      @default(0)
-  spendMicros Int     @default(0)
-  demo       Boolean  @default(false)
-  domain     Domain   @relation(fields: [domainId], references: [id])
-  aiClient   AIClient @relation(fields: [aiClientId], references: [id])
-
-  @@unique([date, domainId, aiClientId])
-}
-
-model UsageAggDomain {
-  id         Int      @id @default(autoincrement())
-  domainId   Int
-  aiClientId Int
-  requests   Int      @default(0)
-  spendMicros Int     @default(0)
-  demo       Boolean  @default(false)
-  domain     Domain   @relation(fields: [domainId], references: [id])
-  aiClient   AIClient @relation(fields: [aiClientId], references: [id])
-
-  @@unique([domainId, aiClientId])
 }
