@@ -225,4 +225,159 @@ router.delete('/webhooks/:id', async (req: AuthRequest, res) => {
   return res.status(204).send();
 });
 
+
+
+router.get('/me', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  if (!publisher) return errorResponse(res, 404, 'PUBLISHER_NOT_FOUND', 'Publisher not found');
+  return res.json(publisher);
+});
+
+router.get('/domains', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  if (!publisher) return errorResponse(res, 404, 'PUBLISHER_NOT_FOUND', 'Publisher not found');
+  const domains = await prisma.domain.findMany({ where: { publisherId: publisher.id }, orderBy: { createdAt: 'desc' } });
+  res.json(domains.map((d) => ({ ...d, subdomainVerified: Boolean(d.subdomainHost && d.subdomainCnameTarget && d.verified) })));
+});
+
+router.post('/domains', async (req: AuthRequest, res) => {
+  req.body.domain = req.body.domain || req.body.name;
+  const publisher = await getPublisher(req.user!.id);
+  if (!publisher) return errorResponse(res, 404, 'PUBLISHER_NOT_FOUND', 'Publisher not found');
+  const name = String(req.body?.domain || '').trim().toLowerCase();
+  if (!name) return errorResponse(res, 400, 'INVALID_INPUT', 'domain is required');
+  const created = await prisma.domain.create({ data: { publisherId: publisher.id, name, subdomainHost: `paid.${name}`, subdomainCnameTarget: `fetch.${name}` } });
+  return res.status(201).json(created);
+});
+
+router.post('/domains/:id/demo-verify', async (req: AuthRequest, res) => {
+  if (process.env.DEMO_MODE !== 'true') return errorResponse(res, 403, 'DEMO_DISABLED', 'Demo mode disabled');
+  const publisher = await getPublisher(req.user!.id);
+  const domain = await prisma.domain.findFirst({ where: { id: Number(req.params.id), publisherId: publisher?.id } });
+  if (!domain) return errorResponse(res, 404, 'DOMAIN_NOT_FOUND', 'Domain not found');
+  const updated = await prisma.domain.update({ where: { id: domain.id }, data: { verified: true } });
+  return res.json(updated);
+});
+
+router.get('/overview', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  if (!publisher) return errorResponse(res, 404, 'PUBLISHER_NOT_FOUND', 'Publisher not found');
+  const domains = await prisma.domain.findMany({ where: { publisherId: publisher.id } });
+  const domainIds = domains.map((d) => d.id);
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const txs = await prisma.ledgerTransaction.findMany({ where: { domainId: { in: domainIds }, createdAt: { gte: since } }, include: { aiClient: true }, orderBy: { createdAt: 'desc' }, take: 10 });
+  const topClient = txs.reduce((acc: any, tx: any) => {
+    acc[tx.aiClient.name] = (acc[tx.aiClient.name] || 0) + tx.totalMicros;
+    return acc;
+  }, {} as Record<string, number>);
+  const topAIClient = Object.entries(topClient).sort((a: any, b: any) => Number(b[1]) - Number(a[1]))[0]?.[0] || null;
+  const revenueMicros = txs.reduce((sum, tx) => sum + tx.publisherAmountMicros, 0);
+  const licenses = await prisma.license.findMany({ where: { domainId: { in: domainIds } } });
+  const checklist = [
+    { key: 'domain', label: 'Add domain', done: domains.length > 0 },
+    { key: 'verify', label: 'Verify domain (DNS token)', done: domains.some((d) => d.verified) },
+    { key: 'subdomain', label: 'Configure paid-access subdomain', done: domains.some((d) => Boolean(d.subdomainHost)) },
+    { key: 'pricing', label: 'Set pricing + activate licenses', done: licenses.length > 0 },
+    { key: 'integrations', label: '(Optional) Enable integrations/log forwarding', done: false },
+  ];
+  return res.json({
+    kpis: { revenueMicros, requests30d: txs.length, activeDomains: domains.filter((d) => d.verified).length, topAIClient },
+    checklist,
+    recentTransactions: txs.map((tx) => ({ id: tx.id, createdAt: tx.createdAt, aiClient: tx.aiClient.name, path: tx.path, licenseType: tx.licenseType, publisherAmountMicros: tx.publisherAmountMicros })),
+  });
+});
+
+router.get('/pricing-rules', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const rules = await prisma.pricingRule.findMany({ where: { domain: { publisherId: publisher?.id } }, orderBy: { createdAt: 'desc' } });
+  res.json(rules.map((r) => ({ id: r.id, domainId: r.domainId, type: r.scope === 'BOT' ? 'AICLIENT' : r.scope, matchValue: r.userAgentRegex || r.pathPattern || r.keywordExpression || String(r.freshnessWindowMins || ''), licenseType: r.licenseType || 'SUMMARY', priceMicros: r.priceMicros, priority: r.priority, active: r.enabled })));
+});
+
+router.post('/pricing-rules', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const domain = await prisma.domain.findFirst({ where: { id: Number(req.body.domainId), publisherId: publisher?.id } });
+  if (!domain) return errorResponse(res, 404, 'DOMAIN_NOT_FOUND', 'Domain not found');
+  const mapScope: Record<string, PriceRuleScope> = { AICLIENT: 'BOT', PAGE: 'PAGE', DIRECTORY: 'DIRECTORY', FRESHNESS: 'FRESHNESS', KEYWORD: 'KEYWORD', GLOBAL: 'GLOBAL' };
+  const scope = mapScope[String(req.body.type)] || 'GLOBAL';
+  const rule = await prisma.pricingRule.create({ data: { domainId: domain.id, scope, userAgentRegex: scope === 'BOT' ? String(req.body.matchValue || '') : null, pathPattern: scope === 'PAGE' || scope === 'DIRECTORY' ? String(req.body.matchValue || '') : null, keywordExpression: scope === 'KEYWORD' ? String(req.body.matchValue || '') : null, freshnessWindowMins: scope === 'FRESHNESS' ? Number(req.body.matchValue || 0) : null, licenseType: req.body.licenseType === 'DISPLAY' ? 'DISPLAY' : 'SUMMARY', priceMicros: Number(req.body.priceMicros || 0), enabled: Boolean(req.body.active), priority: Number(req.body.priority || 100) } });
+  res.status(201).json(rule);
+});
+
+router.post('/pricing-rules/:id/activate', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const updated = await prisma.pricingRule.updateMany({ where: { id: Number(req.params.id), domain: { publisherId: publisher?.id } }, data: { enabled: true } });
+  if (!updated.count) return errorResponse(res, 404, 'RULE_NOT_FOUND', 'Rule not found');
+  res.json({ activated: true });
+});
+
+router.get('/license-settings', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const domains = await prisma.domain.findMany({ where: { publisherId: publisher?.id }, select: { id: true } });
+  const licenses = await prisma.license.findMany({ where: { domainId: { in: domains.map((d) => d.id) } } });
+  const summary = licenses.find((l) => l.code === 'SUMMARY');
+  const display = licenses.find((l) => l.code === 'DISPLAY');
+  res.json({ SUMMARY: { enabled: Boolean(summary), basePriceMicros: 0 }, DISPLAY: { enabled: Boolean(display), basePriceMicros: 0 } });
+});
+
+router.post('/license-settings', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const domain = await prisma.domain.findFirst({ where: { publisherId: publisher?.id }, orderBy: { createdAt: 'asc' } });
+  if (!domain) return errorResponse(res, 404, 'DOMAIN_NOT_FOUND', 'No domain found');
+  const payload = req.body || {};
+  for (const code of ['SUMMARY', 'DISPLAY']) {
+    if (payload?.[code]?.enabled) {
+      await prisma.license.upsert({ where: { domainId_code: { domainId: domain.id, code } }, create: { domainId: domain.id, code, terms: 'No training usage allowed. Access limited to licensed inference use.' }, update: { terms: 'No training usage allowed. Access limited to licensed inference use.' } });
+    }
+  }
+  res.json({ success: true });
+});
+
+router.post('/price-preview', async (req: AuthRequest, res) => {
+  const url = String(req.body?.url || '');
+  const parsed = new URL(url);
+  const domain = await prisma.domain.findUnique({ where: { name: parsed.host }, include: { pricingRules: true } });
+  if (!domain) return res.json({ ruleId: null, priceMicros: -1 });
+  const { resolvePrice } = await import('../services/pricing');
+  const out = resolvePrice({ rules: domain.pricingRules, path: parsed.pathname, fullUrl: url, userAgent: String(req.body?.aiClientId || ''), licenseType: req.body?.licenseType === 'DISPLAY' ? 'DISPLAY' : 'SUMMARY' });
+  res.json(out);
+});
+
+router.get('/transactions/export', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const domainIds = (await prisma.domain.findMany({ where: { publisherId: publisher?.id }, select: { id: true } })).map((d) => d.id);
+  const txs = await prisma.ledgerTransaction.findMany({ where: { domainId: { in: domainIds } }, include: { aiClient: true, domain: true }, orderBy: { createdAt: 'desc' }, take: 500 });
+  const lines = ['timestamp,ai_client,domain,path,license,price_micros,status,transaction_id', ...txs.map((tx) => `${tx.createdAt.toISOString()},${tx.aiClient.name},${tx.domain.name},${tx.path},${tx.licenseType},${tx.publisherAmountMicros},settled,${tx.id}`)];
+  res.json({ csv: lines.join('\n') });
+});
+
+router.get('/content-controls', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const controls = await prisma.contentFilter.findMany({ where: { domain: { publisherId: publisher?.id } }, orderBy: { createdAt: 'desc' } });
+  res.json(controls.map((c) => ({ id: c.id, pattern: c.blockedPathRegex || '' })));
+});
+
+router.post('/content-controls', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const domain = await prisma.domain.findFirst({ where: { publisherId: publisher?.id } });
+  if (!domain) return errorResponse(res, 404, 'DOMAIN_NOT_FOUND', 'No domain found');
+  const created = await prisma.contentFilter.create({ data: { domainId: domain.id, blockedPathRegex: String(req.body?.pattern || '') } });
+  res.status(201).json({ id: created.id, pattern: created.blockedPathRegex });
+});
+
+router.delete('/content-controls/:id', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const deleted = await prisma.contentFilter.deleteMany({ where: { id: Number(req.params.id), domain: { publisherId: publisher?.id } } });
+  if (!deleted.count) return errorResponse(res, 404, 'CONTROL_NOT_FOUND', 'Control not found');
+  res.status(204).send();
+});
+
+router.get('/payouts', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  const domainIds = (await prisma.domain.findMany({ where: { publisherId: publisher?.id }, select: { id: true } })).map((d) => d.id);
+  const txs = await prisma.ledgerTransaction.findMany({ where: { domainId: { in: domainIds } }, orderBy: { createdAt: 'desc' } });
+  const revenueMicros = txs.reduce((sum, tx) => sum + tx.publisherAmountMicros, 0);
+  const history = txs.slice(0, 5).map((tx) => ({ date: tx.createdAt.toISOString().slice(0, 10), amountMicros: tx.publisherAmountMicros, status: 'pending' }));
+  res.json({ summary: { revenueMicros, methodStatus: 'Manual review' }, history });
+});
+
 export default router;
