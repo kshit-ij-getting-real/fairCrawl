@@ -6,6 +6,9 @@ const requiredVars = ['DATABASE_URL', 'JWT_SECRET'] as const;
 
 export const assertRequiredEnv = () => {
   const missing = requiredVars.filter((name) => !process.env[name]);
+  if (process.env.DEMO_MODE === "true" && !process.env.DEMO_SECRET) {
+    missing.push("DEMO_SECRET" as (typeof requiredVars)[number]);
+  }
   if (missing.length > 0) {
     throw new Error(`Missing required environment variable(s): ${missing.join(', ')}`);
   }

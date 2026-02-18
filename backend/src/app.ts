@@ -70,7 +70,7 @@ export const createApp = () => {
   app.use('/api/publisher', authenticate, requireRole('PUBLISHER'), publisherRouter);
   app.use('/api/aiclient', authenticate, requireRole('AICLIENT'), aiClientRouter);
   app.use('/api/client', authenticate, requireRole('AICLIENT'), aiClientRouter);
-  app.use('/api/demo', authenticate, requireRole('PUBLISHER'), demoRouter);
+  app.use('/api/demo', demoRouter);
 
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     const requestId = (req as Request & { requestId?: string }).requestId || 'unknown';

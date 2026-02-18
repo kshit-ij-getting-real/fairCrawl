@@ -60,9 +60,9 @@ npm --prefix backend run seed
 ## Demo quickstart
 Set these env vars for demo-only controls:
 - Backend: `DEMO_MODE=true`, `DEMO_SECRET=your-secret`
-- Frontend: `NEXT_PUBLIC_DEMO_SECRET=your-secret`
+- Frontend: `NEXT_PUBLIC_DEMO_MODE=true`, `NEXT_PUBLIC_DEMO_SECRET=your-secret`
 
-Then use **Publisher Dashboard → Demo Console**:
+Then use **/demo-logins** and **Publisher Dashboard → Demo Console**:
 1. Seed demo workspace.
 2. Simulate transaction.
 3. Review Transactions and AI Team usage updates.
