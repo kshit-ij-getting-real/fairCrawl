@@ -46,7 +46,7 @@ export default async function DirectoryPage() {
                 <div className="flex flex-col gap-1">
                   <h3 className="text-lg font-semibold text-white">{domain.displayName ?? domainName}</h3>
                   <p className="text-xs text-white/60">
-                    Verified by {publisherName ?? 'site owner'}. AI rules published through FairFetch.
+                    Verified by {publisherName ?? 'site owner'}. Pricing from {domain.pricingFromMicros ?? '—'} micros for summarize access.
                   </p>
                 </div>
                 <div className="flex justify-end">

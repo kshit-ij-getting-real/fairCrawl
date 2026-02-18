@@ -28,21 +28,25 @@ router.get('/ai-policy', async (req, res) => {
 router.get('/public/domains', async (_req, res) => {
   const domains = await prisma.domain.findMany({
     where: { verified: true },
-    include: { policies: true, publisher: true },
+    include: { policies: true, publisher: true, pricingRules: true },
     take: 20,
   });
   return res.json(
-    domains.map((d) => ({
-      name: d.name,
-      publisher: d.publisher.name,
-      policies: d.policies.map((p) => ({
-        pathPattern: p.pathPattern,
-        allowAI: p.allowAI,
-        accessType: p.accessType,
-        pricePer1k: p.pricePer1k,
-        priceMicros: p.priceMicros,
-      })),
-    }))
+    domains.map((d) => {
+      const globalSummary = d.pricingRules.find((r) => r.priorityType === 'GLOBAL' && r.active);
+      return {
+        name: d.name,
+        publisher: d.publisher.name,
+        pricingFromMicros: globalSummary?.summarizePriceMicros || globalSummary?.priceMicros || null,
+        policies: d.policies.map((p) => ({
+          pathPattern: p.pathPattern,
+          allowAI: p.allowAI,
+          accessType: p.accessType,
+          pricePer1k: p.pricePer1k,
+          priceMicros: p.priceMicros,
+        })),
+      };
+    })
   );
 });
 

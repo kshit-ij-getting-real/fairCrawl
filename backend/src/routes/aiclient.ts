@@ -60,6 +60,23 @@ router.get('/usage-spend', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
   if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
 
+  const [byDomainAgg, byDayAgg] = await Promise.all([
+    prisma.usageAggDomain.findMany({ where: { aiClientId: aiClient.id }, include: { domain: true }, orderBy: { spendMicros: 'desc' } }),
+    prisma.usageAggDaily.findMany({ where: { aiClientId: aiClient.id }, include: { domain: true }, orderBy: { date: 'desc' }, take: 30 }),
+  ]);
+
+  if (byDomainAgg.length > 0 || byDayAgg.length > 0) {
+    return res.json({
+      byDomain: byDomainAgg.map((row) => ({
+        domainId: row.domainId,
+        domain: row.domain.name,
+        requests: row.requests,
+        spendMicros: row.spendMicros,
+      })),
+      byDay: byDayAgg.map((row) => ({ day: row.date.toISOString().slice(0, 10), spend_micros: row.spendMicros })),
+    });
+  }
+
   const byDomain = await prisma.ledgerTransaction.groupBy({
     by: ['domainId'],
     where: { aiClientId: aiClient.id },
@@ -68,15 +85,14 @@ router.get('/usage-spend', async (req: AuthRequest, res) => {
     orderBy: { _sum: { totalMicros: 'desc' } },
   });
   const domains = await prisma.domain.findMany({ where: { id: { in: byDomain.map((d) => d.domainId) } } });
-
   const byDay = await prisma.$queryRaw<Array<{ day: string; spend_micros: number }>>`
-    SELECT DATE("createdAt")::text AS day, COALESCE(SUM("totalMicros"),0)::int as spend_micros
-    FROM "LedgerTransaction"
-    WHERE "aiClientId" = ${aiClient.id}
-    GROUP BY DATE("createdAt")
-    ORDER BY day DESC
-    LIMIT 30
-  `;
+      SELECT DATE("createdAt")::text AS day, COALESCE(SUM("totalMicros"),0)::int as spend_micros
+      FROM "LedgerTransaction"
+      WHERE "aiClientId" = ${aiClient.id}
+      GROUP BY DATE("createdAt")
+      ORDER BY day DESC
+      LIMIT 30
+    `;
 
   return res.json({
     byDomain: byDomain.map((row) => ({
