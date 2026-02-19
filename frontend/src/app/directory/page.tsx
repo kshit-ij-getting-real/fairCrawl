@@ -48,6 +48,9 @@ export default async function DirectoryPage() {
                   <p className="text-xs text-white/60">
                     Verified by {publisherName ?? 'site owner'}. AI rules published through FairFetch.
                   </p>
+                  {domain.pricingFromMicros !== undefined && (
+                    <p className="text-xs text-white/60">Pricing from {domain.pricingFromMicros} micros</p>
+                  )}
                 </div>
                 <div className="flex justify-end">
                   <SecondaryButton href={visitUrl} target="_blank" rel="noreferrer">

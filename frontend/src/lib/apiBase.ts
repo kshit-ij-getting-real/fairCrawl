@@ -15,7 +15,7 @@ const resolveBaseUrl = () => {
       return '';
     }
 
-    return 'http://localhost:4000';
+    return 'https://fairfetch.onrender.com';
   }
   const normalized = value.replace(/\/+$/, '');
   logBaseUrl(normalized);

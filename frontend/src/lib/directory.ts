@@ -12,6 +12,7 @@ type PublicDomain = {
   verificationStatus?: string;
   displayName?: string;
   ownerName?: string;
+  pricingFromMicros?: number;
   publisher?:
     | string
     | {

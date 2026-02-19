@@ -5,6 +5,7 @@ import prisma from '../db';
 import { getJwtSecret } from '../config';
 
 type AuthDbClient = {
+  $transaction?: <T>(cb: (tx: any) => Promise<T>) => Promise<T>;
   user: {
     findUnique: (args: { where: { email: string } }) => Promise<any>;
     create: (args: { data: { email: string; passwordHash: string; role: 'PUBLISHER' | 'AICLIENT' } }) => Promise<any>;
@@ -54,24 +55,32 @@ export const createAuthRouter = (dbClient: AuthDbClient = prisma as unknown as A
 
       const passwordHash = await bcrypt.hash(password, 10);
 
-      const user = await dbClient.user.create({
-        data: {
-          email: normalizedEmail,
-          passwordHash,
-          role,
-        },
-      });
+      const createRecords = async (tx: any) => {
+        const user = await tx.user.create({
+          data: {
+            email: normalizedEmail,
+            passwordHash,
+            role,
+          },
+        });
 
-      if (role === 'PUBLISHER') {
-        await dbClient.publisher.create({ data: { userId: user.id, name: name.trim() } });
-      } else {
-        await dbClient.aIClient.create({ data: { userId: user.id, name: name.trim() } });
-      }
+        if (role === 'PUBLISHER') {
+          const publisher = await tx.publisher.create({ data: { userId: user.id, name: name.trim() } });
+          await tx.publisherBalance.create({ data: { publisherId: publisher.id, balanceMicros: 0 } });
+        } else {
+          const aiClient = await tx.aIClient.create({ data: { userId: user.id, name: name.trim() } });
+          await tx.clientBalance.create({ data: { clientId: aiClient.id, balanceMicros: 0 } });
+        }
+
+        return user;
+      };
+
+      const user = dbClient.$transaction ? await dbClient.$transaction(createRecords) : await createRecords(dbClient);
 
       const token = createToken(user.id, role);
       return res.status(201).json({ token, role });
-    } catch (error) {
-      return next(error);
+    } catch (_error) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
   });
 

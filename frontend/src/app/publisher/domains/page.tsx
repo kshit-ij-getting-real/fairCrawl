@@ -52,7 +52,6 @@ export default function DomainsPage() {
             <p>Delegate paid subdomain <code>{selected.subdomainHost}</code> to <code>{selected.subdomainCnameTarget}</code>.</p>
             <div className="flex gap-2">
               <Button onClick={async () => { await apiFetch(`/api/publisher/domains/${selected.id}/verify-dns`, { method: 'POST' }); load(); }}>Re-check verification</Button>
-              <Button variant="secondary" onClick={async () => { await apiFetch(`/api/publisher/domains/${selected.id}/demo-verify`, { method: 'POST' }); load(); }}>Demo verify</Button>
             </div>
           </div>
         )}
