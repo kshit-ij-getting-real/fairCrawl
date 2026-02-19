@@ -9,11 +9,17 @@ export default function AIClientDashboard() {
   const [agentId, setAgentId] = useState('');
   const [uaRegex, setUaRegex] = useState('.*');
   const [usage, setUsage] = useState<any>({ byDomain: [], byDay: [] });
+  const [testForm, setTestForm] = useState<any>({ url: '', license: 'SUMMARY', maxPriceMicros: '' });
+  const [receipt, setReceipt] = useState<any>(null);
 
   const load = async () => {
-    const [keys, usageResp] = await Promise.all([apiFetch('/api/aiclient/apikeys'), apiFetch('/api/aiclient/usage-spend')]);
+    const [keys, usageByDomain, usageByDay] = await Promise.all([
+      apiFetch('/api/aiclient/apikeys'),
+      apiFetch('/api/aiclient/usage/by-domain'),
+      apiFetch('/api/aiclient/usage/by-day'),
+    ]);
     setApiKeys(keys);
-    setUsage(usageResp);
+    setUsage({ byDomain: usageByDomain, byDay: usageByDay });
   };
 
   useEffect(() => { load(); }, []);
@@ -30,11 +36,11 @@ export default function AIClientDashboard() {
         <h2 className="text-lg font-semibold">API keys</h2>
         <Button className="mt-2" onClick={async () => { const key = await apiFetch('/api/aiclient/apikeys', { method: 'POST' }); setNewKey(key.key); load(); }}>Create key</Button>
         {newKey && <p className="mt-2 text-sm">New key: <code>{newKey}</code></p>}
-        {apiKeys.length === 0 ? <div className="mt-3"><EmptyState title="No API keys" description="Create a key for token requests." /></div> : <ul className="mt-3 space-y-2">{apiKeys.map((k) => <li key={k.id} className="flex justify-between rounded-lg border border-white/10 p-3">Key #{k.id} <Button variant="ghost" onClick={async () => { await apiFetch(`/api/aiclient/apikeys/${k.id}/revoke`, { method: 'POST' }); load(); }}>Revoke</Button></li>)}</ul>}
+        {apiKeys.length === 0 ? <div className="mt-3"><EmptyState title="No API keys" description="Create a key for token requests." /></div> : <ul className="mt-3 space-y-2">{apiKeys.map((k) => <li key={k.id} className="flex justify-between rounded-lg border border-white/10 p-3">{k.maskedKey} <Button variant="ghost" onClick={async () => { await apiFetch(`/api/aiclient/apikeys/${k.id}`, { method: 'DELETE' }); load(); }}>Revoke</Button></li>)}</ul>}
       </Card>
       <Card>
         <h2 className="text-lg font-semibold">Agent identity</h2>
-        <div className="mt-3 grid gap-2 md:grid-cols-3"><Input value={agentId} onChange={(e) => setAgentId(e.target.value)} placeholder="agent_id" /><Input value={uaRegex} onChange={(e) => setUaRegex(e.target.value)} placeholder="allowed user-agent regex" /><Button onClick={async () => { await apiFetch('/api/aiclient/agents', { method: 'POST', body: JSON.stringify({ agentId, allowedUserAgentRe: uaRegex }) }); }}>Save</Button></div>
+        <div className="mt-3 grid gap-2 md:grid-cols-3"><Input value={agentId} onChange={(e) => setAgentId(e.target.value)} placeholder="agent_id" /><Input value={uaRegex} onChange={(e) => setUaRegex(e.target.value)} placeholder="allowed user-agent regex" /><Button onClick={async () => { await apiFetch('/api/aiclient/identity', { method: 'POST', body: JSON.stringify({ agentId, allowedUserAgentRegex: uaRegex }) }); }}>Save</Button></div>
       </Card>
       <Card>
         <h2 className="text-lg font-semibold">Usage + spend</h2>
@@ -46,6 +52,19 @@ export default function AIClientDashboard() {
       <Card>
         <h2 className="text-lg font-semibold">Integration snippet</h2>
         <pre className="mt-3 overflow-auto rounded bg-black/40 p-3 text-xs">{`// Step A: request token\nPOST /api/tokens { url, license: 'SUMMARY', maxPriceMicros }\n// Step B: fetch content\nGET /api/content?url=... with x-fairfetch-token\n// Receipt includes transaction_id + price`}</pre>
+        <div className="mt-4 grid gap-2 md:grid-cols-4">
+          <Input placeholder="https://ai-essays.vercel.app/premium/demo" value={testForm.url} onChange={(e) => setTestForm({ ...testForm, url: e.target.value })} />
+          <select className="rounded-lg border border-white/10 bg-black/20 px-3 py-2" value={testForm.license} onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></select>
+          <Input placeholder="maxPriceMicros" value={testForm.maxPriceMicros} onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })} />
+          <Button onClick={async () => {
+            const tokenResp = await apiFetch('/api/tokens', { method: 'POST', body: JSON.stringify({ url: testForm.url, license: testForm.license, maxPriceMicros: testForm.maxPriceMicros ? Number(testForm.maxPriceMicros) : undefined }) });
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/content?url=${encodeURIComponent(testForm.url)}`, { headers: { 'x-fairfetch-token': tokenResp.token } });
+            const content = await response.json();
+            setReceipt(content.receipt);
+            await load();
+          }}>Test paid request</Button>
+        </div>
+        {receipt && <p className="mt-3 text-xs text-faircrawl-textMuted">Receipt: {receipt.txId} · {receipt.priceMicros} micros · {receipt.domain}{receipt.path} · {new Date(receipt.timestamp).toLocaleString()}</p>}
       </Card>
     </div>
   );

@@ -6,87 +6,144 @@ import { AuthRequest } from '../middleware/auth';
 const router = Router();
 const hashKey = (key: string) => crypto.createHash('sha256').update(key).digest('hex');
 const getAIClient = (userId: number) => prisma.aIClient.findUnique({ where: { userId } });
+const maskKeyHash = (hash: string) => `${hash.slice(0, 6)}...${hash.slice(-4)}`;
 
 router.get('/me', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
   return res.json(aiClient);
 });
 
 router.post('/apikeys', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
-  if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
-  const plainKey = crypto.randomBytes(32).toString('base64');
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const plainKey = crypto.randomBytes(32).toString('hex');
   const apiKey = await prisma.aPIKey.create({ data: { aiClientId: aiClient.id, keyHash: hashKey(plainKey) } });
-  return res.json({ id: apiKey.id, key: plainKey, createdAt: apiKey.createdAt });
+  return res.status(201).json({ id: apiKey.id, key: plainKey, createdAt: apiKey.createdAt });
+});
+
+router.delete('/apikeys/:id', async (req: AuthRequest, res) => {
+  const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const updated = await prisma.aPIKey.updateMany({ where: { id: Number(req.params.id), aiClientId: aiClient.id }, data: { revokedAt: new Date() } });
+  if (!updated.count) return res.status(404).json({ error: 'API_KEY_NOT_FOUND' });
+  return res.status(204).send();
 });
 
 router.post('/apikeys/:id/revoke', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
-  if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
   await prisma.aPIKey.updateMany({ where: { id: Number(req.params.id), aiClientId: aiClient.id }, data: { revokedAt: new Date() } });
   return res.json({ success: true });
 });
 
 router.get('/apikeys', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
-  if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
   const keys = await prisma.aPIKey.findMany({ where: { aiClientId: aiClient.id }, orderBy: { createdAt: 'desc' } });
-  return res.json(keys);
+  return res.json(keys.map((k) => ({ id: k.id, maskedKey: maskKeyHash(k.keyHash), createdAt: k.createdAt, revokedAt: k.revokedAt })));
 });
 
-router.get('/agents', async (req: AuthRequest, res) => {
+router.get('/identity', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
-  if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
-  const agents = await prisma.agentIdentity.findMany({ where: { aiClientId: aiClient.id }, orderBy: { createdAt: 'desc' } });
-  return res.json(agents);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const identity = await prisma.agentIdentity.findFirst({ where: { aiClientId: aiClient.id }, orderBy: { updatedAt: 'desc' } });
+  return res.json(identity || { agentId: '', allowedUserAgentRegex: '.*' });
 });
 
-router.post('/agents', async (req: AuthRequest, res) => {
+router.post('/identity', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
-  if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
-  const agent = await prisma.agentIdentity.upsert({
-    where: { aiClientId_agentId: { aiClientId: aiClient.id, agentId: String(req.body.agentId) } },
-    update: { allowedUserAgentRe: String(req.body.allowedUserAgentRe || '.*') },
-    create: {
-      aiClientId: aiClient.id,
-      agentId: String(req.body.agentId),
-      allowedUserAgentRe: String(req.body.allowedUserAgentRe || '.*'),
-    },
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const agentId = String(req.body?.agentId || '').trim();
+  if (!agentId) return res.status(400).json({ error: 'AGENT_ID_REQUIRED' });
+  const allowedUserAgentRegex = String(req.body?.allowedUserAgentRegex || '.*');
+  try {
+    new RegExp(allowedUserAgentRegex);
+  } catch {
+    return res.status(400).json({ error: 'INVALID_REGEX' });
+  }
+  const identity = await prisma.agentIdentity.upsert({
+    where: { aiClientId_agentId: { aiClientId: aiClient.id, agentId } },
+    update: { allowedUserAgentRe: allowedUserAgentRegex },
+    create: { aiClientId: aiClient.id, agentId, allowedUserAgentRe: allowedUserAgentRegex },
   });
-  return res.json(agent);
+  return res.json({ id: identity.id, agentId: identity.agentId, allowedUserAgentRegex: identity.allowedUserAgentRe });
 });
 
-router.get('/usage-spend', async (req: AuthRequest, res) => {
+router.get('/usage/by-domain', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
-  if (!aiClient) return res.status(404).json({ error: 'AI client not found' });
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
 
-  const byDomain = await prisma.ledgerTransaction.groupBy({
+  const grouped = await prisma.ledgerTransaction.groupBy({
     by: ['domainId'],
     where: { aiClientId: aiClient.id },
-    _sum: { totalMicros: true },
     _count: { _all: true },
+    _sum: { totalMicros: true },
     orderBy: { _sum: { totalMicros: 'desc' } },
   });
-  const domains = await prisma.domain.findMany({ where: { id: { in: byDomain.map((d) => d.domainId) } } });
+  const domains = await prisma.domain.findMany({ where: { id: { in: grouped.map((g) => g.domainId) } } });
+  return res.json(grouped.map((g) => ({ domainId: g.domainId, domain: domains.find((d) => d.id === g.domainId)?.name || 'Unknown', requests: g._count._all, spendMicros: g._sum.totalMicros || 0 })));
+});
 
-  const byDay = await prisma.$queryRaw<Array<{ day: string; spend_micros: number }>>`
-    SELECT DATE("createdAt")::text AS day, COALESCE(SUM("totalMicros"),0)::int as spend_micros
+router.get('/usage/by-day', async (req: AuthRequest, res) => {
+  const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+
+  const byDay = await prisma.$queryRaw<Array<{ day: string; spend_micros: number; requests: number }>>`
+    SELECT DATE("createdAt")::text AS day,
+           COALESCE(SUM("totalMicros"),0)::int as spend_micros,
+           COUNT(*)::int as requests
     FROM "LedgerTransaction"
     WHERE "aiClientId" = ${aiClient.id}
     GROUP BY DATE("createdAt")
     ORDER BY day DESC
     LIMIT 30
   `;
+  return res.json(byDay);
+});
 
-  return res.json({
-    byDomain: byDomain.map((row) => ({
-      domainId: row.domainId,
-      domain: domains.find((d) => d.id === row.domainId)?.name || 'Unknown',
-      requests: row._count._all,
-      spendMicros: row._sum.totalMicros || 0,
-    })),
-    byDay,
+router.get('/usage-spend', async (req: AuthRequest, res) => {
+  const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const [byDomain, byDay] = await Promise.all([
+    prisma.ledgerTransaction.groupBy({ by: ['domainId'], where: { aiClientId: aiClient.id }, _count: { _all: true }, _sum: { totalMicros: true } }),
+    prisma.$queryRaw<Array<{ day: string; spend_micros: number }>>`
+      SELECT DATE("createdAt")::text AS day, COALESCE(SUM("totalMicros"),0)::int as spend_micros
+      FROM "LedgerTransaction"
+      WHERE "aiClientId" = ${aiClient.id}
+      GROUP BY DATE("createdAt")
+      ORDER BY day DESC
+      LIMIT 30
+    `,
+  ]);
+  const domains = await prisma.domain.findMany({ where: { id: { in: byDomain.map((d) => d.domainId) } } });
+  return res.json({ byDomain: byDomain.map((row) => ({ domainId: row.domainId, domain: domains.find((d) => d.id === row.domainId)?.name || 'Unknown', requests: row._count._all, spendMicros: row._sum.totalMicros || 0 })), byDay });
+});
+
+router.get('/agents', async (req: AuthRequest, res) => {
+  const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const identity = await prisma.agentIdentity.findMany({ where: { aiClientId: aiClient.id } });
+  return res.json(identity);
+});
+
+router.post('/agents', async (req: AuthRequest, res) => {
+  const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+  const agentId = String(req.body?.agentId || '').trim();
+  if (!agentId) return res.status(400).json({ error: 'AGENT_ID_REQUIRED' });
+  const regex = String(req.body?.allowedUserAgentRe || '.*');
+  try {
+    new RegExp(regex);
+  } catch {
+    return res.status(400).json({ error: 'INVALID_REGEX' });
+  }
+  const identity = await prisma.agentIdentity.upsert({
+    where: { aiClientId_agentId: { aiClientId: aiClient.id, agentId } },
+    update: { allowedUserAgentRe: regex },
+    create: { aiClientId: aiClient.id, agentId, allowedUserAgentRe: regex },
   });
+  return res.json(identity);
 });
 
 export default router;
