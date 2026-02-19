@@ -1,25 +1,13 @@
 import { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, SelectHTMLAttributes, TableHTMLAttributes } from 'react';
 import { cn } from '@/lib/cn';
+import { Button as SharedButton } from '@/components/ui/Button';
 
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('rounded-xl border border-white/10 bg-faircrawl-surface p-5 shadow-sm', className)} {...props} />;
 }
 
-export function Button({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' }) {
-  const variant = (props as any).variant || 'primary';
-  const { variant: _variant, ...rest } = props as any;
-  return (
-    <button
-      className={cn(
-        'inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition',
-        variant === 'primary' && 'bg-faircrawl-accent text-white hover:bg-faircrawl-accentSoft',
-        variant === 'secondary' && 'border border-white/20 bg-white/5 text-white hover:bg-white/10',
-        variant === 'ghost' && 'text-faircrawl-textMuted hover:text-white',
-        className
-      )}
-      {...rest}
-    />
-  );
+export function Button({ className, variant = 'primary', size = 'sm', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost'; size?: 'sm' | 'md' }) {
+  return <SharedButton className={className} variant={variant} size={size} {...props} />;
 }
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {

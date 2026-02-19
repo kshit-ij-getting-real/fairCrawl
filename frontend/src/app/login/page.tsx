@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { apiFetch } from '@/lib/http';
 import { setSession } from '@/lib/session';
 import { SectionActions } from '../../components/ui/SectionActions';
+import { Button } from '@/components/ui/Button';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function LoginPage() {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-      setSession(data.token, data.role);
+      setSession(data.token, data.role, email);
       router.push(data.role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
     } catch (err: any) {
       setError(err.message);
@@ -56,13 +57,14 @@ export default function LoginPage() {
           </div>
           {error && <p className="text-sm text-red-400">{error}</p>}
           <SectionActions>
-            <button
+            <Button
               type="submit"
+              variant="primary"
+              size="sm"
               disabled={loading}
-              className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft disabled:opacity-70"
             >
               {loading ? 'Signing in…' : 'Login'}
-            </button>
+            </Button>
           </SectionActions>
         </form>
       </div>

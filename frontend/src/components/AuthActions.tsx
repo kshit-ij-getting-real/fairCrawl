@@ -2,115 +2,82 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { API_BASE_URL } from '@/lib/apiBase';
-import { Role, clearSession, getRole, getToken } from '@/lib/api';
-
-type SessionState = { status: 'guest' } | { status: 'authenticated'; name: string; role: Role };
+import { useAuthState } from '@/components/auth/AuthStateProvider';
+import { Button } from '@/components/ui/Button';
 
 type AuthActionsProps = {
   className?: string;
   variant?: 'header' | 'footer';
 };
 
-const fetchProfileName = async (role: Role, token: string) => {
-  const path = role === 'PUBLISHER' ? 'publisher' : 'aiclient';
-  const res = await fetch(`${API_BASE_URL}/api/${path}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Profile fetch failed');
-  }
-
-  const data = await res.json();
-  return data?.name || 'Account';
-};
-
 export function AuthActions({ className, variant = 'header' }: AuthActionsProps) {
   const router = useRouter();
-  const token = getToken();
-  const role = getRole();
-  const [session, setSession] = useState<SessionState>(token && role ? { status: 'authenticated', name: 'Dashboard', role } : { status: 'guest' });
-
-  useEffect(() => {
-    let active = true;
-    const token = getToken();
-    const role = getRole();
-
-    if (!token || !role) {
-      setSession({ status: 'guest' });
-      return () => {
-        active = false;
-      };
-    }
-
-    const loadProfile = async () => {
-      try {
-        const name = await fetchProfileName(role, token);
-        if (!active) return;
-        setSession({ status: 'authenticated', name, role });
-      } catch (err) {
-        if (!active) return;
-        clearSession();
-        setSession({ status: 'guest' });
-      }
-    };
-
-    loadProfile();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const logout = () => {
-    clearSession();
-    setSession({ status: 'guest' });
-    router.push('/');
-  };
+  const { isAuthed, displayLabel, dashboardHref, logout } = useAuthState();
 
   const containerClass =
     className || (variant === 'footer' ? 'flex items-center gap-4 text-sm' : 'flex items-center gap-4');
 
-  if (session.status === 'guest') {
+  if (!isAuthed) {
     const loginClass = variant === 'footer' ? 'hover:text-white' : 'text-sm text-white/70 hover:text-white';
-    const signupClass =
-      variant === 'footer'
-        ? 'hover:text-white'
-        : 'rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-400';
+
     return (
       <div className={containerClass}>
         <Link href="/login" className={loginClass}>
           Log in
         </Link>
-        <Link href="/signup" className={signupClass}>
-          {variant === 'footer' ? 'Sign up' : 'Get started'}
-        </Link>
+        {variant === 'footer' ? (
+          <Link href="/signup" className="hover:text-white">
+            Sign up
+          </Link>
+        ) : (
+          <Button href="/signup" variant="primary" size="md">
+            Get started
+          </Button>
+        )}
       </div>
     );
   }
 
-  const dashboardHref = session.role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard';
-  const nameClass =
-    variant === 'footer'
-      ? 'inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-medium text-white/90 hover:border-white/30 hover:bg-white/15'
-      : 'inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white hover:border-white/40 hover:bg-white/20';
-  const logoutClass =
-    variant === 'footer'
-      ? 'hover:text-white'
-      : 'rounded-full bg-blue-500 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-400';
+  if (variant === 'footer') {
+    return (
+      <div className={containerClass}>
+        <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-medium text-white/90">
+          {displayLabel}
+        </span>
+        <Link href={dashboardHref} className="hover:text-white">
+          Dashboard
+        </Link>
+        <button
+          onClick={() => {
+            logout();
+            router.push('/');
+          }}
+          className="hover:text-white"
+        >
+          Logout
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={containerClass}>
-      <Link href={dashboardHref} className={nameClass}>
-        {session.name}
-      </Link>
-      <button onClick={logout} className={logoutClass}>
+      <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">
+        {displayLabel}
+      </span>
+      <Button href={dashboardHref} variant="secondary" size="md">
+        Dashboard
+      </Button>
+      <Button
+        variant="ghost"
+        size="md"
+        onClick={() => {
+          logout();
+          router.push('/');
+        }}
+      >
         Logout
-      </button>
+      </Button>
     </div>
   );
 }

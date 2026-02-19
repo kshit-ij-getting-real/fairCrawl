@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { apiFetch } from '@/lib/http';
 import { setSession, Role } from '@/lib/session';
 import { SectionActions } from '../../components/ui/SectionActions';
+import { Button } from '@/components/ui/Button';
 
 function SignupContent() {
   const router = useRouter();
@@ -34,7 +35,7 @@ function SignupContent() {
         method: 'POST',
         body: JSON.stringify({ email, password, role, name }),
       });
-      setSession(data.token, role);
+      setSession(data.token, role, email);
       router.push(role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
     } catch (err: any) {
       setError(err.message);
@@ -105,13 +106,14 @@ function SignupContent() {
           </div>
           {error && <p className="text-sm text-red-400">{error}</p>}
           <SectionActions>
-            <button
+            <Button
               type="submit"
+              variant="primary"
+              size="sm"
               disabled={loading}
-              className="rounded-full bg-faircrawl-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-faircrawl-accentSoft disabled:opacity-70"
             >
               {loading ? 'Creating account…' : 'Sign up'}
-            </button>
+            </Button>
           </SectionActions>
         </form>
       </div>

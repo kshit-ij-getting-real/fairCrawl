@@ -66,3 +66,7 @@ Then use **Publisher Dashboard → Demo Console**:
 1. Seed demo workspace.
 2. Simulate transaction.
 3. Review Transactions and AI Team usage updates.
+
+## Recent frontend UI consistency updates
+- Header auth actions are now session-aware across the app (unauthenticated users see **Log in / Get started**; authenticated users see an account chip, **Dashboard**, and **Logout**).
+- Logged-in dashboard actions now reuse the same shared button variants used on exterior marketing pages for consistent primary/secondary styling.
