@@ -1,5 +1,7 @@
 'use client';
 
+import { canUseDOM, safeLocalGet, safeLocalRemove, safeLocalSet } from '@/lib/safeStorage';
+
 export type Role = 'PUBLISHER' | 'AICLIENT';
 
 export type SessionSnapshot = {
@@ -9,31 +11,44 @@ export type SessionSnapshot = {
 };
 
 const SESSION_EVENT = 'fairfetch:session-change';
+const EMPTY_SNAPSHOT: SessionSnapshot = { token: null, role: null, displayLabel: null };
+let cachedSnapshot: SessionSnapshot = EMPTY_SNAPSHOT;
 
 const readRole = () => {
-  const role = localStorage.getItem('role');
+  const role = safeLocalGet('role');
   return role === 'PUBLISHER' || role === 'AICLIENT' ? role : null;
 };
 
 export const getSessionSnapshot = (): SessionSnapshot => {
-  if (typeof window === 'undefined') {
-    return { token: null, role: null, displayLabel: null };
+  if (!canUseDOM()) {
+    return EMPTY_SNAPSHOT;
   }
 
-  return {
-    token: localStorage.getItem('token'),
+  const nextSnapshot: SessionSnapshot = {
+    token: safeLocalGet('token'),
     role: readRole(),
-    displayLabel: localStorage.getItem('displayLabel'),
+    displayLabel: safeLocalGet('displayLabel'),
   };
+
+  if (
+    cachedSnapshot.token === nextSnapshot.token &&
+    cachedSnapshot.role === nextSnapshot.role &&
+    cachedSnapshot.displayLabel === nextSnapshot.displayLabel
+  ) {
+    return cachedSnapshot;
+  }
+
+  cachedSnapshot = nextSnapshot;
+  return cachedSnapshot;
 };
 
 const emitSessionChange = () => {
-  if (typeof window === 'undefined') return;
+  if (!canUseDOM()) return;
   window.dispatchEvent(new Event(SESSION_EVENT));
 };
 
 export const subscribeSession = (listener: () => void) => {
-  if (typeof window === 'undefined') return () => {};
+  if (!canUseDOM()) return () => {};
 
   const onStorage = (event: StorageEvent) => {
     if (!event.key || ['token', 'role', 'displayLabel'].includes(event.key)) {
@@ -54,21 +69,23 @@ export const getToken = () => getSessionSnapshot().token;
 export const getRole = () => getSessionSnapshot().role;
 
 export const setSession = (token: string, role: Role, displayLabel?: string) => {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem('token', token);
-  localStorage.setItem('role', role);
+  if (!canUseDOM()) return;
+
+  safeLocalSet('token', token);
+  safeLocalSet('role', role);
 
   if (displayLabel && displayLabel.trim().length > 0) {
-    localStorage.setItem('displayLabel', displayLabel.trim());
+    safeLocalSet('displayLabel', displayLabel.trim());
   }
 
   emitSessionChange();
 };
 
 export const clearSession = () => {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('token');
-  localStorage.removeItem('role');
-  localStorage.removeItem('displayLabel');
+  if (!canUseDOM()) return;
+
+  safeLocalRemove('token');
+  safeLocalRemove('role');
+  safeLocalRemove('displayLabel');
   emitSessionChange();
 };
