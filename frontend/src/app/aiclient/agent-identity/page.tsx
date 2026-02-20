@@ -10,20 +10,31 @@ import { ApiError } from '@/lib/http';
 export default function AIClientAgentIdentityPage() {
   const [agentId, setAgentId] = useState('');
   const [uaRegex, setUaRegex] = useState('.*');
+  const [savedIdentity, setSavedIdentity] = useState<{ agentId: string; allowedUserAgentRegex: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
   const loadIdentity = async () => {
     try {
       const identity = await apiFetch('/api/aiclient/identity');
-      if (identity?.agentId) setAgentId(identity.agentId);
-      setUaRegex(identity?.allowedUserAgentRegex || identity?.allowedUserAgentRe || '.*');
+      const resolvedAgentId = identity?.agentId || '';
+      const resolvedRegex = identity?.allowedUserAgentRegex || identity?.allowedUserAgentRe || '.*';
+      if (resolvedAgentId) setAgentId(resolvedAgentId);
+      setUaRegex(resolvedRegex);
+      if (resolvedAgentId) {
+        setSavedIdentity({ agentId: resolvedAgentId, allowedUserAgentRegex: resolvedRegex });
+      }
     } catch (error) {
       if (error instanceof ApiError && error.code === 'REQUEST_FAILED') {
         const identities = await apiFetch('/api/aiclient/agents');
         const latestIdentity = Array.isArray(identities) ? identities[0] : null;
-        if (latestIdentity?.agentId) setAgentId(latestIdentity.agentId);
-        setUaRegex(latestIdentity?.allowedUserAgentRe || '.*');
+        const resolvedAgentId = latestIdentity?.agentId || '';
+        const resolvedRegex = latestIdentity?.allowedUserAgentRe || '.*';
+        if (resolvedAgentId) setAgentId(resolvedAgentId);
+        setUaRegex(resolvedRegex);
+        if (resolvedAgentId) {
+          setSavedIdentity({ agentId: resolvedAgentId, allowedUserAgentRegex: resolvedRegex });
+        }
         return;
       }
       toast.error(getErrorMessage(error));
@@ -51,16 +62,18 @@ export default function AIClientAgentIdentityPage() {
             setIsSaving(true);
             try {
               try {
-                await apiFetch('/api/aiclient/identity', {
+                const identity = await apiFetch('/api/aiclient/identity', {
                   method: 'POST',
                   body: JSON.stringify({ agentId, allowedUserAgentRegex: uaRegex }),
                 });
+                setSavedIdentity({ agentId: identity.agentId, allowedUserAgentRegex: identity.allowedUserAgentRegex });
               } catch (error) {
                 if (error instanceof ApiError && error.code === 'REQUEST_FAILED') {
-                  await apiFetch('/api/aiclient/agents', {
+                  const identity = await apiFetch('/api/aiclient/agents', {
                     method: 'POST',
                     body: JSON.stringify({ agentId, allowedUserAgentRe: uaRegex }),
                   });
+                  setSavedIdentity({ agentId: identity.agentId, allowedUserAgentRegex: identity.allowedUserAgentRe });
                 } else {
                   throw error;
                 }
@@ -76,6 +89,22 @@ export default function AIClientAgentIdentityPage() {
           {isLoading ? 'Loading...' : isSaving ? 'Saving...' : 'Save'}
         </Button>
       </div>
+
+      {savedIdentity?.agentId && (
+        <div className="mt-4 rounded-lg border border-white/10 bg-black/20 p-4 text-sm">
+          <h3 className="font-medium text-white">Registered credentials</h3>
+          <p className="mt-1 text-faircrawl-textMuted">Use this identity alongside your API key when minting tokens.</p>
+          <div className="mt-3 space-y-2">
+            <p>
+              <span className="text-faircrawl-textMuted">agent_id:</span> <code>{savedIdentity.agentId}</code>
+            </p>
+            <p>
+              <span className="text-faircrawl-textMuted">allowed_user_agent_regex:</span>{' '}
+              <code>{savedIdentity.allowedUserAgentRegex}</code>
+            </p>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
