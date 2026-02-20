@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-import { Button, Card, EmptyState, Input, Table } from '@/components/dashboard/primitives';
+import { Button, Card, EmptyState, Input, Select, Table } from '@/components/dashboard/primitives';
 
 export default function AIClientDashboard() {
   const [apiKeys, setApiKeys] = useState<any[]>([]);
@@ -54,7 +54,7 @@ export default function AIClientDashboard() {
         <pre className="mt-3 overflow-auto rounded bg-black/40 p-3 text-xs">{`// Step A: request token\nPOST /api/tokens { url, license: 'SUMMARY', maxPriceMicros }\n// Step B: fetch content\nGET /api/content?url=... with x-fairfetch-token\n// Receipt includes transaction_id + price`}</pre>
         <div className="mt-4 grid gap-2 md:grid-cols-4">
           <Input placeholder="https://ai-essays.vercel.app/premium/demo" value={testForm.url} onChange={(e) => setTestForm({ ...testForm, url: e.target.value })} />
-          <select className="rounded-lg border border-white/10 bg-black/20 px-3 py-2" value={testForm.license} onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></select>
+          <Select value={testForm.license} onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></Select>
           <Input placeholder="maxPriceMicros" value={testForm.maxPriceMicros} onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })} />
           <Button onClick={async () => {
             const tokenResp = await apiFetch('/api/tokens', { method: 'POST', body: JSON.stringify({ url: testForm.url, license: testForm.license, maxPriceMicros: testForm.maxPriceMicros ? Number(testForm.maxPriceMicros) : undefined }) });

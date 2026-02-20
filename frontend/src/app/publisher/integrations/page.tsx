@@ -16,7 +16,14 @@ export default function IntegrationsPage() {
         <h2 className="text-lg font-semibold">Analytics / Log forwarding</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {providers.map((provider) => (
-            <button key={provider} onClick={() => setSelected(provider)} className="rounded-lg border border-white/10 bg-white/5 p-4 text-left hover:bg-white/10">{provider}</button>
+            <Button
+              key={provider}
+              variant={selected === provider ? 'primary' : 'secondary'}
+              className="w-full justify-start rounded-lg p-4 text-left"
+              onClick={() => setSelected(provider)}
+            >
+              {provider}
+            </Button>
           ))}
         </div>
       </Card>
