@@ -79,8 +79,8 @@ export const createAuthRouter = (dbClient: AuthDbClient = prisma as unknown as A
 
       const token = createToken(user.id, role);
       return res.status(201).json({ token, role });
-    } catch (_error) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    } catch (error) {
+      return next(error);
     }
   });
 
