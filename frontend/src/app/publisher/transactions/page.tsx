@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Button, Card, EmptyState, Input, Select, Table } from '@/components/dashboard/primitives';
 import { formatMicrosToCurrency } from '@/lib/money';
+import { toast } from '@/components/toast/ToastProvider';
 
 type ReceiptRow = {
   txId: string;
@@ -31,6 +32,7 @@ export default function TransactionsPage() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [cursorHistory, setCursorHistory] = useState<(string | null)[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const queryString = useMemo(() => {
     const query = new URLSearchParams();
@@ -54,9 +56,13 @@ export default function TransactionsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryString]);
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
+    setIsRefreshing(true);
     setCursor(null);
     setCursorHistory([]);
+    await load();
+    toast.success('Updated');
+    setIsRefreshing(false);
   };
 
   const goNextPage = () => {
@@ -86,12 +92,12 @@ export default function TransactionsPage() {
           <option value="SUMMARY">SUMMARY</option>
           <option value="DISPLAY">DISPLAY</option>
         </Select>
-        <Button onClick={applyFilters}>Apply filters</Button>
+        <Button onClick={applyFilters} disabled={isRefreshing}>{isRefreshing ? 'Updating...' : 'Apply filters'}</Button>
       </div>
 
       {transactions.length === 0 ? (
         <div className="mt-4">
-          <EmptyState title="No transactions" description="A transaction appears after an AI client redeems a token for content." />
+          <EmptyState title="No transactions" description="Transactions appear after an AI client redeems a token for your content." />
         </div>
       ) : (
         <div className="mt-4 overflow-x-auto">

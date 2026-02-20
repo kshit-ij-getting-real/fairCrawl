@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Badge, Button, Card, Drawer, EmptyState, Input, Table } from '@/components/dashboard/primitives';
+import { toast } from '@/components/toast/ToastProvider';
+import { getErrorMessage } from '@/lib/errorMessage';
 
 const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 
@@ -9,8 +11,12 @@ export default function DomainsPage() {
   const [domains, setDomains] = useState<any[]>([]);
   const [domain, setDomain] = useState('');
   const [selected, setSelected] = useState<any | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
 
-  const load = () => apiFetch('/api/publisher/domains').then(setDomains);
+  const load = async () => {
+    const response = await apiFetch('/api/publisher/domains');
+    setDomains(response || []);
+  };
   useEffect(() => { load(); }, []);
 
   return (
@@ -20,7 +26,27 @@ export default function DomainsPage() {
         {isDemoMode && <p className="mt-2 text-sm text-faircrawl-textMuted">Domains are auto-verified in demo mode.</p>}
         <div className="mt-3 flex gap-2">
           <Input value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="example.com" />
-          <Button onClick={async () => { await apiFetch('/api/publisher/domains', { method: 'POST', body: JSON.stringify({ domain }) }); setDomain(''); load(); }}>Add</Button>
+          <Button
+            onClick={async () => {
+              setIsAdding(true);
+              try {
+                const addedDomain = await apiFetch('/api/publisher/domains', { method: 'POST', body: JSON.stringify({ domain }) });
+                setDomains((current) => [addedDomain, ...current]);
+                setDomain('');
+                toast.success('Domain added');
+                if (isDemoMode) {
+                  toast.success('Domain verified');
+                }
+              } catch (error) {
+                toast.error(getErrorMessage(error));
+              } finally {
+                setIsAdding(false);
+              }
+            }}
+            disabled={!domain.trim() || isAdding}
+          >
+            {isAdding ? 'Adding...' : 'Add'}
+          </Button>
         </div>
       </Card>
       <Card>
