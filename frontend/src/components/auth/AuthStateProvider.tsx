@@ -13,7 +13,7 @@ type AuthState = {
 
 const AuthStateContext = createContext<AuthState | null>(null);
 
-const getDashboardHref = (role: Role | null) => (role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
+const getDashboardHref = (role: Role | null) => (role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/api-keys');
 
 export function AuthStateProvider({ children }: { children: React.ReactNode }) {
   const snapshot = useSyncExternalStore(subscribeSession, getSessionSnapshot, () => ({ token: null, role: null, displayLabel: null }));

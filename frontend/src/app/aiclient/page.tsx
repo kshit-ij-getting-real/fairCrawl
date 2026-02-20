@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
-export default function AIClientDashboardRedirectPage() {
+export default function AIClientIndexPage() {
   redirect('/aiclient/api-keys');
 }

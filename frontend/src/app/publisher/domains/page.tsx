@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Badge, Button, Card, Drawer, EmptyState, Input, Table } from '@/components/dashboard/primitives';
 
+const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+
 export default function DomainsPage() {
   const [domains, setDomains] = useState<any[]>([]);
   const [domain, setDomain] = useState('');
@@ -15,6 +17,7 @@ export default function DomainsPage() {
     <div className="space-y-6">
       <Card>
         <h2 className="text-lg font-semibold">Add domain</h2>
+        {isDemoMode && <p className="mt-2 text-sm text-faircrawl-textMuted">Domains are auto-verified in demo mode.</p>}
         <div className="mt-3 flex gap-2">
           <Input value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="example.com" />
           <Button onClick={async () => { await apiFetch('/api/publisher/domains', { method: 'POST', body: JSON.stringify({ domain }) }); setDomain(''); load(); }}>Add</Button>
@@ -34,8 +37,12 @@ export default function DomainsPage() {
                     <td><Badge tone={d.subdomainVerified ? 'success' : 'warning'}>{d.subdomainVerified ? 'Verified' : 'Pending'}</Badge></td>
                     <td>{new Date(d.createdAt).toLocaleDateString()}</td>
                     <td className="space-x-2">
-                      <Button variant="secondary" onClick={() => setSelected(d)}>View setup</Button>
-                      <Button variant="ghost" onClick={async () => { await apiFetch(`/api/publisher/domains/${d.id}/verify-dns`, { method: 'POST' }); load(); }}>Re-check</Button>
+                      {!isDemoMode && (
+                        <>
+                          <Button variant="secondary" onClick={() => setSelected(d)}>View setup</Button>
+                          <Button variant="ghost" onClick={async () => { await apiFetch(`/api/publisher/domains/${d.id}/verify-dns`, { method: 'POST' }); load(); }}>Re-check</Button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -45,17 +52,19 @@ export default function DomainsPage() {
         )}
       </Card>
 
-      <Drawer open={Boolean(selected)} title="Domain setup instructions" onClose={() => setSelected(null)}>
-        {selected && (
-          <div className="space-y-3 text-sm">
-            <p>Add TXT record: <code>_fairfetch-verify.{selected.name}</code> with token <code>{selected.verifyToken}</code>.</p>
-            <p>Delegate paid subdomain <code>{selected.subdomainHost}</code> to <code>{selected.subdomainCnameTarget}</code>.</p>
-            <div className="flex gap-2">
-              <Button onClick={async () => { await apiFetch(`/api/publisher/domains/${selected.id}/verify-dns`, { method: 'POST' }); load(); }}>Re-check verification</Button>
+      {!isDemoMode && (
+        <Drawer open={Boolean(selected)} title="Domain setup instructions" onClose={() => setSelected(null)}>
+          {selected && (
+            <div className="space-y-3 text-sm">
+              <p>Add TXT record: <code>_fairfetch-verify.{selected.name}</code> with token <code>{selected.verifyToken}</code>.</p>
+              <p>Delegate paid subdomain <code>{selected.subdomainHost}</code> to <code>{selected.subdomainCnameTarget}</code>.</p>
+              <div className="flex gap-2">
+                <Button onClick={async () => { await apiFetch(`/api/publisher/domains/${selected.id}/verify-dns`, { method: 'POST' }); load(); }}>Re-check verification</Button>
+              </div>
             </div>
-          </div>
-        )}
-      </Drawer>
+          )}
+        </Drawer>
+      )}
     </div>
   );
 }
