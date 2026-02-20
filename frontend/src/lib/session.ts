@@ -76,6 +76,8 @@ export const setSession = (token: string, role: Role, displayLabel?: string) => 
 
   if (displayLabel && displayLabel.trim().length > 0) {
     safeLocalSet('displayLabel', displayLabel.trim());
+  } else {
+    safeLocalRemove('displayLabel');
   }
 
   emitSessionChange();
