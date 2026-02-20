@@ -5,7 +5,6 @@ const links = [
   ['Creators', '/creators'],
   ['AI teams', '/ai-teams'],
   ['Directory', '/directory'],
-  ['Docs', '/docs'],
 ] as const;
 
 export function HeaderNav() {

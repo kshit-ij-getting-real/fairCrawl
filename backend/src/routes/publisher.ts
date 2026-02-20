@@ -24,6 +24,12 @@ const parseDateFilter = (value?: string) => {
   return Number.isNaN(date.getTime()) ? undefined : date;
 };
 
+const parsePageSize = (value: unknown, fallback = 25, max = 100) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  return Math.min(Math.floor(parsed), max);
+};
+
 const errorJson = (res: any, status: number, error: string, details?: unknown) => res.status(status).json({ error, details });
 
 const getPublisher = async (userId: number) => prisma.publisher.findUnique({ where: { userId } });
@@ -195,37 +201,64 @@ router.get('/transactions', async (req: AuthRequest, res) => {
   const from = parseDateFilter(String(req.query.from || ''));
   const to = parseDateFilter(String(req.query.to || ''));
   const domainId = Number(req.query.domainId || 0) || undefined;
+  const domainName = String(req.query.domain || '').trim().toLowerCase();
+  const licenseType = String(req.query.licenseType || '').trim().toUpperCase();
+  const cursor = String(req.query.cursor || '');
+  const pageSize = parsePageSize(req.query.pageSize, 25, 100);
 
-  const domainIds = domainId
-    ? [domainId]
-    : (await prisma.domain.findMany({ where: { publisherId: publisher.id }, select: { id: true } })).map((d) => d.id);
+  const domainIds = (
+    await prisma.domain.findMany({
+      where: {
+        publisherId: publisher.id,
+        ...(domainId ? { id: domainId } : {}),
+        ...(domainName ? { name: { contains: domainName, mode: 'insensitive' } } : {}),
+      },
+      select: { id: true },
+    })
+  ).map((d) => d.id);
+
+  if (!domainIds.length) {
+    return res.json({
+      rows: [],
+      page: {
+        pageSize,
+        nextCursor: null,
+        hasMore: false,
+      },
+    });
+  }
 
   const rows = await prisma.ledgerTransaction.findMany({
     where: {
       domainId: { in: domainIds },
       createdAt: { gte: from, lte: to },
+      ...(licenseType === 'SUMMARY' || licenseType === 'DISPLAY' ? { licenseType: licenseType as LicenseType } : {}),
     },
-    include: { aiClient: { include: { user: true } }, domain: true },
-    orderBy: { createdAt: 'desc' },
-    take: 500,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    include: { domain: true },
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    take: pageSize + 1,
   });
 
-  return res.json(rows.map((row) => ({
-    time: row.createdAt,
-    aiClientName: row.aiClient.name,
-    email: row.aiClient.user.email,
-    domain: row.domain.name,
-    path: row.path,
-    license: row.licenseType,
-    priceMicros: row.publisherAmountMicros,
-    status: 'SETTLED',
-    requestId: row.tokenId,
-    ledgerId: row.id,
-    id: row.id,
-    createdAt: row.createdAt,
-    licenseType: row.licenseType,
-    publisherAmountMicros: row.publisherAmountMicros,
-  })));
+  const hasMore = rows.length > pageSize;
+  const pageRows = hasMore ? rows.slice(0, pageSize) : rows;
+  const nextCursor = hasMore ? pageRows[pageRows.length - 1]?.id || null : null;
+
+  return res.json({
+    rows: pageRows.map((row) => ({
+      txId: row.id,
+      timestamp: row.createdAt,
+      domain: row.domain.name,
+      path: row.path,
+      license: row.licenseType,
+      priceMicros: row.publisherAmountMicros,
+    })),
+    page: {
+      pageSize,
+      hasMore,
+      nextCursor,
+    },
+  });
 });
 
 router.get('/overview', async (req: AuthRequest, res) => {
