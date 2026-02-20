@@ -8,6 +8,8 @@ import { getErrorMessage } from '@/lib/errorMessage';
 
 const emptyForm = { pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
 
+const isMissingDomainPricingRoute = (error: unknown) =>
+  error instanceof ApiError && (error.code === 'NOT_FOUND' || error.code === 'REQUEST_FAILED');
 
 export default function PricingPage() {
   const [domains, setDomains] = useState<any[]>([]);
@@ -32,6 +34,16 @@ export default function PricingPage() {
     if (!domainId) {
       setRules([]);
       return;
+    }
+
+    try {
+      const response = await apiFetch(`/api/publisher/domains/${domainId}/pricing-rules`);
+      setRules(response?.pricingRules || []);
+      return;
+    } catch (error) {
+      if (!isMissingDomainPricingRoute(error)) {
+        throw error;
+      }
     }
 
     const response = await apiFetch('/api/publisher/pricing-rules');
@@ -102,10 +114,19 @@ export default function PricingPage() {
             try {
               setIsCreatingRule(true);
               setCreateError('');
-              const response = await apiFetch('/api/publisher/pricing-rules', {
-                method: 'POST',
-                body: JSON.stringify({ ...form, domainId: selectedDomainId }),
-              });
+              let response;
+              try {
+                response = await apiFetch(`/api/publisher/domains/${selectedDomainId}/pricing-rules`, { method: 'POST', body: JSON.stringify(form) });
+              } catch (error) {
+                if (!isMissingDomainPricingRoute(error)) {
+                  throw error;
+                }
+
+                response = await apiFetch('/api/publisher/pricing-rules', {
+                  method: 'POST',
+                  body: JSON.stringify({ ...form, domainId: selectedDomainId }),
+                });
+              }
 
               setRules((current) => [response.pricingRule, ...current]);
               setForm({ ...emptyForm });
