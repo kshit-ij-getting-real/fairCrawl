@@ -34,8 +34,8 @@ export default function PricingPage() {
     }
 
     const response = await apiFetch('/api/publisher/pricing-rules');
-    const allRules = response?.pricingRules || [];
-    setRules(allRules.filter((rule: any) => Number(rule.domainId) === Number(domainId)));
+    const allRules = Array.isArray(response?.pricingRules) ? response.pricingRules : [];
+    setRules(allRules.filter((rule: any) => rule && Number(rule.domainId) === Number(domainId)));
   };
 
   useEffect(() => {
@@ -106,7 +106,9 @@ export default function PricingPage() {
                 body: JSON.stringify({ ...form, domainId: selectedDomainId }),
               });
 
-              setRules((current) => [response.pricingRule, ...current]);
+              if (response?.pricingRule) {
+                setRules((current) => [response.pricingRule, ...current]);
+              }
               setForm({ ...emptyForm });
               toast.success('Pricing rule created');
             } catch (error) {

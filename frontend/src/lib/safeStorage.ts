@@ -2,6 +2,16 @@ export function canUseDOM(): boolean {
   return typeof window !== 'undefined';
 }
 
+const getStorage = (kind: 'localStorage' | 'sessionStorage'): Storage | null => {
+  if (!canUseDOM()) return null;
+
+  try {
+    return window[kind];
+  } catch {
+    return null;
+  }
+};
+
 const safeGet = (storage: Storage, key: string): string | null => {
   try {
     return storage.getItem(key);
@@ -29,31 +39,37 @@ const safeRemove = (storage: Storage, key: string): boolean => {
 };
 
 export function safeSessionGet(key: string): string | null {
-  if (!canUseDOM()) return null;
-  return safeGet(window.sessionStorage, key);
+  const storage = getStorage('sessionStorage');
+  if (!storage) return null;
+  return safeGet(storage, key);
 }
 
 export function safeSessionSet(key: string, value: string): boolean {
-  if (!canUseDOM()) return false;
-  return safeSet(window.sessionStorage, key, value);
+  const storage = getStorage('sessionStorage');
+  if (!storage) return false;
+  return safeSet(storage, key, value);
 }
 
 export function safeSessionRemove(key: string): boolean {
-  if (!canUseDOM()) return false;
-  return safeRemove(window.sessionStorage, key);
+  const storage = getStorage('sessionStorage');
+  if (!storage) return false;
+  return safeRemove(storage, key);
 }
 
 export function safeLocalGet(key: string): string | null {
-  if (!canUseDOM()) return null;
-  return safeGet(window.localStorage, key);
+  const storage = getStorage('localStorage');
+  if (!storage) return null;
+  return safeGet(storage, key);
 }
 
 export function safeLocalSet(key: string, value: string): boolean {
-  if (!canUseDOM()) return false;
-  return safeSet(window.localStorage, key, value);
+  const storage = getStorage('localStorage');
+  if (!storage) return false;
+  return safeSet(storage, key, value);
 }
 
 export function safeLocalRemove(key: string): boolean {
-  if (!canUseDOM()) return false;
-  return safeRemove(window.localStorage, key);
+  const storage = getStorage('localStorage');
+  if (!storage) return false;
+  return safeRemove(storage, key);
 }
