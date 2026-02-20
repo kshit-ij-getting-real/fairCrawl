@@ -91,7 +91,7 @@ export default function TransactionsPage() {
 
       {transactions.length === 0 ? (
         <div className="mt-4">
-          <EmptyState title="No transactions" description="Transactions will appear after successful paid fetches." />
+          <EmptyState title="No transactions" description="A transaction appears after an AI client redeems a token for content." />
         </div>
       ) : (
         <div className="mt-4 overflow-x-auto">

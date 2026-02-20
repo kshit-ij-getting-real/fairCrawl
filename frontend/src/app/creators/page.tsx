@@ -9,7 +9,7 @@ const CreatorsPage = () => {
         <SubpageHero
           eyebrow="For creators & publishers"
           title="FairFetch for creators & publishers"
-          description="Set rules per path, see which AI clients read your work, and turn AI training into income."
+          description="Set rules per path, see which AI clients read your work, and turn AI access into income."
         />
 
         <div className="grid items-stretch gap-6 md:grid-cols-3">
@@ -59,7 +59,7 @@ const CreatorsPage = () => {
               <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
               <ul className="space-y-3">
                 {[
-                  'See which clients hit which paths, how often, and what they read.',
+                  'See which clients redeemed paid access, for which paths, and how often.',
                   'Use a shared log as the source of truth for audits, payouts, and disputes.',
                   'Give AI teams and publishers the same record of how your work was used.',
                 ].map((item) => (
