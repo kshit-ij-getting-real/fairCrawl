@@ -37,12 +37,51 @@ const getPublisher = async (userId: number) => prisma.publisher.findUnique({ whe
 const mapRule = (rule: any) => ({
   id: rule.id,
   domainId: rule.domainId,
-  licenseType: rule.licenseType || rule.license?.code || 'SUMMARY',
+  licenseCode: rule.licenseType || rule.license?.code || 'SUMMARY',
   pathPrefix: rule.pathPattern || '/',
   priceMicros: rule.priceMicros,
+  isActive: rule.enabled,
+  createdAt: rule.createdAt,
+  updatedAt: rule.updatedAt,
+  // legacy aliases kept for existing consumers
+  licenseType: rule.licenseType || rule.license?.code || 'SUMMARY',
   active: rule.enabled,
   scope: rule.scope,
 });
+
+const parseLicenseCode = (value: unknown) => {
+  const normalized = String(value || 'SUMMARY').toUpperCase();
+  if (normalized !== 'SUMMARY' && normalized !== 'DISPLAY') {
+    return null;
+  }
+  return normalized as LicenseType;
+};
+
+const parseAndValidateRuleInput = (body: any) => {
+  const licenseCode = parseLicenseCode(body?.licenseCode || body?.licenseType);
+  if (!licenseCode) {
+    return { error: { status: 400, error: 'INVALID_LICENSE', message: 'licenseCode must be SUMMARY or DISPLAY.' } };
+  }
+
+  const pathPrefix = String(body?.pathPrefix || body?.matchValue || '/').trim() || '/';
+  if (!pathPrefix.startsWith('/') || pathPrefix.length > 200) {
+    return { error: { status: 400, error: 'INVALID_PATH_PREFIX', message: 'pathPrefix must start with "/" and be at most 200 characters.' } };
+  }
+
+  const priceMicros = Number(body?.priceMicros);
+  if (!Number.isInteger(priceMicros) || priceMicros < 1) {
+    return { error: { status: 400, error: 'INVALID_PRICE', message: 'priceMicros must be an integer greater than or equal to 1.' } };
+  }
+
+  return {
+    data: {
+      licenseCode,
+      pathPrefix,
+      priceMicros,
+      isActive: body?.isActive !== false && body?.active !== false,
+    },
+  };
+};
 
 router.get('/domains', async (req: AuthRequest, res) => {
   const publisher = await getPublisher(req.user!.id);
@@ -105,7 +144,7 @@ router.get('/domains/:domainId/pricing-rules', async (req: AuthRequest, res) => 
     orderBy: [{ enabled: 'desc' }, { pathPattern: 'desc' }, { createdAt: 'desc' }],
   });
 
-  return res.json(rules.map(mapRule));
+  return res.json({ pricingRules: rules.map(mapRule) });
 });
 
 router.post('/domains/:domainId/pricing-rules', async (req: AuthRequest, res) => {
@@ -115,25 +154,33 @@ router.post('/domains/:domainId/pricing-rules', async (req: AuthRequest, res) =>
   const domain = await prisma.domain.findFirst({ where: { id: Number(req.params.domainId), publisherId: publisher.id } });
   if (!domain) return errorJson(res, 404, 'DOMAIN_NOT_FOUND');
 
-  const licenseType: LicenseType = String(req.body?.licenseType || 'SUMMARY').toUpperCase() === 'DISPLAY' ? 'DISPLAY' : 'SUMMARY';
-  const pathPrefix = String(req.body?.pathPrefix || '/').trim() || '/';
-  const priceMicros = Number(req.body?.priceMicros);
-  if (!Number.isFinite(priceMicros) || priceMicros < 0) return errorJson(res, 400, 'INVALID_PRICE');
+  const parsedInput = parseAndValidateRuleInput(req.body);
+  if ('error' in parsedInput) {
+    return res.status(parsedInput.error.status).json({ error: parsedInput.error.error, message: parsedInput.error.message });
+  }
+  const { licenseCode, pathPrefix, priceMicros, isActive } = parsedInput.data;
+
+  const existing = await prisma.pricingRule.findFirst({
+    where: { domainId: domain.id, pathPattern: pathPrefix, licenseType: licenseCode },
+  });
+  if (existing) {
+    return res.status(409).json({ error: 'PRICING_RULE_EXISTS', message: 'A pricing rule already exists for this domain/pathPrefix/licenseCode.' });
+  }
 
   const rule = await prisma.pricingRule.create({
     data: {
       domainId: domain.id,
       scope: 'DIRECTORY',
       pathPattern: pathPrefix,
-      licenseType,
+      licenseType: licenseCode,
       priceMicros,
-      enabled: req.body?.active !== false,
+      enabled: isActive,
       priority: 100,
     },
     include: { license: true },
   });
 
-  return res.status(201).json(mapRule(rule));
+  return res.status(201).json({ pricingRule: mapRule(rule) });
 });
 
 const createRuleFromBody = async (req: AuthRequest, res: any, domainId: number) => {
@@ -143,25 +190,33 @@ const createRuleFromBody = async (req: AuthRequest, res: any, domainId: number) 
   const domain = await prisma.domain.findFirst({ where: { id: domainId, publisherId: publisher.id } });
   if (!domain) return errorJson(res, 404, 'DOMAIN_NOT_FOUND');
 
-  const licenseType: LicenseType = String(req.body?.licenseType || 'SUMMARY').toUpperCase() === 'DISPLAY' ? 'DISPLAY' : 'SUMMARY';
-  const pathPrefix = String(req.body?.pathPrefix || req.body?.matchValue || '/').trim() || '/';
-  const priceMicros = Number(req.body?.priceMicros);
-  if (!Number.isFinite(priceMicros) || priceMicros < 0) return errorJson(res, 400, 'INVALID_PRICE');
+  const parsedInput = parseAndValidateRuleInput(req.body);
+  if ('error' in parsedInput) {
+    return res.status(parsedInput.error.status).json({ error: parsedInput.error.error, message: parsedInput.error.message });
+  }
+  const { licenseCode, pathPrefix, priceMicros, isActive } = parsedInput.data;
+
+  const existing = await prisma.pricingRule.findFirst({
+    where: { domainId: domain.id, pathPattern: pathPrefix, licenseType: licenseCode },
+  });
+  if (existing) {
+    return res.status(409).json({ error: 'PRICING_RULE_EXISTS', message: 'A pricing rule already exists for this domain/pathPrefix/licenseCode.' });
+  }
 
   const rule = await prisma.pricingRule.create({
     data: {
       domainId: domain.id,
       scope: 'DIRECTORY',
       pathPattern: pathPrefix,
-      licenseType,
+      licenseType: licenseCode,
       priceMicros,
-      enabled: req.body?.active !== false,
+      enabled: isActive,
       priority: 100,
     },
     include: { license: true },
   });
 
-  return res.status(201).json(mapRule(rule));
+  return res.status(201).json({ pricingRule: mapRule(rule) });
 };
 
 router.get('/pricing-rules', async (req: AuthRequest, res) => {
@@ -169,7 +224,7 @@ router.get('/pricing-rules', async (req: AuthRequest, res) => {
   if (!publisher) return errorJson(res, 404, 'PUBLISHER_NOT_FOUND');
 
   const rules = await prisma.pricingRule.findMany({ where: { domain: { publisherId: publisher.id } }, include: { license: true }, orderBy: { createdAt: 'desc' } });
-  return res.json(rules.map(mapRule));
+  return res.json({ pricingRules: rules.map(mapRule) });
 });
 
 router.post('/pricing-rules', async (req: AuthRequest, res) => {

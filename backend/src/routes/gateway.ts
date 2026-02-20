@@ -85,9 +85,9 @@ router.post('/tokens', async (req, res) => {
   if (!resolvedRule) {
     return err(
       res,
-      404,
-      'PRICING_RULE_NOT_FOUND',
-      'No pricing rule found for this domain/path/license.',
+      400,
+      'NO_PRICING_RULE',
+      'No active pricing rule matches this domain/path/license.',
       { domain: parsed.hostname, path: parsed.path, license }
     );
   }

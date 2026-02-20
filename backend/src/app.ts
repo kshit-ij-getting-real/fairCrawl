@@ -83,6 +83,11 @@ export const createApp = () => {
   app.use('/api/aiclient', authenticate, requireRole('AICLIENT'), aiClientRouter);
   app.use('/api/client', authenticate, requireRole('AICLIENT'), aiClientRouter);
 
+
+  app.use('/api', (_req, res) => {
+    return res.status(404).json({ error: 'NOT_FOUND', message: 'API route not found.' });
+  });
+
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     const requestId = (req as Request & { requestId?: string }).requestId || 'unknown';
     const normalizedError = err instanceof Error ? err : new Error('Unknown error');
