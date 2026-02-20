@@ -13,7 +13,7 @@ const heroHighlights = [
   {
     title: 'Track usage',
     body:
-      'See who’s reading you in real time. FairFetch logs which AI teams access your content and how often.',
+      'Track paid access with clear logs. FairFetch records which AI teams redeem tokens for your content and how often.',
   },
   {
     title: 'Earn from your work',
@@ -138,7 +138,7 @@ export default function Page() {
               <SectionEyebrow className="text-blue-200">Vision</SectionEyebrow>
               <h2 className="text-xl font-semibold">Our vision: a fair web for AI</h2>
               <p className="text-sm text-white/70">
-                AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the work that trains their models.
+                AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for licensed access to their work.
               </p>
             </div>
             <div className="flex justify-end gap-3 pt-4">
@@ -153,7 +153,7 @@ export default function Page() {
               <SectionEyebrow className="text-blue-200">Directory</SectionEyebrow>
               <h2 className="text-xl font-semibold">Verified AI-ready sites</h2>
               <p className="text-sm text-white/70">
-                Browse sites that have verified ownership and published AI access rules through FairFetch. They’re safe defaults when you want high-quality, permissioned training data.
+                Browse sites with verified ownership and published AI access rules through FairFetch. They are strong defaults when you want permissioned data with clear licensing terms.
               </p>
             </div>
             <div className="flex justify-end gap-3 pt-4">

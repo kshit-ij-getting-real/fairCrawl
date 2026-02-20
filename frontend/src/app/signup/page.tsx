@@ -58,8 +58,8 @@ function SignupContent() {
               <p className="font-medium">After you create an account, you&apos;ll:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Add a domain you control.</li>
-                <li>Prove you own it by serving a small verification file.</li>
-                <li>Set crawl policies and see which AI clients access your site.</li>
+                <li>Verify ownership from the Domains setup flow (auto-verified in demo mode).</li>
+                <li>Create pricing and content controls for the paths you want to allow or monetize.</li>
               </ul>
             </div>
           </div>

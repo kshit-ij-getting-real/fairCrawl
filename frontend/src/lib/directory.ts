@@ -37,7 +37,7 @@ export type DirectoryEntry = {
 
 const ctaDirectoryEntry: DirectoryEntry = {
   title: 'Your site here',
-  description: 'Verify your own site and it will show up in the directory once we go live.',
+  description: 'Verified domains appear in the directory after ownership checks are complete.',
   link: '/signup?role=publisher',
   cta: 'Become a launch publisher',
 };

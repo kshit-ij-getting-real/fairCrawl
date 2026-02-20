@@ -10,11 +10,11 @@ const HowItWorksPage = () => {
     },
     {
       title: 'Request goes through FairFetch',
-      body: 'The AI team signs up, gets an API key, and identifies itself on every request. FairFetch checks your rules to see what they can read, how fast they can crawl, and whether the path is paid.',
+      body: 'The AI team signs up, gets an API key, and identifies itself on every request. FairFetch checks your rules to see what they can read, and whether the path is paid.',
     },
     {
-      title: 'You set the rules — and get paid',
-      body: 'You choose which paths are open, premium, throttled, or not listed, and what each client pays. FairFetch logs every access, returns content when allowed, and records the transaction so you can track earnings.',
+      title: 'You set the rules, and get paid',
+      body: 'You choose which paths are open, premium, or not listed, and what each client pays. FairFetch logs every access, returns content when allowed, and records the transaction so you can track earnings.',
     },
   ];
 
@@ -30,7 +30,7 @@ const HowItWorksPage = () => {
                 FairFetch sits between AI clients and the sites they read. Clients authenticate, you set the rules, and FairFetch checks every request before content is returned.
               </p>
               <p>
-                AI clients go through FairFetch instead of requesting in the dark. You decide which paths are open, premium, throttled, or not listed, and every request is logged so both sides see the same record.
+                AI clients go through FairFetch instead of requesting in the dark. You decide which paths are open, premium, or not listed, and paid requests are logged so both sides see the same record.
               </p>
             </>
           }

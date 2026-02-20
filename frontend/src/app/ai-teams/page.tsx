@@ -8,12 +8,12 @@ const AiTeamsPage = () => {
   const benefits = [
     'One API key for many publishers, with clear rules for each domain.',
     'See which paths are free, metered, or not listed before you crawl.',
-    'Built-in rate limiting, identity verification, and audit logs prove you’re playing fair.',
+    'Client identity and shared transaction logs make usage easy to verify.',
     'Shared observability so you and the publisher see the same record of reads.',
   ];
   const statusBadges = [
     { label: 'Open', className: 'bg-blue-500/20 text-blue-100' },
-    { label: 'Throttled', className: 'bg-amber-500/20 text-amber-100' },
+    { label: 'Paid', className: 'bg-amber-500/20 text-amber-100' },
     { label: 'Not listed', className: 'bg-white/10 text-white' },
   ];
 
@@ -30,7 +30,7 @@ const AiTeamsPage = () => {
           <MarketingCard className="flex min-h-[320px] flex-col gap-4 text-white">
             <SectionEyebrow className="text-blue-200">API preview</SectionEyebrow>
             <p className="text-sm text-white/70">
-              A single call tells you if a page is open, throttled, or not listed for your client.
+              A single call tells you if a page is open, paid, or not listed for your client.
             </p>
             <div className="space-y-4 rounded-2xl border border-white/10 bg-black/60 p-4 text-xs font-mono text-blue-100">
               <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-white/70">

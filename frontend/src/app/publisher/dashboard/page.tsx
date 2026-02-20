@@ -21,7 +21,7 @@ export default function PublisherOverviewPage() {
           { label: 'Revenue (30d)', value: `$${((data?.kpis?.revenueMicros || 0) / 1_000_000).toFixed(2)}` },
           { label: 'Requests (30d)', value: data?.kpis?.requests30d || 0 },
           { label: 'Active domains', value: data?.kpis?.activeDomains || 0 },
-          { label: 'Top AI client', value: data?.kpis?.topAIClient || '—' },
+          { label: 'Top AI client', value: data?.kpis?.topAIClient || 'None yet' },
         ].map((kpi) => (
           <Card key={kpi.label}>
             <p className="text-xs text-faircrawl-textMuted">{kpi.label}</p>
@@ -46,7 +46,7 @@ export default function PublisherOverviewPage() {
         <h2 className="text-lg font-semibold text-white">Recent transactions</h2>
         {transactions.length === 0 ? (
           <div className="mt-4">
-            <EmptyState title="No transactions yet" description="After tokens are spent, receipts will appear here." />
+            <EmptyState title="No transactions yet" description="A transaction appears here after an AI client redeems a token for content." />
           </div>
         ) : (
           <div className="mt-4 overflow-x-auto">

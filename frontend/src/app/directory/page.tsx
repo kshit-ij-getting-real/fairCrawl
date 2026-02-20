@@ -17,7 +17,6 @@ export default async function DirectoryPage() {
     return status || (!('verified' in domain) && !('isVerified' in domain) && !domain.verificationStatus && domain.verifiedAt === undefined);
   });
 
-  const displayDomains = verifiedDomains.length > 0 ? verifiedDomains : domains;
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
@@ -25,11 +24,11 @@ export default async function DirectoryPage() {
         <SubpageHero
           eyebrow="Directory"
           title="Verified AI-ready sites"
-          description="These domains have verified ownership and published AI access rules through FairFetch. They’re good defaults when you want high-quality, permissioned training data with clear licensing terms."
+          description="These domains have verified ownership and published AI access rules through FairFetch. They are good defaults when you want permissioned data with clear licensing terms."
         />
 
         <div className="space-y-4">
-          {displayDomains.map((domain) => {
+          {verifiedDomains.map((domain) => {
             const domainName = domain.domain || domain.host || domain.name;
             const visitUrl = domain.publicUrl || (domainName ? `https://${domainName}` : '#');
             const publisherName =
@@ -66,7 +65,7 @@ export default async function DirectoryPage() {
               <div>
                 <h3 className="text-lg font-semibold">Your site here</h3>
                 <p className="text-sm text-white/70">
-                  Verify your own site and it will show up in the directory once we go live.
+                  Verified domains appear in the directory after ownership checks are complete.
                 </p>
               </div>
               <div className="flex justify-end">

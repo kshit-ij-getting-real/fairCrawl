@@ -31,7 +31,7 @@ const VisionPage = () => {
               label: 'Standard',
               title: 'From one product to a standard',
               body:
-                'We start as a hosted gateway for AI traffic. The long-term goal is a common way for any site and any AI team to talk about access, licensing, and price — no matter who runs the infrastructure.',
+                'We start as a hosted gateway for AI traffic. The long-term goal is a common way for any site and any AI team to talk about access, licensing, and price, no matter who runs the infrastructure.',
             },
           ].map((card) => (
             <MarketingCard key={card.label} className="flex min-h-[280px] flex-col justify-between text-white">
