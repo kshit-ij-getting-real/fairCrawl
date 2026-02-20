@@ -3,6 +3,18 @@
 import { API_BASE_URL } from './apiBase';
 import { getToken } from './session';
 
+export class ApiError extends Error {
+  code: string;
+  details?: unknown;
+
+  constructor(code: string, message: string, details?: unknown) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code;
+    this.details = details;
+  }
+}
+
 export async function apiFetch(path: string, init: RequestInit = {}) {
   if (!API_BASE_URL) {
     throw new Error('Missing NEXT_PUBLIC_API_BASE_URL');
@@ -26,8 +38,8 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, { ...init, headers });
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(err.error || 'Request failed');
+    const err = await response.json().catch(() => ({ error: 'REQUEST_FAILED', message: 'Request failed' }));
+    throw new ApiError(err.error || 'REQUEST_FAILED', err.message || err.error || 'Request failed', err.details);
   }
 
   const contentLength = response.headers.get('content-length');

@@ -11,6 +11,17 @@ export default function AIClientDashboard() {
   const [usage, setUsage] = useState<any>({ byDomain: [], byDay: [] });
   const [testForm, setTestForm] = useState<any>({ url: '', license: 'SUMMARY', maxPriceMicros: '' });
   const [receipt, setReceipt] = useState<any>(null);
+  const [testError, setTestError] = useState('');
+
+  const getErrorMeta = (error: unknown) => {
+    if (typeof error === 'object' && error !== null && 'code' in error) {
+      const err = error as { code?: string; message?: string };
+      return { code: err.code || 'UNKNOWN_ERROR', message: err.message || 'Request failed' };
+    }
+
+    const fallback = error instanceof Error ? error.message : 'Request failed';
+    return { code: 'UNKNOWN_ERROR', message: fallback };
+  };
 
   const load = async () => {
     const [keys, usageByDomain, usageByDay] = await Promise.all([
@@ -57,13 +68,50 @@ export default function AIClientDashboard() {
           <select className="rounded-lg border border-white/10 bg-black/20 px-3 py-2" value={testForm.license} onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></select>
           <Input placeholder="maxPriceMicros" value={testForm.maxPriceMicros} onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })} />
           <Button onClick={async () => {
-            const tokenResp = await apiFetch('/api/tokens', { method: 'POST', body: JSON.stringify({ url: testForm.url, license: testForm.license, maxPriceMicros: testForm.maxPriceMicros ? Number(testForm.maxPriceMicros) : undefined }) });
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/content?url=${encodeURIComponent(testForm.url)}`, { headers: { 'x-fairfetch-token': tokenResp.token } });
-            const content = await response.json();
-            setReceipt(content.receipt);
-            await load();
+            setTestError('');
+            setReceipt(null);
+
+            try {
+              const tokenResp = await apiFetch('/api/tokens', {
+                method: 'POST',
+                body: JSON.stringify({
+                  url: testForm.url,
+                  license: testForm.license,
+                  maxPriceMicros: testForm.maxPriceMicros ? Number(testForm.maxPriceMicros) : undefined,
+                }),
+              });
+
+              try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/content?url=${encodeURIComponent(testForm.url)}`, {
+                  headers: { 'x-fairfetch-token': tokenResp.token },
+                });
+                const content = await response.json();
+
+                if (!response.ok) {
+                  const redeemMessage = content?.message || content?.error || 'Unable to redeem content token.';
+                  setTestError(`${redeemMessage} Please retry in a few seconds. If this continues, mint a new token and verify the URL and license.`);
+                  return;
+                }
+
+                setReceipt(content.receipt);
+                await load();
+              } catch (error) {
+                const { message } = getErrorMeta(error);
+                setTestError(`${message} Please retry in a few seconds. If this continues, mint a new token and verify the URL and license.`);
+              }
+            } catch (error) {
+              const { code, message } = getErrorMeta(error);
+
+              if (code === 'PRICING_RULE_NOT_FOUND') {
+                setTestError('No pricing rule found for this domain/path/license – configure it under Publisher → Pricing.');
+                return;
+              }
+
+              setTestError(message);
+            }
           }}>Test paid request</Button>
         </div>
+        {testError && <p className="mt-3 text-sm text-red-300">{testError}</p>}
         {receipt && <p className="mt-3 text-xs text-faircrawl-textMuted">Receipt: {receipt.txId} · {receipt.priceMicros} micros · {receipt.domain}{receipt.path} · {new Date(receipt.timestamp).toLocaleString()}</p>}
       </Card>
     </div>
