@@ -9,7 +9,8 @@ const router = Router();
 
 const hash = (value: string) => crypto.createHash('sha256').update(value).digest('hex');
 const bypassVerification = () => process.env.MVP_BYPASS_VERIFICATION === 'true';
-const err = (res: any, status: number, error: string, details?: unknown) => res.status(status).json({ error, details });
+const err = (res: any, status: number, error: string, message?: string, details?: unknown) =>
+  res.status(status).json({ error, message, details });
 
 const parseUrl = (url: string) => {
   const parsed = new URL(url);
@@ -51,21 +52,21 @@ const authenticateAIClient = async (req: any) => {
 
 router.post('/tokens', async (req, res) => {
   const auth = await authenticateAIClient(req);
-  if (!auth) return err(res, 401, 'INVALID_AUTH');
+  if (!auth) return err(res, 401, 'INVALID_AUTH', 'Authentication failed. Provide a valid API key or AI client bearer token.');
 
   const url = String(req.body?.url || '');
-  if (!url) return err(res, 400, 'URL_REQUIRED');
+  if (!url) return err(res, 400, 'URL_REQUIRED', 'A URL is required to mint a token.');
 
   let parsed: { full: string; hostname: string; path: string };
   try {
     parsed = parseUrl(url);
   } catch {
-    return err(res, 400, 'INVALID_URL');
+    return err(res, 400, 'INVALID_URL', 'The provided URL is invalid.');
   }
 
   const domain = await prisma.domain.findUnique({ where: { name: parsed.hostname }, include: { pricingRules: true } });
-  if (!domain) return err(res, 404, 'NOT_LISTED');
-  if (!bypassVerification() && !domain.verified) return err(res, 403, 'DOMAIN_NOT_VERIFIED');
+  if (!domain) return err(res, 404, 'DOMAIN_NOT_LISTED', 'This domain is not listed in FairFetch.');
+  if (!bypassVerification() && !domain.verified) return err(res, 403, 'DOMAIN_NOT_VERIFIED', 'This domain exists but has not been verified yet.');
 
   const license: LicenseType = String(req.body?.license || 'SUMMARY').toUpperCase() === 'DISPLAY' ? 'DISPLAY' : 'SUMMARY';
 
@@ -73,18 +74,28 @@ router.post('/tokens', async (req, res) => {
   if (identity && req.header('user-agent')) {
     try {
       if (!new RegExp(identity.allowedUserAgentRe).test(String(req.header('user-agent')))) {
-        return err(res, 403, 'USER_AGENT_NOT_ALLOWED');
+        return err(res, 403, 'USER_AGENT_NOT_ALLOWED', 'This user agent does not match the AI client identity policy.');
       }
     } catch {
-      return err(res, 400, 'INVALID_AGENT_REGEX');
+      return err(res, 400, 'INVALID_AGENT_REGEX', 'The configured user-agent regex is invalid.');
     }
   }
 
   const resolvedRule = resolvePriceMicros(domain.pricingRules, license, parsed.path);
-  if (!resolvedRule) return err(res, 404, 'NOT_LISTED');
+  if (!resolvedRule) {
+    return err(
+      res,
+      404,
+      'PRICING_RULE_NOT_FOUND',
+      'No pricing rule found for this domain/path/license.',
+      { domain: parsed.hostname, path: parsed.path, license }
+    );
+  }
   const priceMicros = resolvedRule.priceMicros;
   const maxPriceMicros = req.body?.maxPriceMicros !== undefined ? Number(req.body.maxPriceMicros) : undefined;
-  if (maxPriceMicros !== undefined && priceMicros > maxPriceMicros) return err(res, 402, 'PRICE_TOO_HIGH', { priceMicros });
+  if (maxPriceMicros !== undefined && priceMicros > maxPriceMicros) {
+    return err(res, 402, 'PRICE_TOO_HIGH', 'The resolved price exceeds maxPriceMicros.', { priceMicros });
+  }
 
   const rawToken = crypto.randomBytes(48).toString('hex');
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -114,11 +125,13 @@ router.post('/tokens', async (req, res) => {
 
 router.get('/content', async (req, res) => {
   const rawToken = req.header('x-fairfetch-token');
-  if (!rawToken) return err(res, 401, 'INVALID_TOKEN');
+  if (!rawToken) return err(res, 401, 'INVALID_TOKEN', 'A spend token is required in x-fairfetch-token.');
 
   const tokenRow = await prisma.spendToken.findUnique({ where: { tokenHash: hash(rawToken) } });
-  if (!tokenRow) return err(res, 401, 'INVALID_TOKEN');
-  if (tokenRow.spentAt || tokenRow.expiresAt < new Date() || tokenRow.status !== 'ACTIVE') return err(res, 409, 'TOKEN_NOT_ACTIVE');
+  if (!tokenRow) return err(res, 401, 'INVALID_TOKEN', 'The supplied spend token is invalid.');
+  if (tokenRow.spentAt || tokenRow.expiresAt < new Date() || tokenRow.status !== 'ACTIVE') {
+    return err(res, 409, 'TOKEN_NOT_ACTIVE', 'This spend token has already been redeemed, expired, or is no longer active.');
+  }
 
   const spentAt = new Date();
 

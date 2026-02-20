@@ -8,6 +8,18 @@ const hashKey = (key: string) => crypto.createHash('sha256').update(key).digest(
 const getAIClient = (userId: number) => prisma.aIClient.findUnique({ where: { userId } });
 const maskKeyHash = (hash: string) => `${hash.slice(0, 6)}...${hash.slice(-4)}`;
 
+const parseDateFilter = (value?: string) => {
+  if (!value) return undefined;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+};
+
+const parsePageSize = (value: unknown, fallback = 25, max = 100) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  return Math.min(Math.floor(parsed), max);
+};
+
 router.get('/me', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
   if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
@@ -100,6 +112,66 @@ router.get('/usage/by-day', async (req: AuthRequest, res) => {
     LIMIT 30
   `;
   return res.json(byDay);
+});
+
+
+router.get('/usage/ledger', async (req: AuthRequest, res) => {
+  const aiClient = await getAIClient(req.user!.id);
+  if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
+
+  const from = parseDateFilter(String(req.query.from || ''));
+  const to = parseDateFilter(String(req.query.to || ''));
+  const domainFilter = String(req.query.domain || '').trim();
+  const licenseFilter = String(req.query.licenseType || '').trim().toUpperCase();
+  const cursor = String(req.query.cursor || '');
+  const pageSize = parsePageSize(req.query.pageSize, 25, 100);
+
+  const rows = await prisma.ledgerTransaction.findMany({
+    where: {
+      aiClientId: aiClient.id,
+      createdAt: { gte: from, lte: to },
+      ...(domainFilter ? { domain: { name: { contains: domainFilter, mode: 'insensitive' } } } : {}),
+      ...(licenseFilter === 'SUMMARY' || licenseFilter === 'DISPLAY' ? { licenseType: licenseFilter as 'SUMMARY' | 'DISPLAY' } : {}),
+    },
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    include: { domain: true },
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    take: pageSize + 1,
+  });
+
+  const hasMore = rows.length > pageSize;
+  const pageRows = hasMore ? rows.slice(0, pageSize) : rows;
+  const nextCursor = hasMore ? pageRows[pageRows.length - 1]?.id || null : null;
+
+  const totals = await prisma.ledgerTransaction.aggregate({
+    where: {
+      aiClientId: aiClient.id,
+      createdAt: { gte: from, lte: to },
+      ...(domainFilter ? { domain: { name: { contains: domainFilter, mode: 'insensitive' } } } : {}),
+      ...(licenseFilter === 'SUMMARY' || licenseFilter === 'DISPLAY' ? { licenseType: licenseFilter as 'SUMMARY' | 'DISPLAY' } : {}),
+    },
+    _sum: { totalMicros: true },
+  });
+
+  return res.json({
+    rows: pageRows.map((row) => ({
+      txId: row.id,
+      timestamp: row.createdAt,
+      domain: row.domain.name,
+      path: row.path,
+      license: row.licenseType,
+      priceMicros: row.totalMicros,
+    })),
+    summary: {
+      runningSpendMicros: pageRows.reduce((sum, row) => sum + row.totalMicros, 0),
+      totalSpendMicros: totals._sum.totalMicros || 0,
+    },
+    page: {
+      pageSize,
+      hasMore,
+      nextCursor,
+    },
+  });
 });
 
 router.get('/usage-spend', async (req: AuthRequest, res) => {

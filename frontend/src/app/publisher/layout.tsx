@@ -4,11 +4,8 @@ const publisherItems = [
   { href: '/publisher/dashboard', label: 'Overview' },
   { href: '/publisher/domains', label: 'Domains' },
   { href: '/publisher/pricing', label: 'Pricing' },
-  { href: '/publisher/integrations', label: 'Integrations' },
   { href: '/publisher/transactions', label: 'Transactions' },
   { href: '/publisher/controls', label: 'Content Controls' },
-  { href: '/publisher/payouts', label: 'Payouts' },
-  { href: '/publisher/demo', label: 'Demo Console' },
 ];
 
 export default function PublisherLayout({ children }: { children: React.ReactNode }) {
