@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useMemo, useSyncExternalStore } from 'react';
-import { clearSession, getSessionSnapshot, type Role, subscribeSession, type SessionSnapshot } from '@/lib/session';
+import { clearSession, getSessionSnapshot, type Role, subscribeSession } from '@/lib/session';
 
 type AuthState = {
   isAuthed: boolean;
@@ -12,12 +12,11 @@ type AuthState = {
 };
 
 const AuthStateContext = createContext<AuthState | null>(null);
-const EMPTY_SNAPSHOT: SessionSnapshot = { token: null, role: null, displayLabel: null };
 
 const getDashboardHref = (role: Role | null) => (role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
 
 export function AuthStateProvider({ children }: { children: React.ReactNode }) {
-  const snapshot = useSyncExternalStore(subscribeSession, getSessionSnapshot, () => EMPTY_SNAPSHOT);
+  const snapshot = useSyncExternalStore(subscribeSession, getSessionSnapshot, () => ({ token: null, role: null, displayLabel: null }));
 
   const value = useMemo<AuthState>(() => {
     const isAuthed = Boolean(snapshot.token && snapshot.role);
