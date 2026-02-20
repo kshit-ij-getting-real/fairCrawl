@@ -18,6 +18,12 @@ export default function PricingPage() {
   const [isSavingLicenses, setIsSavingLicenses] = useState(false);
   const [isCreatingRule, setIsCreatingRule] = useState(false);
   const [createSuccess, setCreateSuccess] = useState('');
+  const [savedLicenseSnapshot, setSavedLicenseSnapshot] = useState<any | null>(null);
+
+  const toWholeNumber = (value: string) => {
+    const digitsOnly = value.replace(/\D/g, '');
+    return digitsOnly ? Number(digitsOnly) : 0;
+  };
 
   const loadDomains = async () => {
     const d = await apiFetch('/api/publisher/domains');
@@ -28,6 +34,7 @@ export default function PricingPage() {
   const loadDomainData = async (domainId?: number | null) => {
     const licenseSettings = await apiFetch('/api/publisher/license-settings');
     setLicenses(licenseSettings);
+    setSavedLicenseSnapshot(licenseSettings);
 
     if (!domainId) {
       setRules([]);
@@ -52,13 +59,20 @@ export default function PricingPage() {
       <Card>
         <h2 className="text-lg font-semibold">License toggles</h2>
         <p className="text-sm text-faircrawl-textMuted">Training usage is explicitly prohibited. Licenses are inactive until enabled.</p>
+        <p className="mt-2 text-sm text-faircrawl-textMuted">A license defines the type of access buyers can purchase. Enable only the license types you want to sell, then set a base price for each one in micros (1,000,000 micros = 1 currency unit).</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {(['SUMMARY', 'DISPLAY'] as const).map((license) => (
             <div key={license} className="rounded-lg border border-white/10 p-4">
               <p className="font-medium">{license === 'SUMMARY' ? 'Summarize / Grounding' : 'Full Display'}</p>
               <p className="mt-1 text-xs text-faircrawl-textMuted">{license === 'SUMMARY' ? 'Read + summarize/cite, no full text display.' : 'Display full content once.'}</p>
               <div className="mt-3 flex gap-2">
-                <Input type="number" value={licenses[license]?.basePriceMicros || 0} onChange={(e) => setLicenses((s: any) => ({ ...s, [license]: { ...s[license], basePriceMicros: Number(e.target.value) } }))} />
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={licenses[license]?.basePriceMicros || 0}
+                  onChange={(e) => setLicenses((s: any) => ({ ...s, [license]: { ...s[license], basePriceMicros: toWholeNumber(e.target.value) } }))}
+                />
                 <Button variant={licenses[license]?.enabled ? 'secondary' : 'primary'} onClick={() => setLicenses((s: any) => ({ ...s, [license]: { ...s[license], enabled: !s[license].enabled } }))}>{licenses[license]?.enabled ? 'Enabled' : 'Disabled'}</Button>
               </div>
             </div>
@@ -71,6 +85,7 @@ export default function PricingPage() {
             setIsSavingLicenses(true);
             try {
               await apiFetch('/api/publisher/license-settings', { method: 'POST', body: JSON.stringify(licenses) });
+              setSavedLicenseSnapshot(licenses);
               toast.success('License settings saved');
             } catch (error) {
               toast.error(getErrorMessage(error));
@@ -81,11 +96,25 @@ export default function PricingPage() {
         >
           {isSavingLicenses ? 'Saving...' : 'Save license settings'}
         </Button>
+        {savedLicenseSnapshot ? (
+          <div className="mt-4 rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-3">
+            <p className="text-sm font-medium text-emerald-200">Saved license configuration</p>
+            <p className="mt-1 text-xs text-emerald-100/90">These license settings are currently saved and ready to be used by pricing rules.</p>
+            <ul className="mt-2 space-y-1 text-xs text-emerald-100/90">
+              {(['SUMMARY', 'DISPLAY'] as const).map((license) => (
+                <li key={`saved-${license}`}>
+                  {license}: {savedLicenseSnapshot[license]?.enabled ? 'Enabled' : 'Disabled'} • Base price {savedLicenseSnapshot[license]?.basePriceMicros || 0} micros
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </Card>
 
       <Card>
         <h2 className="text-lg font-semibold">Pricing rules builder</h2>
         <p className="text-sm text-faircrawl-textMuted">Default rule uses / and path overrides can use prefixes like /premium/.</p>
+        <p className="mt-2 text-sm text-faircrawl-textMuted">Pricing controls how much buyers pay for each request. Choose the domain + path, pick the license type being sold, and set the per-request price in micros.</p>
         <div className="mt-3 grid gap-2 md:grid-cols-5">
           <Select value={selectedDomainId ?? ''} onChange={(e) => setSelectedDomainId(e.target.value ? Number(e.target.value) : null)}>
             <option value="">Pick domain</option>
@@ -93,7 +122,13 @@ export default function PricingPage() {
           </Select>
           <Input placeholder="path prefix" value={form.pathPrefix} onChange={(e) => setForm({ ...form, pathPrefix: e.target.value })} />
           <Select value={form.licenseCode} onChange={(e) => setForm({ ...form, licenseCode: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></Select>
-          <Input type="number" value={form.priceMicros} onChange={(e) => setForm({ ...form, priceMicros: Number(e.target.value) })} />
+          <Input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={form.priceMicros}
+            onChange={(e) => setForm({ ...form, priceMicros: toWholeNumber(e.target.value) })}
+          />
           <Button disabled={!selectedDomainId || isCreatingRule} onClick={async () => {
             if (!selectedDomainId) {
               setCreateError('Pick a domain to set pricing rules.');
