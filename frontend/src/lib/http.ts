@@ -30,5 +30,19 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
     throw new Error(err.error || 'Request failed');
   }
 
+  const contentLength = response.headers.get('content-length');
+  const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+  const isJsonResponse = contentType.includes('application/json');
+  const hasContentLengthHeader = contentLength !== null;
+
+  const isEmptyResponse =
+    response.status === 204 ||
+    contentLength === '0' ||
+    (!hasContentLengthHeader && !isJsonResponse);
+
+  if (isEmptyResponse || !isJsonResponse) {
+    return null;
+  }
+
   return response.json();
 }
