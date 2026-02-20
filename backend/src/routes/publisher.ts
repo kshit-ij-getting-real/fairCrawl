@@ -2,21 +2,11 @@ import { LicenseType, Prisma } from '@prisma/client';
 import { Router } from 'express';
 import prisma from '../db';
 import { AuthRequest } from '../middleware/auth';
+import { normalizeDomainInput } from '../utils/domain';
 
 const router = Router();
 
 const isBypassVerificationEnabled = () => process.env.MVP_BYPASS_VERIFICATION === 'true';
-
-const sanitizeDomain = (value: string) => {
-  const raw = value.trim().toLowerCase();
-  if (!raw) return '';
-  const withScheme = raw.includes('://') ? raw : `https://${raw}`;
-  try {
-    return new URL(withScheme).hostname.replace(/\.$/, '');
-  } catch {
-    return raw.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/\.$/, '');
-  }
-};
 
 const parseDateFilter = (value?: string) => {
   if (!value) return undefined;
@@ -60,17 +50,17 @@ const parseLicenseCode = (value: unknown) => {
 const parseAndValidateRuleInput = (body: any) => {
   const licenseCode = parseLicenseCode(body?.licenseCode || body?.licenseType);
   if (!licenseCode) {
-    return { error: { status: 400, error: 'INVALID_LICENSE', message: 'licenseCode must be SUMMARY or DISPLAY.' } };
+    return { error: { status: 400, error: 'VALIDATION_ERROR', message: 'licenseCode must be SUMMARY or DISPLAY.' } };
   }
 
   const pathPrefix = String(body?.pathPrefix || body?.matchValue || '/').trim() || '/';
   if (!pathPrefix.startsWith('/') || pathPrefix.length > 200) {
-    return { error: { status: 400, error: 'INVALID_PATH_PREFIX', message: 'pathPrefix must start with "/" and be at most 200 characters.' } };
+    return { error: { status: 400, error: 'VALIDATION_ERROR', message: 'pathPrefix must start with "/" and be at most 200 characters.' } };
   }
 
   const priceMicros = Number(body?.priceMicros);
   if (!Number.isInteger(priceMicros) || priceMicros < 1) {
-    return { error: { status: 400, error: 'INVALID_PRICE', message: 'priceMicros must be an integer greater than or equal to 1.' } };
+    return { error: { status: 400, error: 'VALIDATION_ERROR', message: 'priceMicros must be an integer greater than or equal to 1.' } };
   }
 
   return {
@@ -81,6 +71,14 @@ const parseAndValidateRuleInput = (body: any) => {
       isActive: body?.isActive !== false && body?.active !== false,
     },
   };
+};
+
+const parseDomainId = (value: string) => {
+  const id = Number(value);
+  if (!Number.isInteger(id) || id <= 0) {
+    return null;
+  }
+  return id;
 };
 
 router.get('/domains', async (req: AuthRequest, res) => {
@@ -95,7 +93,7 @@ router.post('/domains', async (req: AuthRequest, res) => {
   const publisher = await getPublisher(req.user!.id);
   if (!publisher) return errorJson(res, 404, 'PUBLISHER_NOT_FOUND');
 
-  const sanitized = sanitizeDomain(String(req.body?.domain || ''));
+  const sanitized = normalizeDomainInput(String(req.body?.domain || ''));
   if (!sanitized) return errorJson(res, 400, 'INVALID_DOMAIN');
 
   try {
@@ -135,7 +133,10 @@ router.get('/domains/:domainId/pricing-rules', async (req: AuthRequest, res) => 
   const publisher = await getPublisher(req.user!.id);
   if (!publisher) return errorJson(res, 404, 'PUBLISHER_NOT_FOUND');
 
-  const domain = await prisma.domain.findFirst({ where: { id: Number(req.params.domainId), publisherId: publisher.id } });
+  const domainId = parseDomainId(req.params.domainId);
+  if (!domainId) return errorJson(res, 404, 'DOMAIN_NOT_FOUND');
+
+  const domain = await prisma.domain.findFirst({ where: { id: domainId, publisherId: publisher.id } });
   if (!domain) return errorJson(res, 404, 'DOMAIN_NOT_FOUND');
 
   const rules = await prisma.pricingRule.findMany({
@@ -151,7 +152,10 @@ router.post('/domains/:domainId/pricing-rules', async (req: AuthRequest, res) =>
   const publisher = await getPublisher(req.user!.id);
   if (!publisher) return errorJson(res, 404, 'PUBLISHER_NOT_FOUND');
 
-  const domain = await prisma.domain.findFirst({ where: { id: Number(req.params.domainId), publisherId: publisher.id } });
+  const domainId = parseDomainId(req.params.domainId);
+  if (!domainId) return errorJson(res, 404, 'DOMAIN_NOT_FOUND');
+
+  const domain = await prisma.domain.findFirst({ where: { id: domainId, publisherId: publisher.id } });
   if (!domain) return errorJson(res, 404, 'DOMAIN_NOT_FOUND');
 
   const parsedInput = parseAndValidateRuleInput(req.body);
