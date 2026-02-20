@@ -4,18 +4,22 @@ import { useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { ApiError } from '@/lib/http';
 import { Button, Card, Input } from '@/components/dashboard/primitives';
+import { toast } from '@/components/toast/ToastProvider';
+import { getErrorMessage } from '@/lib/errorMessage';
 
 export default function AIClientTestPaidRequestPage() {
   const [testForm, setTestForm] = useState<any>({ url: '', license: 'SUMMARY', maxPriceMicros: '' });
   const [receipt, setReceipt] = useState<any>(null);
   const [error, setError] = useState('');
-
-  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  const [status, setStatus] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [copiedReceipt, setCopiedReceipt] = useState(false);
 
   return (
     <Card>
       <h2 className="text-lg font-semibold">Test paid request</h2>
-      <p className="mt-2 text-sm text-faircrawl-textMuted">Mint a spend token, redeem it once, and inspect the receipt returned by the gateway.</p>
+      <p className="mt-2 text-sm text-faircrawl-textMuted">Some publisher pages may be paywalled for humans but accessible to licensed AI via FairFetch.</p>
+      <p className="mt-1 text-sm text-faircrawl-textMuted">The demo publisher site uses via=fairfetch as a marker of licensed access.</p>
       <div className="mt-4 grid gap-2 md:grid-cols-4">
         <Input
           placeholder="https://ai-essays.vercel.app/premium/demo"
@@ -36,10 +40,14 @@ export default function AIClientTestPaidRequestPage() {
           onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })}
         />
         <Button
+          disabled={isRunning}
           onClick={async () => {
             setError('');
             setReceipt(null);
+            setCopiedReceipt(false);
+            setIsRunning(true);
             try {
+              setStatus('Minting token...');
               const tokenResp = await apiFetch('/api/tokens', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -48,7 +56,9 @@ export default function AIClientTestPaidRequestPage() {
                   maxPriceMicros: testForm.maxPriceMicros ? Number(testForm.maxPriceMicros) : undefined,
                 }),
               });
+              toast.success('Token minted');
 
+              setStatus('Redeeming token...');
               const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/content?url=${encodeURIComponent(testForm.url)}`,
                 { headers: { 'x-fairfetch-token': tokenResp.token } },
@@ -58,35 +68,64 @@ export default function AIClientTestPaidRequestPage() {
                 throw new ApiError(content.error || 'REQUEST_FAILED', content.message || 'Request failed', content.details);
               }
               setReceipt(content.receipt);
+              setStatus('Done');
+              toast.success('Content fetched');
             } catch (err) {
+              setStatus('');
               if (err instanceof ApiError) {
                 if (err.code === 'NO_PRICING_RULE') {
-                  setError('No active pricing rule matches this domain, path, and license. Create one under Publisher Pricing.');
+                  const message = 'No active pricing rule matches this domain, path, and license. Add one under Publisher Pricing.';
+                  setError(message);
+                  toast.error(message);
                   return;
                 }
-                if (err.code === 'DOMAIN_NOT_VERIFIED') {
-                  setError(
-                    isDemoMode
-                      ? 'Domains are auto verified in demo mode.'
-                      : 'This domain is not verified yet. Verified domains appear in the directory and can be priced.',
-                  );
+                if (err.code === 'PRICE_TOO_HIGH') {
+                  const message = 'Price exceeds your max price limit';
+                  setError(message);
+                  toast.error(message);
                   return;
                 }
-                setError(err.message || err.code);
+                const message = getErrorMessage(err);
+                setError(message);
+                toast.error(message);
                 return;
               }
-              setError('Failed to run paid request test.');
+              const message = getErrorMessage(err);
+              setError(message);
+              toast.error(message);
+            } finally {
+              setIsRunning(false);
             }
           }}
         >
-          Run test
+          {isRunning ? 'Running...' : 'Run test'}
         </Button>
       </div>
+      {status ? <p className="mt-3 text-sm text-faircrawl-textMuted">{status}</p> : null}
       {error ? <p className="mt-3 text-sm text-red-300">{error}</p> : null}
       {receipt && (
-        <p className="mt-3 text-xs text-faircrawl-textMuted">
-          Receipt: {receipt.txId} | {receipt.priceMicros} micros | {receipt.domain}{receipt.path} | {new Date(receipt.timestamp).toLocaleString()}
-        </p>
+        <div className="mt-4 rounded-lg border border-blue-300/30 bg-blue-500/10 p-4">
+          <h3 className="text-sm font-semibold text-white">Receipt</h3>
+          <div className="mt-2 grid gap-1 text-xs text-faircrawl-textMuted">
+            <p>txId: {receipt.txId}</p>
+            <p>priceMicros: {receipt.priceMicros}</p>
+            <p>domain: {receipt.domain}</p>
+            <p>path: {receipt.path}</p>
+            <p>license: {receipt.license}</p>
+            <p>timestamp: {new Date(receipt.timestamp).toLocaleString()}</p>
+          </div>
+          <Button
+            className="mt-3"
+            variant="secondary"
+            onClick={async () => {
+              await navigator.clipboard.writeText(JSON.stringify(receipt, null, 2));
+              setCopiedReceipt(true);
+            }}
+          >
+            {copiedReceipt ? 'Copied' : 'Copy receipt'}
+          </Button>
+          <p className="mt-2 text-xs text-faircrawl-textMuted">Receipt is your audit handle.</p>
+        </div>
       )}
     </Card>
   );

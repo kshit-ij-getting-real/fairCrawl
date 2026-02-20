@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Badge, Button, Card, EmptyState, Input, Select, Table } from '@/components/dashboard/primitives';
 import { ApiError } from '@/lib/http';
+import { toast } from '@/components/toast/ToastProvider';
+import { getErrorMessage } from '@/lib/errorMessage';
 
 const emptyForm = { domainId: '', pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
 
@@ -12,6 +14,8 @@ export default function PricingPage() {
   const [licenses, setLicenses] = useState<any>({ SUMMARY: { enabled: false, basePriceMicros: 0 }, DISPLAY: { enabled: false, basePriceMicros: 0 } });
   const [form, setForm] = useState<any>(emptyForm);
   const [createError, setCreateError] = useState('');
+  const [isSavingLicenses, setIsSavingLicenses] = useState(false);
+  const [isCreatingRule, setIsCreatingRule] = useState(false);
 
   const load = async () => {
     const [d, l] = await Promise.all([apiFetch('/api/publisher/domains'), apiFetch('/api/publisher/license-settings')]);
@@ -50,7 +54,24 @@ export default function PricingPage() {
             </div>
           ))}
         </div>
-        <Button className="mt-4" onClick={async () => { await apiFetch('/api/publisher/license-settings', { method: 'POST', body: JSON.stringify(licenses) }); load(); }}>Save license settings</Button>
+        <Button
+          className="mt-4"
+          disabled={isSavingLicenses}
+          onClick={async () => {
+            setIsSavingLicenses(true);
+            try {
+              await apiFetch('/api/publisher/license-settings', { method: 'POST', body: JSON.stringify(licenses) });
+              toast.success('License settings saved');
+              await load();
+            } catch (error) {
+              toast.error(getErrorMessage(error));
+            } finally {
+              setIsSavingLicenses(false);
+            }
+          }}
+        >
+          {isSavingLicenses ? 'Saving...' : 'Save license settings'}
+        </Button>
       </Card>
 
       <Card>
@@ -61,20 +82,31 @@ export default function PricingPage() {
           <Input placeholder="path prefix" value={form.pathPrefix} onChange={(e) => setForm({ ...form, pathPrefix: e.target.value })} />
           <Select value={form.licenseCode} onChange={(e) => setForm({ ...form, licenseCode: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></Select>
           <Input type="number" value={form.priceMicros} onChange={(e) => setForm({ ...form, priceMicros: Number(e.target.value) })} />
-          <Button onClick={async () => {
+          <Button disabled={isCreatingRule} onClick={async () => {
             try {
+              setIsCreatingRule(true);
               setCreateError('');
-              await apiFetch(`/api/publisher/domains/${form.domainId}/pricing-rules`, { method: 'POST', body: JSON.stringify(form) });
+              const rule = await apiFetch(`/api/publisher/domains/${form.domainId}/pricing-rules`, { method: 'POST', body: JSON.stringify(form) });
+              setRules((current) => [rule, ...current]);
               setForm({ ...emptyForm, domainId: form.domainId });
-              await load();
+              toast.success('Pricing rule created');
             } catch (error) {
               if (error instanceof ApiError) {
+                if (error.code === 'REQUEST_FAILED' || error.code === 'NOT_FOUND') {
+                  setCreateError('Pricing rules are required to allow paid access.');
+                  toast.error('Pricing rules could not be created. Backend route not available.');
+                  return;
+                }
                 setCreateError(error.message || error.code);
+                toast.error(getErrorMessage(error));
                 return;
               }
-              setCreateError('Failed to create pricing rule.');
+              setCreateError('Pricing rules are required to allow paid access.');
+              toast.error(getErrorMessage(error));
+            } finally {
+              setIsCreatingRule(false);
             }
-          }}>Create</Button>
+          }}>{isCreatingRule ? 'Creating...' : 'Create'}</Button>
         </div>
         {createError ? <p className="mt-2 text-sm text-red-300">{createError}</p> : null}
         {rules.length === 0 ? <div className="mt-4"><EmptyState title="No pricing rules" description="Create and activate at least one pricing rule to allow paid access. New rules appear here after creation." /></div> : (
