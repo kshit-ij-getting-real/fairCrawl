@@ -10,7 +10,7 @@ export default function AIClientDashboard() {
   const [uaRegex, setUaRegex] = useState('.*');
   const [usage, setUsage] = useState<any>({ byDomain: [], byDay: [] });
   const [testForm, setTestForm] = useState<any>({ url: '', license: 'SUMMARY', maxPriceMicros: '' });
-  const [receipt, setReceipt] = useState<any>(null);
+  const [testResult, setTestResult] = useState<{ snippet: string; receipt: { txId: string; priceMicros: number; domain: string; path: string; license: string; timestamp: string } } | null>(null);
 
   const load = async () => {
     const [keys, usageByDomain, usageByDay] = await Promise.all([
@@ -55,16 +55,48 @@ export default function AIClientDashboard() {
         <div className="mt-4 grid gap-2 md:grid-cols-4">
           <Input placeholder="https://ai-essays.vercel.app/premium/demo" value={testForm.url} onChange={(e) => setTestForm({ ...testForm, url: e.target.value })} />
           <select className="rounded-lg border border-white/10 bg-black/20 px-3 py-2" value={testForm.license} onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}><option>SUMMARY</option><option>DISPLAY</option></select>
-          <Input placeholder="maxPriceMicros" value={testForm.maxPriceMicros} onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })} />
+          <Input placeholder="maxPriceMicros (optional)" value={testForm.maxPriceMicros} onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })} />
           <Button onClick={async () => {
             const tokenResp = await apiFetch('/api/tokens', { method: 'POST', body: JSON.stringify({ url: testForm.url, license: testForm.license, maxPriceMicros: testForm.maxPriceMicros ? Number(testForm.maxPriceMicros) : undefined }) });
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/content?url=${encodeURIComponent(testForm.url)}`, { headers: { 'x-fairfetch-token': tokenResp.token } });
             const content = await response.json();
-            setReceipt(content.receipt);
+            setTestResult({ snippet: content.excerpt || '', receipt: content.receipt });
             await load();
           }}>Test paid request</Button>
         </div>
-        {receipt && <p className="mt-3 text-xs text-faircrawl-textMuted">Receipt: {receipt.txId} · {receipt.priceMicros} micros · {receipt.domain}{receipt.path} · {new Date(receipt.timestamp).toLocaleString()}</p>}
+        {testResult && (
+          <div className="mt-4 space-y-3">
+            <div>
+              <p className="text-xs text-faircrawl-textMuted">Content snippet</p>
+              <pre className="mt-1 overflow-auto rounded bg-black/40 p-3 text-xs">{testResult.snippet || 'No snippet returned.'}</pre>
+            </div>
+            <div>
+              <p className="text-xs text-faircrawl-textMuted">Receipt summary</p>
+              <Table className="mt-1">
+                <thead>
+                  <tr>
+                    <th>txId</th>
+                    <th>priceMicros</th>
+                    <th>domain</th>
+                    <th>path</th>
+                    <th>license</th>
+                    <th>timestamp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-white/10">
+                    <td className="py-2">{testResult.receipt.txId}</td>
+                    <td>{testResult.receipt.priceMicros}</td>
+                    <td>{testResult.receipt.domain}</td>
+                    <td>{testResult.receipt.path}</td>
+                    <td>{testResult.receipt.license}</td>
+                    <td>{new Date(testResult.receipt.timestamp).toLocaleString()}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );
