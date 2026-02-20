@@ -5,7 +5,7 @@ import { apiFetch } from '@/lib/api';
 import { Button, Card, EmptyState, Input, Select, Table } from '@/components/dashboard/primitives';
 import { formatMicrosToCurrency } from '@/lib/money';
 
-type ReceiptRow = {
+type UsageRow = {
   txId: string;
   timestamp: string;
   domain: string;
@@ -14,19 +14,18 @@ type ReceiptRow = {
   priceMicros: number;
 };
 
-type TransactionsResponse = {
-  rows: ReceiptRow[];
-  page: {
-    pageSize: number;
-    hasMore: boolean;
-    nextCursor: string | null;
-  };
+type UsageLedgerResponse = {
+  rows: UsageRow[];
+  summary: { runningSpendMicros: number; totalSpendMicros: number };
+  page: { pageSize: number; hasMore: boolean; nextCursor: string | null };
 };
 
 const DEFAULT_PAGE_SIZE = 25;
 
-export default function TransactionsPage() {
-  const [transactions, setTransactions] = useState<ReceiptRow[]>([]);
+export default function UsageSpendPage() {
+  const [rows, setRows] = useState<UsageRow[]>([]);
+  const [runningSpendMicros, setRunningSpendMicros] = useState(0);
+  const [totalSpendMicros, setTotalSpendMicros] = useState(0);
   const [filters, setFilters] = useState({ from: '', to: '', domain: '', licenseType: '' });
   const [cursor, setCursor] = useState<string | null>(null);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -43,15 +42,15 @@ export default function TransactionsPage() {
     return query.toString();
   }, [filters, cursor]);
 
-  const load = async () => {
-    const response = await apiFetch(`/api/publisher/transactions?${queryString}`) as TransactionsResponse;
-    setTransactions(response.rows || []);
-    setNextCursor(response.page?.nextCursor || null);
-  };
-
   useEffect(() => {
+    const load = async () => {
+      const response = await apiFetch(`/api/aiclient/usage/ledger?${queryString}`) as UsageLedgerResponse;
+      setRows(response.rows || []);
+      setRunningSpendMicros(response.summary?.runningSpendMicros || 0);
+      setTotalSpendMicros(response.summary?.totalSpendMicros || 0);
+      setNextCursor(response.page?.nextCursor || null);
+    };
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryString]);
 
   const applyFilters = () => {
@@ -76,7 +75,10 @@ export default function TransactionsPage() {
 
   return (
     <Card>
-      <h2 className="text-lg font-semibold">Transactions</h2>
+      <h2 className="text-lg font-semibold">AI Usage & Spend</h2>
+      <p className="mt-1 text-sm text-faircrawl-textMuted">Running spend total (current page): {formatMicrosToCurrency(runningSpendMicros)}</p>
+      <p className="text-sm text-faircrawl-textMuted">Total spend (matching filters): {formatMicrosToCurrency(totalSpendMicros)}</p>
+
       <div className="mt-3 grid gap-2 md:grid-cols-5">
         <Input value={filters.from} placeholder="From YYYY-MM-DD" onChange={(e) => setFilters({ ...filters, from: e.target.value })} />
         <Input value={filters.to} placeholder="To YYYY-MM-DD" onChange={(e) => setFilters({ ...filters, to: e.target.value })} />
@@ -89,9 +91,9 @@ export default function TransactionsPage() {
         <Button onClick={applyFilters}>Apply filters</Button>
       </div>
 
-      {transactions.length === 0 ? (
+      {rows.length === 0 ? (
         <div className="mt-4">
-          <EmptyState title="No transactions" description="Transactions will appear after successful paid fetches." />
+          <EmptyState title="No usage yet" description="Ledger receipts will appear after paid requests." />
         </div>
       ) : (
         <div className="mt-4 overflow-x-auto">
@@ -107,14 +109,14 @@ export default function TransactionsPage() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((tx) => (
-                <tr key={tx.txId} className="border-t border-white/10">
-                  <td className="py-2">{tx.txId}</td>
-                  <td>{new Date(tx.timestamp).toLocaleString()}</td>
-                  <td>{tx.domain}</td>
-                  <td>{tx.path}</td>
-                  <td>{tx.license}</td>
-                  <td>{formatMicrosToCurrency(tx.priceMicros)}</td>
+              {rows.map((row) => (
+                <tr key={row.txId} className="border-t border-white/10">
+                  <td className="py-2">{row.txId}</td>
+                  <td>{new Date(row.timestamp).toLocaleString()}</td>
+                  <td>{row.domain}</td>
+                  <td>{row.path}</td>
+                  <td>{row.license}</td>
+                  <td>{formatMicrosToCurrency(row.priceMicros)}</td>
                 </tr>
               ))}
             </tbody>
@@ -126,8 +128,6 @@ export default function TransactionsPage() {
         <Button variant="secondary" onClick={goPreviousPage} disabled={cursorHistory.length === 0}>Previous</Button>
         <Button variant="secondary" onClick={goNextPage} disabled={!nextCursor}>Next</Button>
       </div>
-
-      <Button className="mt-4" variant="secondary" onClick={async () => { const csv = await apiFetch('/api/publisher/transactions/export'); const blob = new Blob([csv.csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'transactions.csv'; a.click(); }}>Export CSV</Button>
     </Card>
   );
 }

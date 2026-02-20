@@ -1,6 +1,6 @@
 import { DashboardHeader, DashboardNav, DashboardShell } from '@/components/dashboard/layout';
 
-const aiItems = [{ href: '/aiclient/dashboard', label: 'Dashboard' }];
+const aiItems = [{ href: '/aiclient/dashboard', label: 'Dashboard' }, { href: '/aiclient/usage-spend', label: 'AI Usage & Spend' }];
 
 export default function AIClientLayout({ children }: { children: React.ReactNode }) {
   return (
