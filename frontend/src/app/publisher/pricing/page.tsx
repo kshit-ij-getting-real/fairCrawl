@@ -8,6 +8,9 @@ import { getErrorMessage } from '@/lib/errorMessage';
 
 const emptyForm = { pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
 
+const isMissingDomainPricingRoute = (error: unknown) =>
+  error instanceof ApiError && (error.code === 'NOT_FOUND' || error.code === 'REQUEST_FAILED');
+
 export default function PricingPage() {
   const [domains, setDomains] = useState<any[]>([]);
   const [rules, setRules] = useState<any[]>([]);
@@ -33,8 +36,19 @@ export default function PricingPage() {
       return;
     }
 
-    const response = await apiFetch(`/api/publisher/domains/${domainId}/pricing-rules`);
-    setRules(response?.pricingRules || []);
+    try {
+      const response = await apiFetch(`/api/publisher/domains/${domainId}/pricing-rules`);
+      setRules(response?.pricingRules || []);
+      return;
+    } catch (error) {
+      if (!isMissingDomainPricingRoute(error)) {
+        throw error;
+      }
+    }
+
+    const response = await apiFetch('/api/publisher/pricing-rules');
+    const allRules = response?.pricingRules || [];
+    setRules(allRules.filter((rule: any) => Number(rule.domainId) === Number(domainId)));
   };
 
   useEffect(() => {
@@ -100,17 +114,25 @@ export default function PricingPage() {
             try {
               setIsCreatingRule(true);
               setCreateError('');
-              const response = await apiFetch(`/api/publisher/domains/${selectedDomainId}/pricing-rules`, { method: 'POST', body: JSON.stringify(form) });
+              let response;
+              try {
+                response = await apiFetch(`/api/publisher/domains/${selectedDomainId}/pricing-rules`, { method: 'POST', body: JSON.stringify(form) });
+              } catch (error) {
+                if (!isMissingDomainPricingRoute(error)) {
+                  throw error;
+                }
+
+                response = await apiFetch('/api/publisher/pricing-rules', {
+                  method: 'POST',
+                  body: JSON.stringify({ ...form, domainId: selectedDomainId }),
+                });
+              }
+
               setRules((current) => [response.pricingRule, ...current]);
               setForm({ ...emptyForm });
               toast.success('Pricing rule created');
             } catch (error) {
               if (error instanceof ApiError) {
-                if (error.code === 'REQUEST_FAILED' || error.code === 'NOT_FOUND') {
-                  setCreateError('Pricing rules are required to allow paid access.');
-                  toast.error('Pricing rules could not be created. Backend route not available.');
-                  return;
-                }
                 setCreateError(error.message || error.code);
                 toast.error(getErrorMessage(error));
                 return;
