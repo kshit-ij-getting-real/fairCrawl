@@ -17,6 +17,7 @@ export default function PricingPage() {
   const [createError, setCreateError] = useState('');
   const [isSavingLicenses, setIsSavingLicenses] = useState(false);
   const [isCreatingRule, setIsCreatingRule] = useState(false);
+  const [createSuccess, setCreateSuccess] = useState('');
 
   const loadDomains = async () => {
     const d = await apiFetch('/api/publisher/domains');
@@ -96,28 +97,36 @@ export default function PricingPage() {
           <Button disabled={!selectedDomainId || isCreatingRule} onClick={async () => {
             if (!selectedDomainId) {
               setCreateError('Pick a domain to set pricing rules.');
+              setCreateSuccess('');
               return;
             }
             try {
               setIsCreatingRule(true);
               setCreateError('');
+              setCreateSuccess('');
               const response = await apiFetch('/api/publisher/pricing-rules', {
                 method: 'POST',
                 body: JSON.stringify({ ...form, domainId: selectedDomainId }),
               });
 
-              if (response?.pricingRule) {
-                setRules((current) => [response.pricingRule, ...current]);
+              const createdRule = response?.pricingRule || response?.rule || response;
+              if (createdRule?.id) {
+                setRules((current) => [createdRule, ...current.filter((rule) => rule.id !== createdRule.id)]);
+              } else {
+                await loadDomainData(selectedDomainId);
               }
               setForm({ ...emptyForm });
+              setCreateSuccess('Pricing rule created successfully.');
               toast.success('Pricing rule created');
             } catch (error) {
               if (error instanceof ApiError) {
                 setCreateError(error.message || error.code);
+                setCreateSuccess('');
                 toast.error(getErrorMessage(error));
                 return;
               }
               setCreateError('Pricing rules are required to allow paid access.');
+              setCreateSuccess('');
               toast.error(getErrorMessage(error));
             } finally {
               setIsCreatingRule(false);
@@ -128,6 +137,7 @@ export default function PricingPage() {
         </div>
         {!selectedDomainId ? <p className="mt-2 text-xs text-faircrawl-textMuted">Pick a domain to set pricing rules.</p> : null}
         {createError ? <p className="mt-2 text-sm text-red-300">{createError}</p> : null}
+        {createSuccess ? <p className="mt-2 text-sm text-emerald-300">{createSuccess}</p> : null}
         {rules.length === 0 ? <div className="mt-4"><EmptyState title="No pricing rules" description="Create and activate at least one pricing rule to allow paid access. New rules appear here after creation." /></div> : (
           <div className="mt-4 overflow-x-auto"><Table><thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Path</th><th>License</th><th>Price</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{rules.map((r) => <tr key={r.id} className="border-t border-white/10"><td className="py-2">{domains.find((d) => d.id === r.domainId)?.name || r.domainId}</td><td>{r.pathPrefix || '/'}</td><td>{r.licenseCode || r.licenseType}</td><td>{r.priceMicros}</td><td><Badge tone={r.isActive || r.active ? 'success' : 'warning'}>{r.isActive || r.active ? 'Active' : 'Inactive'}</Badge></td><td>{new Date(r.createdAt).toLocaleString()}</td><td><Button variant="ghost" onClick={async () => { await apiFetch(`/api/publisher/pricing-rules/${r.id}`, { method: 'DELETE' }); await loadDomainData(selectedDomainId); }}>Delete</Button></td></tr>)}</tbody></Table></div>
         )}
