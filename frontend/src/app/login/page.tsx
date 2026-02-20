@@ -24,7 +24,7 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
       setSession(data.token, data.role, email);
-      router.push(data.role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
+      router.push(data.role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/api-keys');
     } catch (err: any) {
       setError(err.message);
     } finally {

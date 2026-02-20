@@ -36,7 +36,7 @@ function SignupContent() {
         body: JSON.stringify({ email, password, role, name }),
       });
       setSession(data.token, role, email);
-      router.push(role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/dashboard');
+      router.push(role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/api-keys');
     } catch (err: any) {
       setError(err.message);
     } finally {
