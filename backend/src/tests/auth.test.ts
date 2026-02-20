@@ -27,7 +27,9 @@ const createFakeDb = () => {
         },
       },
       publisher: { create: async () => ({ id: 1 }) },
+      publisherBalance: { create: async () => ({ id: 1 }) },
       aIClient: { create: async () => ({ id: 1 }) },
+      clientBalance: { create: async () => ({ id: 1 }) },
     },
   };
 };
@@ -110,4 +112,54 @@ test('POST /api/auth/login returns 401 for wrong password', async () => {
     const body = await response.json();
     assert.equal(body.error, 'Invalid credentials');
   });
+});
+
+test('POST /api/auth/signup forwards unexpected errors to error handler', async () => {
+  process.env.JWT_SECRET = 'test-secret';
+  const app = express();
+  app.use(express.json());
+  app.use(
+    '/api/auth',
+    createAuthRouter({
+      user: {
+        findUnique: async () => {
+          throw new Error('db failed');
+        },
+        create: async () => {
+          throw new Error('should not create');
+        },
+      },
+      publisher: { create: async () => ({ id: 1 }) },
+      publisherBalance: { create: async () => ({ id: 1 }) },
+      aIClient: { create: async () => ({ id: 1 }) },
+      clientBalance: { create: async () => ({ id: 1 }) },
+    } as any),
+  );
+  app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const message = err instanceof Error ? err.message : 'error';
+    res.status(500).json({ error: message });
+  });
+
+  const server = app.listen(0);
+  const address = server.address() as AddressInfo;
+  const baseUrl = `http://127.0.0.1:${address.port}`;
+
+  try {
+    const response = await fetch(`${baseUrl}/api/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'test@example.com',
+        password: 'Pass123!',
+        role: 'PUBLISHER',
+        name: 'Demo Publisher',
+      }),
+    });
+
+    assert.equal(response.status, 500);
+    const body = await response.json();
+    assert.equal(body.error, 'db failed');
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
 });
