@@ -7,6 +7,9 @@ import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
 
 const emptyForm = { pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
+const LICENSE_DRAFT_STORAGE_KEY = 'fairfetch.publisher.licenseSettings.draft';
+const LICENSE_SAVED_STORAGE_KEY = 'fairfetch.publisher.licenseSettings.saved';
+const SELECTED_DOMAIN_STORAGE_KEY = 'fairfetch.publisher.pricing.selectedDomainId';
 
 export default function PricingPage() {
   const [domains, setDomains] = useState<any[]>([]);
@@ -20,6 +23,22 @@ export default function PricingPage() {
   const [createSuccess, setCreateSuccess] = useState('');
   const [savedLicenseSnapshot, setSavedLicenseSnapshot] = useState<any | null>(null);
 
+  const readStoredJson = (key: string) => {
+    if (typeof window === 'undefined') return null;
+    const value = window.localStorage.getItem(key);
+    if (!value) return null;
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
+  };
+
+  const writeStoredJson = (key: string, value: unknown) => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(key, JSON.stringify(value));
+  };
+
   const toWholeNumber = (value: string) => {
     const digitsOnly = value.replace(/\D/g, '');
     return digitsOnly ? Number(digitsOnly) : 0;
@@ -28,22 +47,27 @@ export default function PricingPage() {
   const loadDomains = async () => {
     const d = await apiFetch('/api/publisher/domains');
     setDomains(d);
-    setSelectedDomainId((current) => current || d[0]?.id || null);
+    const storedSelectedDomainId = Number(readStoredJson(SELECTED_DOMAIN_STORAGE_KEY));
+    const hasStoredDomain = d.some((domain: any) => Number(domain.id) === storedSelectedDomainId);
+    setSelectedDomainId((current) => current || (hasStoredDomain ? storedSelectedDomainId : null) || d[0]?.id || null);
   };
 
   const loadDomainData = async (domainId?: number | null) => {
     const licenseSettings = await apiFetch('/api/publisher/license-settings');
-    setLicenses(licenseSettings);
-    setSavedLicenseSnapshot(licenseSettings);
+    const storedDraft = readStoredJson(LICENSE_DRAFT_STORAGE_KEY);
+    const storedSaved = readStoredJson(LICENSE_SAVED_STORAGE_KEY);
+
+    setLicenses(storedDraft || licenseSettings);
+    setSavedLicenseSnapshot(storedSaved || licenseSettings);
 
     if (!domainId) {
       setRules([]);
       return;
     }
 
-    const response = await apiFetch('/api/publisher/pricing-rules');
+    const response = await apiFetch(`/api/publisher/domains/${domainId}/pricing-rules`);
     const allRules = Array.isArray(response?.pricingRules) ? response.pricingRules : [];
-    setRules(allRules.filter((rule: any) => rule && Number(rule.domainId) === Number(domainId)));
+    setRules(allRules);
   };
 
   useEffect(() => {
@@ -51,7 +75,23 @@ export default function PricingPage() {
   }, []);
 
   useEffect(() => {
+    const storedDraft = readStoredJson(LICENSE_DRAFT_STORAGE_KEY);
+    const storedSaved = readStoredJson(LICENSE_SAVED_STORAGE_KEY);
+    if (storedDraft) setLicenses(storedDraft);
+    if (storedSaved) setSavedLicenseSnapshot(storedSaved);
+  }, []);
+
+  useEffect(() => {
     loadDomainData(selectedDomainId).catch((error) => toast.error(getErrorMessage(error)));
+  }, [selectedDomainId]);
+
+  useEffect(() => {
+    writeStoredJson(LICENSE_DRAFT_STORAGE_KEY, licenses);
+  }, [licenses]);
+
+  useEffect(() => {
+    if (!selectedDomainId) return;
+    writeStoredJson(SELECTED_DOMAIN_STORAGE_KEY, selectedDomainId);
   }, [selectedDomainId]);
 
   return (
@@ -86,6 +126,7 @@ export default function PricingPage() {
             try {
               await apiFetch('/api/publisher/license-settings', { method: 'POST', body: JSON.stringify(licenses) });
               setSavedLicenseSnapshot(licenses);
+              writeStoredJson(LICENSE_SAVED_STORAGE_KEY, licenses);
               toast.success('License settings saved');
             } catch (error) {
               toast.error(getErrorMessage(error));
@@ -139,9 +180,9 @@ export default function PricingPage() {
               setIsCreatingRule(true);
               setCreateError('');
               setCreateSuccess('');
-              const response = await apiFetch('/api/publisher/pricing-rules', {
+              const response = await apiFetch(`/api/publisher/domains/${selectedDomainId}/pricing-rules`, {
                 method: 'POST',
-                body: JSON.stringify({ ...form, domainId: selectedDomainId }),
+                body: JSON.stringify(form),
               });
 
               const createdRule = response?.pricingRule || response?.rule || response;
