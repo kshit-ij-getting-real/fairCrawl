@@ -20,25 +20,36 @@ export default function AIClientTestPaidRequestPage() {
       <h2 className="text-lg font-semibold">Test paid request</h2>
       <p className="mt-2 text-sm text-faircrawl-textMuted">Some publisher pages may be paywalled for humans but accessible to licensed AI via FairFetch.</p>
       <p className="mt-1 text-sm text-faircrawl-textMuted">The demo publisher site uses via=fairfetch as a marker of licensed access.</p>
+      <p className="mt-1 text-sm text-faircrawl-textMuted">Run order: mint token → redeem token on publisher endpoint → inspect receipt.</p>
       <div className="mt-4 grid gap-2 md:grid-cols-4">
-        <Input
-          placeholder="https://ai-essays.vercel.app/premium/demo"
+        <div className="space-y-1">
+          <p className="text-xs text-faircrawl-textMuted">Target URL</p>
+          <Input
+            placeholder="https://ai-essays.vercel.app/premium/demo"
           value={testForm.url}
-          onChange={(e) => setTestForm({ ...testForm, url: e.target.value })}
-        />
-        <select
+            onChange={(e) => setTestForm({ ...testForm, url: e.target.value })}
+          />
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs text-faircrawl-textMuted">License type</p>
+          <select
           className="rounded-lg border border-white/10 bg-black/20 px-3 py-2"
           value={testForm.license}
           onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}
         >
           <option>SUMMARY</option>
-          <option>DISPLAY</option>
-        </select>
-        <Input
+            <option>DISPLAY</option>
+          </select>
+        </div>
+        <div className="space-y-1">
+          <p className="text-xs text-faircrawl-textMuted">Max price (optional, micros)</p>
+          <Input
           placeholder="maxPriceMicros"
           value={testForm.maxPriceMicros}
-          onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })}
-        />
+            onChange={(e) => setTestForm({ ...testForm, maxPriceMicros: e.target.value })}
+          />
+        </div>
+        <div className="flex items-end">
         <Button
           disabled={isRunning}
           onClick={async () => {
@@ -100,6 +111,7 @@ export default function AIClientTestPaidRequestPage() {
         >
           {isRunning ? 'Running...' : 'Run test'}
         </Button>
+        </div>
       </div>
       {status ? <p className="mt-3 text-sm text-faircrawl-textMuted">{status}</p> : null}
       {error ? <p className="mt-3 text-sm text-red-300">{error}</p> : null}

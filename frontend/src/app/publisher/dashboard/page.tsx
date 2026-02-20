@@ -16,6 +16,9 @@ export default function PublisherOverviewPage() {
 
   return (
     <div className="space-y-6">
+      <p className="text-sm text-faircrawl-textMuted">
+        Use this overview as your control room: the KPI cards summarize last 30 days, checklist shows setup gaps, and transactions prove payouts.
+      </p>
       <div className="grid gap-4 md:grid-cols-4">
         {[
           { label: 'Revenue (30d)', value: `$${((data?.kpis?.revenueMicros || 0) / 1_000_000).toFixed(2)}` },
@@ -32,6 +35,7 @@ export default function PublisherOverviewPage() {
 
       <Card>
         <h2 className="text-lg font-semibold text-white">Onboarding checklist</h2>
+        <p className="mt-1 text-xs text-faircrawl-textMuted">Complete all items to ensure AI requests can be priced, verified, and paid out.</p>
         <div className="mt-3 space-y-2">
           {checklist.map((item: any) => (
             <div key={item.key} className="flex items-center justify-between rounded-lg border border-white/10 p-3">
@@ -44,6 +48,7 @@ export default function PublisherOverviewPage() {
 
       <Card>
         <h2 className="text-lg font-semibold text-white">Recent transactions</h2>
+        <p className="mt-1 text-xs text-faircrawl-textMuted">Each row is a successful paid redemption with your publisher share.</p>
         {transactions.length === 0 ? (
           <div className="mt-4">
             <EmptyState title="No transactions yet" description="A transaction appears here after an AI client redeems a token for content." />
