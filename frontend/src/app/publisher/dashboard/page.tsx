@@ -1,28 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { apiFetch } from '@/lib/api';
 import { Badge, Card, EmptyState, Table } from '@/components/dashboard/primitives';
-import { canUseDemoFallback, demoPublisherOverview } from '@/lib/demoData';
+import { demoPublisherOverview } from '@/lib/demoData';
+import { publisherMockStore } from '@/lib/publisherMockStore';
 
 export default function PublisherOverviewPage() {
   const [data, setData] = useState<any | null>(null);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const response = await apiFetch('/api/publisher/overview');
-        if (canUseDemoFallback && (!response?.recentTransactions?.length || !response?.checklist?.length)) {
-          setData({ ...response, ...demoPublisherOverview });
-          return;
-        }
-        setData(response);
-      } catch {
-        setData(canUseDemoFallback ? demoPublisherOverview : { error: true });
-      }
-    };
-
-    load();
+    setData(publisherMockStore.getOverview() || demoPublisherOverview);
   }, []);
 
   const checklist = data?.checklist || [];
