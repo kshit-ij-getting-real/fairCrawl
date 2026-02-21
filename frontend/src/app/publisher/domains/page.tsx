@@ -4,7 +4,7 @@ import { apiFetch } from '@/lib/api';
 import { Badge, Button, Card, Drawer, EmptyState, Input, Table } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
-import { demoPublisherDomains, isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback, demoPublisherDomains, isDemoMode } from '@/lib/demoData';
 
 export default function DomainsPage() {
   const [domains, setDomains] = useState<any[]>([]);
@@ -16,9 +16,9 @@ export default function DomainsPage() {
     try {
       const response = await apiFetch('/api/publisher/domains');
       const resolved = response || [];
-      setDomains(isDemoMode && resolved.length === 0 ? demoPublisherDomains : resolved);
+      setDomains(canUseDemoFallback && resolved.length === 0 ? demoPublisherDomains : resolved);
     } catch (error) {
-      if (isDemoMode) {
+      if (canUseDemoFallback) {
         setDomains(demoPublisherDomains);
         return;
       }
@@ -42,7 +42,7 @@ export default function DomainsPage() {
                 setDomains((current) => [addedDomain, ...current]);
                 setDomain('');
                 toast.success('Domain added');
-                if (isDemoMode) {
+                if (canUseDemoFallback) {
                   toast.success('Domain verified');
                 }
               } catch (error) {

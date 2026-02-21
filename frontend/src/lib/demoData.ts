@@ -1,4 +1,5 @@
 export const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+export const canUseDemoFallback = process.env.NEXT_PUBLIC_DEMO_FALLBACK !== 'false';
 
 export const demoPublisherOverview = {
   kpis: {

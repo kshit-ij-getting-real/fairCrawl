@@ -6,7 +6,7 @@ import { Button, Card, Input } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
 import { ApiError } from '@/lib/http';
-import { demoAgentIdentity, isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback, demoAgentIdentity } from '@/lib/demoData';
 
 export default function AIClientAgentIdentityPage() {
   const [agentId, setAgentId] = useState('');
@@ -38,7 +38,7 @@ export default function AIClientAgentIdentityPage() {
         }
         return;
       }
-      if (isDemoMode) {
+      if (canUseDemoFallback) {
         setAgentId(demoAgentIdentity.agentId);
         setUaRegex(demoAgentIdentity.allowedUserAgentRegex);
         setSavedIdentity(demoAgentIdentity);

@@ -5,7 +5,7 @@ import { Badge, Button, Card, EmptyState, Input, Select, Table } from '@/compone
 import { ApiError } from '@/lib/http';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
-import { demoLicenseSettings, demoPricingRules, demoPublisherDomains, isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback, demoLicenseSettings, demoPricingRules, demoPublisherDomains } from '@/lib/demoData';
 
 const emptyForm = { pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
 const LICENSE_DRAFT_STORAGE_KEY = 'fairfetch.publisher.licenseSettings.draft';
@@ -48,13 +48,13 @@ export default function PricingPage() {
   const loadDomains = async () => {
     try {
       const response = await apiFetch('/api/publisher/domains');
-      const d = isDemoMode && (!response || response.length === 0) ? demoPublisherDomains : response;
+      const d = canUseDemoFallback && (!response || response.length === 0) ? demoPublisherDomains : response;
       setDomains(d);
       const storedSelectedDomainId = Number(readStoredJson(SELECTED_DOMAIN_STORAGE_KEY));
       const hasStoredDomain = d.some((domain: any) => Number(domain.id) === storedSelectedDomainId);
       setSelectedDomainId((current) => current || (hasStoredDomain ? storedSelectedDomainId : null) || d[0]?.id || null);
     } catch (error) {
-      if (!isDemoMode) throw error;
+      if (!canUseDemoFallback) throw error;
       setDomains(demoPublisherDomains);
       setSelectedDomainId((current) => current || demoPublisherDomains[0]?.id || null);
     }
@@ -65,13 +65,13 @@ export default function PricingPage() {
     try {
       licenseSettings = await apiFetch('/api/publisher/license-settings');
     } catch (error) {
-      if (!isDemoMode) throw error;
+      if (!canUseDemoFallback) throw error;
       licenseSettings = demoLicenseSettings;
     }
     const storedDraft = readStoredJson(LICENSE_DRAFT_STORAGE_KEY);
     const storedSaved = readStoredJson(LICENSE_SAVED_STORAGE_KEY);
 
-    const resolvedLicenseSettings = (isDemoMode && !licenseSettings) ? demoLicenseSettings : licenseSettings;
+    const resolvedLicenseSettings = (canUseDemoFallback && !licenseSettings) ? demoLicenseSettings : licenseSettings;
     setLicenses(storedDraft || resolvedLicenseSettings);
     setSavedLicenseSnapshot(storedSaved || resolvedLicenseSettings);
 
@@ -83,9 +83,9 @@ export default function PricingPage() {
     try {
       const response = await apiFetch(`/api/publisher/domains/${domainId}/pricing-rules`);
       const allRules = Array.isArray(response?.pricingRules) ? response.pricingRules : [];
-      setRules(isDemoMode && allRules.length === 0 ? demoPricingRules : allRules);
+      setRules(canUseDemoFallback && allRules.length === 0 ? demoPricingRules : allRules);
     } catch (error) {
-      if (!isDemoMode) throw error;
+      if (!canUseDemoFallback) throw error;
       setRules(demoPricingRules);
     }
   };

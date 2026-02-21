@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Button, Card, EmptyState, Input } from '@/components/dashboard/primitives';
-import { demoContentControls, isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback, demoContentControls } from '@/lib/demoData';
 
 export default function ControlsPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -10,9 +10,9 @@ export default function ControlsPage() {
   const load = async () => {
     try {
       const response = await apiFetch('/api/publisher/content-controls');
-      setItems(isDemoMode && response.length === 0 ? demoContentControls : response);
+      setItems(canUseDemoFallback && response.length === 0 ? demoContentControls : response);
     } catch (error) {
-      if (!isDemoMode) throw error;
+      if (!canUseDemoFallback) throw error;
       setItems(demoContentControls);
     }
   };

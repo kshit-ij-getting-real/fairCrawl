@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Badge, Card, EmptyState, Table } from '@/components/dashboard/primitives';
-import { demoPublisherOverview, isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback, demoPublisherOverview } from '@/lib/demoData';
 
 export default function PublisherOverviewPage() {
   const [data, setData] = useState<any | null>(null);
@@ -12,13 +12,13 @@ export default function PublisherOverviewPage() {
     const load = async () => {
       try {
         const response = await apiFetch('/api/publisher/overview');
-        if (isDemoMode && (!response?.recentTransactions?.length || !response?.checklist?.length)) {
+        if (canUseDemoFallback && (!response?.recentTransactions?.length || !response?.checklist?.length)) {
           setData({ ...response, ...demoPublisherOverview });
           return;
         }
         setData(response);
       } catch {
-        setData(isDemoMode ? demoPublisherOverview : { error: true });
+        setData(canUseDemoFallback ? demoPublisherOverview : { error: true });
       }
     };
 

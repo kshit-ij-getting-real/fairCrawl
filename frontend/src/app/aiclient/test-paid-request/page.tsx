@@ -6,13 +6,13 @@ import { ApiError } from '@/lib/http';
 import { Button, Card, Input } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
-import { isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback } from '@/lib/demoData';
 
 export default function AIClientTestPaidRequestPage() {
   const [testForm, setTestForm] = useState<any>({
-    url: isDemoMode ? 'https://ai-essays.vercel.app/premium/demo-article' : '',
+    url: canUseDemoFallback ? 'https://fairfetch-publisher-macro-notes.vercel.app/premium/demo-article' : '',
     license: 'SUMMARY',
-    maxPriceMicros: isDemoMode ? '200000' : '',
+    maxPriceMicros: canUseDemoFallback ? '600000' : '',
   });
   const [receipt, setReceipt] = useState<any>(null);
   const [error, setError] = useState('');
