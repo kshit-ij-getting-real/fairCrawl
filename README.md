@@ -62,6 +62,7 @@ Required env vars (Vercel):
 
 Optional env vars (Vercel):
 - `NEXT_PUBLIC_DEMO_SECRET` (must match backend `DEMO_SECRET` if demo console features are used)
+- `NEXT_PUBLIC_DEMO_FALLBACK` (`true` by default; set to `false` if you want empty-state dashboards instead of seeded demo examples)
 
 ### Runtime env var verification (backend URL / research URL)
 - Frontend runtime API base URL resolves from `NEXT_PUBLIC_API_BASE_URL`.
@@ -152,3 +153,75 @@ Then use **Publisher Dashboard → Demo Console**:
 ## Recent frontend UI consistency updates
 - Header auth actions are now session-aware across the app (unauthenticated users see **Log in / Get started**; authenticated users see an account chip, **Dashboard**, and **Logout**).
 - Logged-in dashboard actions now reuse the same shared button variants used on exterior marketing pages for consistent primary/secondary styling.
+
+
+## Demo content prompts (copy/paste)
+
+### Prompt A — Publisher website dummy content
+Use this with your publishing CMS/LLM to quickly generate realistic macro research demo content:
+
+```text
+You are creating demo content for a macro research publisher website called “Macro Notes” integrated with FairFetch.
+
+Generate:
+1) 3 free preview notes
+2) 4 premium full reports
+
+For each item include:
+- title
+- subtitle
+- publish date (ISO)
+- author/byline
+- 1 short summary (2-3 sentences)
+- key bullets (3-5)
+- tags
+- URL slug
+
+Quality bar:
+- realistic institutional macro language (liquidity, policy rates, credit spreads, FX, carry, duration)
+- no hype, no investment guarantees
+- clear educational/demo disclaimer tone
+
+Output as strict JSON with fields:
+{
+  "freePreviews": [...],
+  "premiumReports": [...]
+}
+```
+
+### Prompt B — AI agent research console dummy run data
+Use this with your AI-agent demo environment to pre-populate realistic run history + receipts:
+
+```text
+Create FairFetch AI-agent demo data for a research console called “MacroScout Research Agent”.
+
+Generate:
+1) agent profile
+2) 2 API keys (masked)
+3) 7-day usage series
+4) domain-level spend summary
+5) 4 recent paid fetch runs with receipt fields
+
+Assumptions:
+- Publisher domains include: fairfetch-publisher-macro-notes.vercel.app and ai-essays.vercel.app
+- Licenses used: SUMMARY and DISPLAY
+- Prices in micros
+
+Each receipt must include:
+- txId
+- timestamp (ISO)
+- domain
+- path
+- license
+- priceMicros
+- status
+
+Output as strict JSON with fields:
+{
+  "agentIdentity": {...},
+  "apiKeys": [...],
+  "usageByDay": [...],
+  "usageByDomain": [...],
+  "recentRuns": [...]
+}
+```

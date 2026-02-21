@@ -86,3 +86,18 @@
 
 **Say:**
 > “FairFetch turns AI access into a transparent market: creators set rules and get paid, AI teams get clean licensed data, and both sides share auditable receipts.”
+
+
+## 5) Demo data guardrails (important)
+
+- Dashboards now auto-fallback to seeded demo examples when API responses are empty.
+- Keep `NEXT_PUBLIC_DEMO_FALLBACK=true` (default) for pitch/demo environments.
+- Set `NEXT_PUBLIC_DEMO_FALLBACK=false` in strict QA if you want to validate true empty-state behavior.
+
+## 6) Populate publisher + AI agent story quickly
+
+Use the two copy/paste prompts in `README.md` under **Demo content prompts (copy/paste)** to generate:
+- publisher-side free preview + premium report content
+- AI agent run history, usage charts, and receipts
+
+Then narrate the generated content while walking through publisher tabs and AI team tabs.

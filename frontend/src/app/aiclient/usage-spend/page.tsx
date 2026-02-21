@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Card, EmptyState, Table } from '@/components/dashboard/primitives';
-import { demoUsageByDay, demoUsageByDomain, isDemoMode } from '@/lib/demoData';
+import { canUseDemoFallback, demoUsageByDay, demoUsageByDomain } from '@/lib/demoData';
 
 const toDollars = (micros: number) => `$${(micros / 1_000_000).toFixed(4)}`;
 
@@ -34,11 +34,11 @@ export default function AIClientUsageSpendPage() {
           apiFetch('/api/aiclient/usage/by-day'),
         ]);
         setUsage({
-          byDomain: isDemoMode && usageByDomain.length === 0 ? demoUsageByDomain : usageByDomain,
-          byDay: isDemoMode && usageByDay.length === 0 ? demoUsageByDay : usageByDay,
+          byDomain: canUseDemoFallback && usageByDomain.length === 0 ? demoUsageByDomain : usageByDomain,
+          byDay: canUseDemoFallback && usageByDay.length === 0 ? demoUsageByDay : usageByDay,
         });
       } catch (error) {
-        if (!isDemoMode) throw error;
+        if (!canUseDemoFallback) throw error;
         setUsage({ byDomain: demoUsageByDomain, byDay: demoUsageByDay });
       }
     };

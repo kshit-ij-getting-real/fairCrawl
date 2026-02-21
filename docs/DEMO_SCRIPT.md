@@ -86,3 +86,6 @@
 
 **Say:**
 > “FairFetch turns AI access into a transparent market: creators set rules and get paid, AI teams get clean licensed data, and both sides share auditable receipts.”
+
+
+See root `DEMO_SCRIPT.md` sections **Demo data guardrails (important)** and **Populate publisher + AI agent story quickly** for the latest dummy-data walkthrough updates.
