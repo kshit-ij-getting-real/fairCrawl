@@ -111,17 +111,17 @@ export default function AIClientUsageSpendPage() {
         <Table className="mt-2">
           <thead>
             <tr>
-              <th>Domain</th>
-              <th>Requests</th>
-              <th>Spend</th>
+              <th className="text-left">Domain</th>
+              <th className="text-right">Requests</th>
+              <th className="text-right">Spend</th>
             </tr>
           </thead>
           <tbody>
             {usage.byDomain?.map((d) => (
               <tr key={d.domainId} className="border-t border-white/10">
                 <td className="py-2">{d.domain}</td>
-                <td>{d.requests}</td>
-                <td>{toDollars(d.spendMicros || 0)}</td>
+                <td className="text-right">{d.requests}</td>
+                <td className="text-right">{toDollars(d.spendMicros || 0)}</td>
               </tr>
             ))}
           </tbody>
@@ -132,17 +132,17 @@ export default function AIClientUsageSpendPage() {
         <Table className="mt-2">
           <thead>
             <tr>
-              <th>Day</th>
-              <th>Requests</th>
-              <th>Spend</th>
+              <th className="text-left">Day</th>
+              <th className="text-right">Requests</th>
+              <th className="text-right">Spend</th>
             </tr>
           </thead>
           <tbody>
             {usage.byDay?.map((d) => (
               <tr key={d.day} className="border-t border-white/10">
                 <td className="py-2">{d.day}</td>
-                <td>{d.requests}</td>
-                <td>{toDollars(d.spend_micros || 0)}</td>
+                <td className="text-right">{d.requests}</td>
+                <td className="text-right">{toDollars(d.spend_micros || 0)}</td>
               </tr>
             ))}
           </tbody>
