@@ -3,12 +3,26 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Badge, Card, EmptyState, Table } from '@/components/dashboard/primitives';
+import { demoPublisherOverview, isDemoMode } from '@/lib/demoData';
 
 export default function PublisherOverviewPage() {
   const [data, setData] = useState<any | null>(null);
 
   useEffect(() => {
-    apiFetch('/api/publisher/overview').then(setData).catch(() => setData({ error: true }));
+    const load = async () => {
+      try {
+        const response = await apiFetch('/api/publisher/overview');
+        if (isDemoMode && (!response?.recentTransactions?.length || !response?.checklist?.length)) {
+          setData({ ...response, ...demoPublisherOverview });
+          return;
+        }
+        setData(response);
+      } catch {
+        setData(isDemoMode ? demoPublisherOverview : { error: true });
+      }
+    };
+
+    load();
   }, []);
 
   const checklist = data?.checklist || [];

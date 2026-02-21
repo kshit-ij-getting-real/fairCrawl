@@ -5,6 +5,7 @@ import { apiFetch } from '@/lib/api';
 import { Button, Card, EmptyState, Input, Select, Table } from '@/components/dashboard/primitives';
 import { formatMicrosToCurrency } from '@/lib/money';
 import { toast } from '@/components/toast/ToastProvider';
+import { demoTransactions, isDemoMode } from '@/lib/demoData';
 
 type ReceiptRow = {
   txId: string;
@@ -46,9 +47,17 @@ export default function TransactionsPage() {
   }, [filters, cursor]);
 
   const load = async () => {
-    const response = await apiFetch(`/api/publisher/transactions?${queryString}`) as TransactionsResponse;
-    setTransactions(response.rows || []);
-    setNextCursor(response.page?.nextCursor || null);
+    try {
+      const response = await apiFetch(`/api/publisher/transactions?${queryString}`) as TransactionsResponse;
+      const rows = response.rows || [];
+      const resolvedRows = isDemoMode && rows.length === 0 ? demoTransactions.rows : rows;
+      setTransactions(resolvedRows as ReceiptRow[]);
+      setNextCursor((isDemoMode && rows.length === 0 ? demoTransactions : response).page?.nextCursor || null);
+    } catch (error) {
+      if (!isDemoMode) throw error;
+      setTransactions(demoTransactions.rows as ReceiptRow[]);
+      setNextCursor(null);
+    }
   };
 
   useEffect(() => {

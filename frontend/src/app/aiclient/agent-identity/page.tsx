@@ -6,6 +6,7 @@ import { Button, Card, Input } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
 import { ApiError } from '@/lib/http';
+import { demoAgentIdentity, isDemoMode } from '@/lib/demoData';
 
 export default function AIClientAgentIdentityPage() {
   const [agentId, setAgentId] = useState('');
@@ -37,7 +38,13 @@ export default function AIClientAgentIdentityPage() {
         }
         return;
       }
-      toast.error(getErrorMessage(error));
+      if (isDemoMode) {
+        setAgentId(demoAgentIdentity.agentId);
+        setUaRegex(demoAgentIdentity.allowedUserAgentRegex);
+        setSavedIdentity(demoAgentIdentity);
+      } else {
+        toast.error(getErrorMessage(error));
+      }
     } finally {
       setIsLoading(false);
     }

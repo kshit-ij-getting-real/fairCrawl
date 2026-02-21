@@ -2,11 +2,20 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Button, Card, EmptyState, Input } from '@/components/dashboard/primitives';
+import { demoContentControls, isDemoMode } from '@/lib/demoData';
 
 export default function ControlsPage() {
   const [items, setItems] = useState<any[]>([]);
   const [value, setValue] = useState('');
-  const load = () => apiFetch('/api/publisher/content-controls').then(setItems);
+  const load = async () => {
+    try {
+      const response = await apiFetch('/api/publisher/content-controls');
+      setItems(isDemoMode && response.length === 0 ? demoContentControls : response);
+    } catch (error) {
+      if (!isDemoMode) throw error;
+      setItems(demoContentControls);
+    }
+  };
   useEffect(() => { load(); }, []);
 
   return (
