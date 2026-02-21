@@ -57,16 +57,24 @@ export async function fetchPublicDomains(): Promise<PublicDomain[]> {
       ? payload.data
       : [];
 
-    return data.map((domain: PublicDomain) => ({
-      ...domain,
-      domain: domain.domain ?? domain.host ?? domain.name,
-      verified:
-        domain.verified === true ||
-        domain.isVerified === true ||
-        domain.verificationStatus?.toString().toLowerCase() === 'verified' ||
-        !!domain.verifiedAt ||
-        domain.verified,
-    }));
+    return data.map((domain: PublicDomain) => {
+      const hasVerificationSignal =
+        typeof domain.verified !== 'undefined' ||
+        typeof domain.isVerified !== 'undefined' ||
+        typeof domain.verificationStatus !== 'undefined' ||
+        typeof domain.verifiedAt !== 'undefined';
+
+      return {
+        ...domain,
+        domain: domain.domain ?? domain.host ?? domain.name,
+        verified: hasVerificationSignal
+          ? domain.verified === true ||
+            domain.isVerified === true ||
+            domain.verificationStatus?.toString().toLowerCase() === 'verified' ||
+            !!domain.verifiedAt
+          : true,
+      };
+    });
   } catch (err) {
     console.error(err);
     return [];
@@ -77,6 +85,10 @@ export function buildDirectoryEntries(domains: PublicDomain[]): DirectoryEntry[]
   const verifiedDomains = domains.filter((domain) => domain.verified);
 
   const directoryEntries = verifiedDomains.map((domain) => {
+    const normalizedDomain = (domain.domain ?? domain.name ?? '')
+      .replace(/^https?:\/\//i, '')
+      .replace(/\/.*/, '');
+
     const publisherEmail = typeof domain.publisher === 'object' ? domain.publisher?.user?.email : undefined;
     const publisherName =
       typeof domain.publisher === 'string'
@@ -86,10 +98,10 @@ export function buildDirectoryEntries(domains: PublicDomain[]): DirectoryEntry[]
     const subtitle = publisherEmail ? `Verified by ${publisherEmail}` : publisherName ? `Verified by ${publisherName}` : 'Verified.';
 
     return {
-      title: domain.name,
-      domain: domain.name,
+      title: normalizedDomain || domain.name,
+      domain: normalizedDomain || domain.name,
       subtitle,
-      link: domain.name ? `https://${domain.name}` : undefined,
+      link: normalizedDomain ? `https://${normalizedDomain}` : undefined,
       cta: 'Visit site',
       verified: true,
     } satisfies DirectoryEntry;
