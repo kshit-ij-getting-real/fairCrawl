@@ -4,8 +4,7 @@ import { apiFetch } from '@/lib/api';
 import { Badge, Button, Card, Drawer, EmptyState, Input, Table } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
-
-const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+import { demoPublisherDomains, isDemoMode } from '@/lib/demoData';
 
 export default function DomainsPage() {
   const [domains, setDomains] = useState<any[]>([]);
@@ -14,8 +13,17 @@ export default function DomainsPage() {
   const [isAdding, setIsAdding] = useState(false);
 
   const load = async () => {
-    const response = await apiFetch('/api/publisher/domains');
-    setDomains(response || []);
+    try {
+      const response = await apiFetch('/api/publisher/domains');
+      const resolved = response || [];
+      setDomains(isDemoMode && resolved.length === 0 ? demoPublisherDomains : resolved);
+    } catch (error) {
+      if (isDemoMode) {
+        setDomains(demoPublisherDomains);
+        return;
+      }
+      throw error;
+    }
   };
   useEffect(() => { load(); }, []);
 

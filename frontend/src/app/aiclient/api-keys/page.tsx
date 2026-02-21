@@ -5,6 +5,7 @@ import { apiFetch } from '@/lib/api';
 import { Button, Card, EmptyState } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
+import { demoApiKeys, isDemoMode } from '@/lib/demoData';
 
 export default function AIClientApiKeysPage() {
   const [apiKeys, setApiKeys] = useState<any[]>([]);
@@ -13,8 +14,13 @@ export default function AIClientApiKeysPage() {
   const [copied, setCopied] = useState(false);
 
   const load = async () => {
-    const keys = await apiFetch('/api/aiclient/apikeys');
-    setApiKeys(keys);
+    try {
+      const keys = await apiFetch('/api/aiclient/apikeys');
+      setApiKeys(isDemoMode && keys.length === 0 ? demoApiKeys : keys);
+    } catch (error) {
+      if (!isDemoMode) throw error;
+      setApiKeys(demoApiKeys);
+    }
   };
 
   useEffect(() => {

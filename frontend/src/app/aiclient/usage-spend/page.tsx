@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Card, EmptyState, Table } from '@/components/dashboard/primitives';
+import { demoUsageByDay, demoUsageByDomain, isDemoMode } from '@/lib/demoData';
 
 const toDollars = (micros: number) => `$${(micros / 1_000_000).toFixed(4)}`;
 
@@ -27,11 +28,19 @@ export default function AIClientUsageSpendPage() {
 
   useEffect(() => {
     const load = async () => {
-      const [usageByDomain, usageByDay] = await Promise.all([
-        apiFetch('/api/aiclient/usage/by-domain'),
-        apiFetch('/api/aiclient/usage/by-day'),
-      ]);
-      setUsage({ byDomain: usageByDomain, byDay: usageByDay });
+      try {
+        const [usageByDomain, usageByDay] = await Promise.all([
+          apiFetch('/api/aiclient/usage/by-domain'),
+          apiFetch('/api/aiclient/usage/by-day'),
+        ]);
+        setUsage({
+          byDomain: isDemoMode && usageByDomain.length === 0 ? demoUsageByDomain : usageByDomain,
+          byDay: isDemoMode && usageByDay.length === 0 ? demoUsageByDay : usageByDay,
+        });
+      } catch (error) {
+        if (!isDemoMode) throw error;
+        setUsage({ byDomain: demoUsageByDomain, byDay: demoUsageByDay });
+      }
     };
 
     load();
