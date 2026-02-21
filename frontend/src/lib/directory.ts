@@ -46,10 +46,20 @@ export async function fetchPublicDomains(): Promise<PublicDomain[]> {
   try {
     const res = await fetch(`${API_BASE_URL}/api/public/domains`, { cache: 'no-store' });
     if (!res.ok) return [];
-    const data: PublicDomain[] = await res.json();
-    return data.map((domain) => ({
+    const payload = await res.json();
+    const data = Array.isArray(payload)
+      ? payload
+      : Array.isArray(payload?.domains)
+      ? payload.domains
+      : Array.isArray(payload?.items)
+      ? payload.items
+      : Array.isArray(payload?.data)
+      ? payload.data
+      : [];
+
+    return data.map((domain: PublicDomain) => ({
       ...domain,
-      domain: domain.domain ?? domain.name,
+      domain: domain.domain ?? domain.host ?? domain.name,
       verified:
         domain.verified === true ||
         domain.isVerified === true ||
