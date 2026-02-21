@@ -65,6 +65,7 @@ export const demoPricingRules = [
     priceMicros: 100000,
     isActive: true,
     domainId: 101,
+    createdAt: '2026-02-20T16:10:00.000Z',
   },
   {
     id: 502,
@@ -73,6 +74,7 @@ export const demoPricingRules = [
     priceMicros: 500000,
     isActive: true,
     domainId: 101,
+    createdAt: '2026-02-20T15:46:00.000Z',
   },
 ];
 

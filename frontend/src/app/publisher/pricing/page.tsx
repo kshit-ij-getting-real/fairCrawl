@@ -22,6 +22,12 @@ export default function PricingPage() {
     return digitsOnly ? Number(digitsOnly) : 0;
   };
 
+  const formatCreatedAt = (value: unknown) => {
+    if (typeof value !== 'string' && typeof value !== 'number' && !(value instanceof Date)) return '—';
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? '—' : parsed.toLocaleString();
+  };
+
   useEffect(() => {
     const loadedDomains = publisherMockStore.getDomains() || demoPublisherDomains;
     const loadedRules = publisherMockStore.getPricingRules() || demoPricingRules;
@@ -103,7 +109,7 @@ export default function PricingPage() {
         {createError ? <p className="mt-2 text-sm text-red-300">{createError}</p> : null}
         {createSuccess ? <p className="mt-2 text-sm text-emerald-300">{createSuccess}</p> : null}
         {visibleRules.length === 0 ? <div className="mt-4"><EmptyState title="No pricing rules" description="Create and activate at least one pricing rule to allow paid access." /></div> : (
-          <div className="mt-4 overflow-x-auto"><Table><thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Path</th><th>License</th><th>Price</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{visibleRules.map((r) => <tr key={r.id} className="border-t border-white/10"><td className="py-2">{domains.find((d) => d.id === r.domainId)?.name || r.domainId}</td><td>{r.pathPrefix || '/'}</td><td>{r.licenseCode || r.licenseType}</td><td>{r.priceMicros}</td><td><Badge tone={r.isActive || r.active ? 'success' : 'warning'}>{r.isActive || r.active ? 'Active' : 'Inactive'}</Badge></td><td>{r.createdAt ? new Date(r.createdAt).toLocaleString() : 'Invalid Date'}</td><td><Button variant="ghost" onClick={() => {
+          <div className="mt-4 overflow-x-auto"><Table><thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Path</th><th>License</th><th>Price</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{visibleRules.map((r) => <tr key={r.id} className="border-t border-white/10"><td className="py-2">{domains.find((d) => d.id === r.domainId)?.name || r.domainId}</td><td>{r.pathPrefix || '/'}</td><td>{r.licenseCode || r.licenseType}</td><td>{r.priceMicros}</td><td><Badge tone={r.isActive || r.active ? 'success' : 'warning'}>{r.isActive || r.active ? 'Active' : 'Inactive'}</Badge></td><td>{formatCreatedAt(r.createdAt)}</td><td><Button variant="ghost" onClick={() => {
             const nextRules = rules.filter((rule) => rule.id !== r.id);
             setRules(nextRules);
             publisherMockStore.setPricingRules(nextRules);
