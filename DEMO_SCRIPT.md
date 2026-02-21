@@ -1,103 +1,96 @@
-# FairFetch demo script (outside-in + post-login talk track)
+# FairFetch Final Demo Script
 
-## 0) Before you start
-- Use demo accounts:
-  - Publisher: `publisher+demo@stack.com`
-  - AI team: `ai@example.com`
-- Ensure `NEXT_PUBLIC_DEMO_MODE=true` so dashboards render showcase data even without backend activity.
-
----
-
-## 1) Outside-in story (public pages)
-
-### Home
-**Say:**
-> “FairFetch helps creators get paid when AI reads their content. Instead of uncontrolled scraping, AI teams request through FairFetch with explicit access rules and receipts.”
-
-### How it works
-**Say:**
-> “The flow is simple: crawler request enters FairFetch, FairFetch checks policy, then allows, blocks, or charges based on publisher rules. Both sides see the same audit trail.”
-
-### Creators page
-**Say:**
-> “For publishers, this is control + monetization: choose what’s open, what’s premium, and what stays blocked.”
-
-### AI teams page
-**Say:**
-> “For AI teams, it’s a cleaner API with clear licensing and predictable pricing.”
-
-### Directory
-**Say:**
-> “Directory lists verified AI-ready domains and pricing signals, so teams can start with permissioned sources.”
+## 0) Demo prep (2 minutes before call)
+- Open frontend: `https://fair-fetch.vercel.app`
+- Keep backend handy: `https://fairfetch.onrender.com`
+- Confirm demo accounts:
+  - Publisher: `publisher@fairfetch.local` / `password123`
+  - AI client: `client@fairfetch.local` / `password123`
+- If using local/dev fallback, run seed first so data is present.
 
 ---
 
-## 2) Publisher login flow
+## 1) 30-second opener (outside-in)
+**Say:**
+> “FairFetch creates a permissioned market between publishers and AI teams. Publishers define rules and pricing by domain/path; AI teams request licensed access through tokens. Every paid fetch creates a shared, auditable receipt.”
 
+Then quickly visit:
+1. `/` (home)
+2. `/how-it-works`
+3. `/directory`
+
+**Narration cues:**
+- Home: “This is the value proposition: control + monetization for publishers, clean licensing for AI teams.”
+- How-it-works: “Requests are policy-checked and either allowed, blocked, or paid.”
+- Directory: “Only verified domains are discoverable to buyers.”
+
+---
+
+## 2) Publisher flow (3 minutes)
 1. Log in as publisher.
-2. Go tab-by-tab:
-
-### Overview
-**Say:**
-> “This is the control room: 30-day revenue, request volume, onboarding status, and recent paid redemptions.”
-
-### Domains
-**Say:**
-> “Here I register domains and confirm verification. In demo mode, we preload two verified domains so you can instantly show the full workflow.”
-
-### Pricing
-**Say:**
-> “Licenses define what buyers can do—summary or full display. Pricing rules apply by path, so premium sections can have different rates.”
-
-### Transactions
-**Say:**
-> “Every paid access event shows up here with timestamp, domain/path, license, and price. This is payout evidence.”
-
-### Content controls
-**Say:**
-> “Sensitive paths can be explicitly excluded. That means publishers keep hard boundaries while still monetizing approved sections.”
+2. Open `/publisher/dashboard`.
+   - **Say:** “This is the operator view: performance, onboarding, and recent monetized activity.”
+3. Open `/publisher/domains`.
+   - **Say:** “Publishers register domains and verify ownership. For MVP demos, verification is often bypass-enabled for speed.”
+4. Open `/publisher/pricing`.
+   - **Say:** “Pricing is path-aware and license-aware, so premium sections can be monetized differently than public sections.”
+5. Open `/publisher/transactions`.
+   - **Say:** “This ledger is the revenue evidence trail—every paid redemption is timestamped and attributable.”
+6. (Optional) Open `/publisher/controls` and `/publisher/payouts`.
+   - **Say:** “These are productized surfaces in progress, illustrating how governance and settlement fit into the full workflow.”
 
 ---
 
-## 3) AI team login flow
-
-1. Log out, then log in as AI team.
-2. Walk through each tab:
-
-### API keys
-**Say:**
-> “AI clients mint tokens using these credentials. Demo data shows realistic masked keys.”
-
-### Agent identity
-**Say:**
-> “Agent identity is what publishers see in receipts. It ties usage to a known crawler profile.”
-
-### Usage/Spend
-**Say:**
-> “This is cost visibility—daily trend line plus domain breakdown. Teams can monitor spikes and optimize crawl behavior.”
-
-### Test paid request
-**Say:**
-> “This runs the full loop: mint token, redeem content, inspect receipt. It proves both access control and payment accounting.”
+## 3) AI client flow (3 minutes)
+1. Log out and log in as AI client.
+2. Open `/aiclient/api-keys`.
+   - **Say:** “Keys provide machine credentials for token minting.”
+3. Open `/aiclient/agent-identity`.
+   - **Say:** “Identity maps usage to a known crawler/agent profile for accountability.”
+4. Open `/aiclient/usage-spend`.
+   - **Say:** “Teams get daily and domain-level spend visibility to control budget and optimize crawl policy.”
+5. Open `/aiclient/test-paid-request` (or dashboard if you prefer).
+   - **Say:** “Now we run the paid lane end-to-end.”
 
 ---
 
-## 4) Close (30-second ending)
+## 4) Live paid-lane proof (CLI, 90 seconds)
+
+### A) Mint token
+```bash
+curl -X POST "https://fairfetch.onrender.com/api/tokens" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <AI_CLIENT_API_KEY>" \
+  -H "User-Agent: DemoBot/1.0" \
+  -d '{
+    "url": "https://ai-essays.vercel.app/premium/demo-article",
+    "license": "SUMMARY",
+    "maxPriceMicros": 200000
+  }'
+```
+
+### B) Redeem token
+```bash
+curl "https://fairfetch.onrender.com/api/content?url=https%3A%2F%2Fai-essays.vercel.app%2Fpremium%2Fdemo-article" \
+  -H "x-fairfetch-token: <SPEND_TOKEN>"
+```
+
+### C) Prove shared receipt outcome
+- Refresh `/publisher/transactions`
+- Refresh `/aiclient/dashboard` or `/aiclient/usage-spend`
 
 **Say:**
-> “FairFetch turns AI access into a transparent market: creators set rules and get paid, AI teams get clean licensed data, and both sides share auditable receipts.”
+> “One transaction, two perspectives: publisher monetization record and AI client cost/usage record. That shared receipt model is the core trust primitive.”
 
+---
 
-## 5) Demo data guardrails (important)
+## 5) Close (20 seconds)
+**Say:**
+> “FairFetch turns unstructured scraping into structured licensed access: publishers control and monetize access, AI teams buy compliant data access, and both sides operate from the same auditable ledger.”
 
-- Dashboards now auto-fallback to seeded demo examples when API responses are empty.
-- Keep `NEXT_PUBLIC_DEMO_FALLBACK=true` (default) for pitch/demo environments.
-- Set `NEXT_PUBLIC_DEMO_FALLBACK=false` in strict QA if you want to validate true empty-state behavior.
+---
 
-## 6) Populate publisher + AI agent story quickly
-
-Use the two copy/paste prompts in `README.md` under **Demo content prompts (copy/paste)** to generate:
-- publisher-side free preview + premium report content
-- AI agent run history, usage charts, and receipts
-
-Then narrate the generated content while walking through publisher tabs and AI team tabs.
+## 6) Backup plan (if something breaks live)
+- If frontend fails: run only the two curl commands and narrate mint → redeem → ledger semantics.
+- If backend fails: switch to local stack (`docker compose up -d`, migrate, seed) and repeat same flow.
+- If login is flaky: continue with pre-generated API key and run API-only demonstration.

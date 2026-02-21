@@ -1,10 +1,66 @@
 # FairFetch
 
-FairFetch is an opt-in marketplace for paid access to paywalled content.
+FairFetch is a two-sided marketplace MVP where publishers define paid access rules for their domains and AI teams buy one-time spend tokens to fetch licensed content with auditable receipts.
 
-## Repo layout
-- `backend/` Express + Prisma API
-- `frontend/` Next.js app (marketing, dashboard, docs)
+## What is in this repo
+- `frontend/` — Next.js application (marketing site + publisher dashboard + AI client dashboard).
+- `backend/` — Express + Prisma API (auth, directory/policy endpoints, publisher + AI APIs, token mint/redeem gateway).
+- `docs/` — operator/demo support docs.
+- `DEMO_SCRIPT.md` — final presenter talk track for live demos.
+
+## Product surfaces (all components)
+
+### Public / marketing pages (`frontend/src/app`)
+- `/` Home
+- `/how-it-works`
+- `/creators`
+- `/ai-teams`
+- `/directory`
+- `/docs`
+- `/about`
+- `/vision`
+- `/login`, `/signup`
+
+### Publisher console (`/publisher/*`)
+- `/publisher/dashboard` — overview metrics and onboarding state.
+- `/publisher/domains` — add and verify domains.
+- `/publisher/pricing` — create/update pricing rules by path + license.
+- `/publisher/transactions` — paid redemption ledger view.
+- `/publisher/controls` — content controls UI (backend support still partial).
+- `/publisher/payouts` — payouts UI (backend support still partial).
+- `/publisher/integrations` — integration guidance.
+- `/publisher/demo` — demo helper page.
+
+### AI client console (`/aiclient/*`)
+- `/aiclient/dashboard` — high-level usage and spend overview.
+- `/aiclient/api-keys` — create/revoke API keys.
+- `/aiclient/agent-identity` — declare crawler identity and allowed User-Agent regex.
+- `/aiclient/usage-spend` — daily and domain-level spend.
+- `/aiclient/test-paid-request` — walkthrough UI for paid request flow.
+
+## Backend capabilities
+
+### Auth + access
+- JWT auth for app sessions (`/api/auth/login`, `/api/auth/signup`).
+- Role-protected dashboard routes:
+  - `/api/publisher/*` for `PUBLISHER`
+  - `/api/aiclient/*` and `/api/client/*` for `AICLIENT`
+
+### Marketplace flow
+- `POST /api/tokens` — mint spend token (via `x-api-key` or AI JWT).
+- `GET /api/content?url=...` — redeem with `x-fairfetch-token`.
+- `GET /api/public/domains` — verified-domain directory feed.
+- `GET /api/ai-policy` — policy feed endpoint.
+
+### Health + ops
+- `GET /api/health` checks API and database reachability.
+- Request IDs are generated/propagated via `x-request-id`.
+
+## Current MVP boundaries
+- DNS verification is MVP/bypass-oriented (`MVP_BYPASS_VERIFICATION=true` is common for demos).
+- `GET /api/content` currently returns licensed demo payload behavior, not full publisher-origin extraction.
+- Publisher `controls` and `payouts` pages are present, but backend support is still partial.
+- Demo routes exist in code under `backend/src/routes/demo.ts`, but are not mounted in the main app router.
 
 ## Local setup
 ```bash
@@ -18,13 +74,22 @@ npm --prefix backend run prisma:generate
 npm --prefix backend run seed
 ```
 
-Backend `.env` keys:
+### Backend `.env` keys
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `FAIRFETCH_TOKEN_SECRET`
+- `CORS_ORIGINS` (recommended)
+- `MVP_BYPASS_VERIFICATION` (recommended for demo)
+- `DEMO_MODE`, `DEMO_SECRET` (optional demo controls)
 - `PORT` (optional)
 
-## Run
+### Frontend `.env.local` keys
+- `NEXT_PUBLIC_API_BASE_URL` (required for deployed environments)
+- `NEXT_PUBLIC_DEMO_SECRET` (optional; must match backend `DEMO_SECRET` for demo endpoints)
+- `NEXT_PUBLIC_DEMO_MODE` (optional)
+- `NEXT_PUBLIC_DEMO_FALLBACK` (`true` by default; set `false` for strict empty-state QA)
+
+## Run locally
 ```bash
 npm --prefix backend run dev
 npm --prefix frontend run dev
@@ -36,192 +101,72 @@ npm --prefix backend run build
 npm --prefix frontend run build
 ```
 
+## Seeded demo users and data
+After `npm --prefix backend run seed`:
+- Publisher: `publisher@fairfetch.local` / `password123`
+- AI client: `client@fairfetch.local` / `password123`
+- Verified domain: `news.local`
+- Licenses: `SUMMARY`, `DISPLAY`
+- Pricing rules: `/premium` for both licenses
+
 ## Deployment (Render + Vercel)
 
-### Backend (`backend/`) on Render
-Deploy as a **Web Service** from this repo root with service root set to `backend/`.
-
+### Backend on Render
+Deploy from `backend/` as a Web Service.
 - Build command: `npm ci && npm run prisma:generate && npm run build`
 - Start command: `npm run prisma:migrate && npm start`
 
-Required env vars (Render):
+Required:
 - `DATABASE_URL`
 - `JWT_SECRET`
 
-Recommended env vars (Render):
-- `FAIRFETCH_TOKEN_SECRET` (set in production; code falls back to `dev-secret` only for local/dev)
-- `CORS_ORIGINS` (include your Vercel domain)
-- `MVP_BYPASS_VERIFICATION` (`true` for demo ease, `false` for stricter behavior)
-- `DEMO_MODE`, `DEMO_SECRET` (only if using Demo Console endpoints)
+Recommended:
+- `FAIRFETCH_TOKEN_SECRET`
+- `CORS_ORIGINS`
+- `MVP_BYPASS_VERIFICATION`
+- `DEMO_MODE`, `DEMO_SECRET` (if demo features are used)
 
-### Frontend (`frontend/`) on Vercel
-Deploy as a **Next.js** app with root set to `frontend/`.
+### Frontend on Vercel
+Deploy from `frontend/` as a Next.js app.
 
-Required env vars (Vercel):
-- `NEXT_PUBLIC_API_BASE_URL` = your Render backend URL (example: `https://fairfetch.onrender.com`)
+Required:
+- `NEXT_PUBLIC_API_BASE_URL=https://fairfetch.onrender.com` (or your backend URL)
 
-Optional env vars (Vercel):
-- `NEXT_PUBLIC_DEMO_SECRET` (must match backend `DEMO_SECRET` if demo console features are used)
-- `NEXT_PUBLIC_DEMO_FALLBACK` (`true` by default; set to `false` if you want empty-state dashboards instead of seeded demo examples)
+Optional:
+- `NEXT_PUBLIC_DEMO_SECRET`
+- `NEXT_PUBLIC_DEMO_FALLBACK`
+- `NEXT_PUBLIC_DEMO_MODE`
 
-### Runtime env var verification (backend URL / research URL)
-- Frontend runtime API base URL resolves from `NEXT_PUBLIC_API_BASE_URL`.
-- If missing during SSR, frontend falls back to `https://fairfetch.onrender.com`.
-- There is currently **no runtime `DEFAULT_RESEARCH_URL` / research backend env var** in this repo; any “research” text shown in UI is static copy.
-
-## Live smoke test flow (investor demo runbook)
-
-Canonical live URLs:
+## Live smoke test (canonical demo endpoints)
 - Frontend: `https://fair-fetch.vercel.app`
 - Backend: `https://fairfetch.onrender.com`
 
-Smoke test steps:
-1. Log in as publisher and verify domain/rate setup in `/publisher/domains` and `/publisher/pricing`.
-2. Log in as AI client and generate API key in `/aiclient/dashboard`.
-3. Mint spend token:
+1) Log in as publisher and confirm domain + pricing.
+2) Log in as AI client and generate API key.
+3) Mint token:
 
-   ```bash
-   curl -X POST "https://fairfetch.onrender.com/api/tokens" \
-     -H "Content-Type: application/json" \
-     -H "x-api-key: <AI_CLIENT_API_KEY>" \
-     -H "User-Agent: DemoBot/1.0" \
-     -d '{
-       "url": "https://ai-essays.vercel.app/premium/demo-article",
-       "license": "SUMMARY",
-       "maxPriceMicros": 200000
-     }'
-   ```
-
-4. Redeem content:
-
-   ```bash
-   curl "https://fairfetch.onrender.com/api/content?url=https%3A%2F%2Fai-essays.vercel.app%2Fpremium%2Fdemo-article" \
-     -H "x-fairfetch-token: <SPEND_TOKEN>"
-   ```
-
-5. Confirm transaction appears in:
-   - Publisher: `/publisher/transactions`
-   - AI client: `/aiclient/dashboard`
-
-## Paid lane flow
-1. Publisher creates property and rates.
-2. AI client calls `GET /api/rates?url=...`.
-3. AI client mints token with `POST /api/tokens`.
-4. AI client fetches content with `GET /api/content?url=...` and `x-fairfetch-token`.
-5. Transaction is visible at `GET /api/publisher/transactions` and `GET /api/aiclient/transactions`.
-
-## Seed data
-The seed script creates:
-- 1 publisher user
-- 1 AI client user
-- 1 verified property
-- 2 licenses
-- 2 rates
-
-Run:
 ```bash
-npm --prefix backend run seed
+curl -X POST "https://fairfetch.onrender.com/api/tokens" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <AI_CLIENT_API_KEY>" \
+  -H "User-Agent: DemoBot/1.0" \
+  -d '{
+    "url": "https://ai-essays.vercel.app/premium/demo-article",
+    "license": "SUMMARY",
+    "maxPriceMicros": 200000
+  }'
 ```
 
+4) Redeem content:
 
-## Demo quickstart
-Set these env vars for demo-only controls:
-- Backend: `DEMO_MODE=true`, `DEMO_SECRET=your-secret`
-- Frontend: `NEXT_PUBLIC_DEMO_SECRET=your-secret`
-
-Then use **Publisher Dashboard → Demo Console**:
-1. Seed demo workspace.
-2. Simulate transaction.
-3. Review Transactions and AI Team usage updates.
-
-## Operator checklist (demo-day)
-
-### Credentials / demo accounts
-- Seed publisher login: `publisher@fairfetch.local` / `password123`
-- Seed AI client login: `client@fairfetch.local` / `password123`
-
-### Seeded demo data expectations
-- Verified domain: `news.local`
-- Licenses: `SUMMARY`, `DISPLAY`
-- Pricing rules on `/premium` path
-
-### Fallback plan if one service is unavailable
-- If **Vercel frontend** is down: run API-only demo via curl (`/api/tokens` + `/api/content`) and narrate transaction semantics.
-- If **Render backend** is down: switch to local demo environment (`docker compose up -d`, migrations, seed, local frontend/backend).
-- If auth/login is degraded: use pre-generated API key + token mint/redeem steps to prove the paid lane independently of UI session state.
-
-## Recent frontend UI consistency updates
-- Header auth actions are now session-aware across the app (unauthenticated users see **Log in / Get started**; authenticated users see an account chip, **Dashboard**, and **Logout**).
-- Logged-in dashboard actions now reuse the same shared button variants used on exterior marketing pages for consistent primary/secondary styling.
-
-
-## Demo content prompts (copy/paste)
-
-### Prompt A — Publisher website dummy content
-Use this with your publishing CMS/LLM to quickly generate realistic macro research demo content:
-
-```text
-You are creating demo content for a macro research publisher website called “Macro Notes” integrated with FairFetch.
-
-Generate:
-1) 3 free preview notes
-2) 4 premium full reports
-
-For each item include:
-- title
-- subtitle
-- publish date (ISO)
-- author/byline
-- 1 short summary (2-3 sentences)
-- key bullets (3-5)
-- tags
-- URL slug
-
-Quality bar:
-- realistic institutional macro language (liquidity, policy rates, credit spreads, FX, carry, duration)
-- no hype, no investment guarantees
-- clear educational/demo disclaimer tone
-
-Output as strict JSON with fields:
-{
-  "freePreviews": [...],
-  "premiumReports": [...]
-}
+```bash
+curl "https://fairfetch.onrender.com/api/content?url=https%3A%2F%2Fai-essays.vercel.app%2Fpremium%2Fdemo-article" \
+  -H "x-fairfetch-token: <SPEND_TOKEN>"
 ```
 
-### Prompt B — AI agent research console dummy run data
-Use this with your AI-agent demo environment to pre-populate realistic run history + receipts:
+5) Verify transaction visibility in:
+- `/publisher/transactions`
+- `/aiclient/dashboard`
 
-```text
-Create FairFetch AI-agent demo data for a research console called “MacroScout Research Agent”.
-
-Generate:
-1) agent profile
-2) 2 API keys (masked)
-3) 7-day usage series
-4) domain-level spend summary
-5) 4 recent paid fetch runs with receipt fields
-
-Assumptions:
-- Publisher domains include: fairfetch-publisher-macro-notes.vercel.app and ai-essays.vercel.app
-- Licenses used: SUMMARY and DISPLAY
-- Prices in micros
-
-Each receipt must include:
-- txId
-- timestamp (ISO)
-- domain
-- path
-- license
-- priceMicros
-- status
-
-Output as strict JSON with fields:
-{
-  "agentIdentity": {...},
-  "apiKeys": [...],
-  "usageByDay": [...],
-  "usageByDomain": [...],
-  "recentRuns": [...]
-}
-```
+## Final demo script
+Use `DEMO_SCRIPT.md` for the latest outside-in walkthrough, role-based talk track, and close.
