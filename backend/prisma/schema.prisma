@@ -97,10 +97,30 @@ model Domain {
   mintedTokens SpendToken[]
   ledgerTransactions LedgerTransaction[]
   webhooks      PublisherWebhook[]
+  apiLogs       DomainApiLog[]
   subdomainCnameTarget String?
   subdomainHost String?
   verificationMethod String @default("DNS_TXT")
   createdAt   DateTime         @default(now())
+}
+
+model DomainApiLog {
+  id         Int      @id @default(autoincrement())
+  domainId   Int
+  timestamp  DateTime @default(now())
+  method     String?
+  path       String
+  url        String?
+  statusCode Int?
+  bytesSent  Int?
+  userAgent  String?
+  ipAddress  String?
+  source     String?
+  raw        Json?
+  createdAt  DateTime @default(now())
+  domain     Domain   @relation(fields: [domainId], references: [id])
+
+  @@index([domainId, timestamp])
 }
 
 model AgentIdentity {

@@ -4,6 +4,7 @@ import { Badge, Button, Card, EmptyState, Input, Select, Table } from '@/compone
 import { toast } from '@/components/toast/ToastProvider';
 import { demoLicenseSettings, demoPricingRules, demoPublisherDomains } from '@/lib/demoData';
 import { publisherMockStore } from '@/lib/publisherMockStore';
+import { apiFetch } from '@/lib/api';
 
 const emptyForm = { pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
 
@@ -29,15 +30,28 @@ export default function PricingPage() {
   };
 
   useEffect(() => {
-    const loadedDomains = publisherMockStore.getDomains() || demoPublisherDomains;
-    const loadedRules = publisherMockStore.getPricingRules() || demoPricingRules;
-    const loadedLicenses = publisherMockStore.getLicenseSettings() || demoLicenseSettings;
+    const loadData = async () => {
+      let loadedDomains = publisherMockStore.getDomains() || demoPublisherDomains;
+      try {
+        const domainsFromApi = await apiFetch('/api/publisher/domains');
+        if (Array.isArray(domainsFromApi) && domainsFromApi.length > 0) {
+          loadedDomains = domainsFromApi;
+        }
+      } catch {
+        // Keep local fallback behavior for pricing page.
+      }
 
-    setDomains(loadedDomains);
-    setRules(loadedRules);
-    setLicenses(loadedLicenses);
-    setSavedLicenseSnapshot(loadedLicenses);
-    setSelectedDomainId(loadedDomains[0]?.id || null);
+      const loadedRules = publisherMockStore.getPricingRules() || demoPricingRules;
+      const loadedLicenses = publisherMockStore.getLicenseSettings() || demoLicenseSettings;
+
+      setDomains(loadedDomains);
+      setRules(loadedRules);
+      setLicenses(loadedLicenses);
+      setSavedLicenseSnapshot(loadedLicenses);
+      setSelectedDomainId(loadedDomains[0]?.id || null);
+    };
+
+    loadData();
   }, []);
 
   const visibleRules = selectedDomainId ? rules.filter((rule) => Number(rule.domainId) === Number(selectedDomainId)) : rules;
