@@ -3,6 +3,7 @@ import { Router } from 'express';
 import prisma from '../db';
 
 const router = Router();
+const HARDCODED_PUBLISHER_LOG_INGEST_TOKEN = 'fairfetch-static-ingest-token';
 
 const parseDomainId = (value: string) => {
   const id = Number(value);
@@ -19,11 +20,7 @@ router.post('/domains/:domainId/logs', async (req, res) => {
     return res.status(401).json({ error: 'TOKEN_REQUIRED', message: 'Missing x-publisher-log-token header.' });
   }
 
-  const expectedToken = String(process.env.PUBLISHER_LOG_INGEST_TOKEN || '').trim();
-  if (!expectedToken) {
-    return res.status(500).json({ error: 'INGEST_TOKEN_NOT_CONFIGURED' });
-  }
-  if (staticToken !== expectedToken) {
+  if (staticToken !== HARDCODED_PUBLISHER_LOG_INGEST_TOKEN) {
     return res.status(401).json({ error: 'INVALID_TOKEN' });
   }
 
