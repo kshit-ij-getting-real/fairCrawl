@@ -51,6 +51,7 @@ FairFetch is a two-sided marketplace MVP where publishers define paid access rul
 - `GET /api/content?url=...` — redeem with `x-fairfetch-token`.
 - `GET /api/public/domains` — verified-domain directory feed.
 - `GET /api/ai-policy` — policy feed endpoint.
+- `POST /api/publisher/domains/:domainId/logs` — store one domain log from request `userAgent` (static token in `x-publisher-log-token`).
 
 ### Health + ops
 - `GET /api/health` checks API and database reachability.
@@ -78,6 +79,7 @@ npm --prefix backend run seed
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `FAIRFETCH_TOKEN_SECRET`
+- `PUBLISHER_LOG_INGEST_TOKEN` (required for `/api/publisher/domains/:domainId/logs`)
 - `CORS_ORIGINS` (recommended)
 - `MVP_BYPASS_VERIFICATION` (recommended for demo)
 - `DEMO_MODE`, `DEMO_SECRET` (optional demo controls)
