@@ -365,35 +365,58 @@ router.get('/traffic/user-agents', async (req: AuthRequest, res) => {
   }
 
   const domainIds = domains.map((d) => d.id);
-  const timestampFilter = from || to ? { gte: from, lte: to } : undefined;
-  const where: Prisma.DomainApiLogWhereInput = {
+  const where = {
     domainId: { in: domainIds },
-    ...(timestampFilter ? { timestamp: timestampFilter } : {}),
+    ...(from || to
+      ? {
+          timestamp: {
+            ...(from ? { gte: from } : {}),
+            ...(to ? { lte: to } : {}),
+          },
+        }
+      : {}),
   };
 
-  const [totalLogs, grouped] = await Promise.all([
+  const [totalLogs, logs] = await Promise.all([
     prisma.domainApiLog.count({ where }),
-    prisma.domainApiLog.groupBy({
-      by: ['userAgent'],
+    prisma.domainApiLog.findMany({
       where,
-      _count: { _all: true },
-      _min: { timestamp: true },
-      _max: { timestamp: true },
-      orderBy: { _count: { _all: 'desc' } },
-      take: limit,
+      select: {
+        userAgent: true,
+        timestamp: true,
+      },
     }),
   ]);
 
+  const byUserAgent = new Map<string, { requests: number; firstSeen: Date; lastSeen: Date }>();
+  for (const log of logs) {
+    const key = log.userAgent || 'UNKNOWN';
+    const existing = byUserAgent.get(key);
+    if (!existing) {
+      byUserAgent.set(key, { requests: 1, firstSeen: log.timestamp, lastSeen: log.timestamp });
+      continue;
+    }
+    existing.requests += 1;
+    if (log.timestamp < existing.firstSeen) existing.firstSeen = log.timestamp;
+    if (log.timestamp > existing.lastSeen) existing.lastSeen = log.timestamp;
+    byUserAgent.set(key, existing);
+  }
+
+  const rows = [...byUserAgent.entries()]
+    .map(([userAgent, stats]) => ({
+      userAgent,
+      requests: stats.requests,
+      firstSeen: stats.firstSeen,
+      lastSeen: stats.lastSeen,
+    }))
+    .sort((a, b) => b.requests - a.requests)
+    .slice(0, limit);
+
   return res.json({
-    rows: grouped.map((row) => ({
-      userAgent: row.userAgent || 'UNKNOWN',
-      requests: row._count._all,
-      firstSeen: row._min.timestamp,
-      lastSeen: row._max.timestamp,
-    })),
+    rows,
     summary: {
       totalLogs,
-      uniqueUserAgents: grouped.length,
+      uniqueUserAgents: byUserAgent.size,
     },
   });
 });
