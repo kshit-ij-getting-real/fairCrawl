@@ -337,6 +337,67 @@ router.get('/overview', async (req: AuthRequest, res) => {
   });
 });
 
+router.get('/traffic/user-agents', async (req: AuthRequest, res) => {
+  const publisher = await getPublisher(req.user!.id);
+  if (!publisher) return errorJson(res, 404, 'PUBLISHER_NOT_FOUND');
+
+  const from = parseDateFilter(String(req.query.from || ''));
+  const to = parseDateFilter(String(req.query.to || ''));
+  const limit = parsePageSize(req.query.limit, 25, 200);
+  const requestedDomainId = Number(req.query.domainId || 0) || undefined;
+
+  const domains = await prisma.domain.findMany({
+    where: {
+      publisherId: publisher.id,
+      ...(requestedDomainId ? { id: requestedDomainId } : {}),
+    },
+    select: { id: true, name: true },
+  });
+
+  if (!domains.length) {
+    return res.json({
+      rows: [],
+      summary: {
+        totalLogs: 0,
+        uniqueUserAgents: 0,
+      },
+    });
+  }
+
+  const domainIds = domains.map((d) => d.id);
+  const timestampFilter = from || to ? { gte: from, lte: to } : undefined;
+  const where: Prisma.DomainApiLogWhereInput = {
+    domainId: { in: domainIds },
+    ...(timestampFilter ? { timestamp: timestampFilter } : {}),
+  };
+
+  const [totalLogs, grouped] = await Promise.all([
+    prisma.domainApiLog.count({ where }),
+    prisma.domainApiLog.groupBy({
+      by: ['userAgent'],
+      where,
+      _count: { _all: true },
+      _min: { timestamp: true },
+      _max: { timestamp: true },
+      orderBy: { _count: { _all: 'desc' } },
+      take: limit,
+    }),
+  ]);
+
+  return res.json({
+    rows: grouped.map((row) => ({
+      userAgent: row.userAgent || 'UNKNOWN',
+      requests: row._count._all,
+      firstSeen: row._min.timestamp,
+      lastSeen: row._max.timestamp,
+    })),
+    summary: {
+      totalLogs,
+      uniqueUserAgents: grouped.length,
+    },
+  });
+});
+
 router.get('/license-settings', async (_req: AuthRequest, res) => {
   return res.json({ SUMMARY: { enabled: true, basePriceMicros: 0 }, DISPLAY: { enabled: true, basePriceMicros: 0 } });
 });
