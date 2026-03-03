@@ -20,6 +20,33 @@ const parsePageSize = (value: unknown, fallback = 25, max = 100) => {
   return Math.min(Math.floor(parsed), max);
 };
 
+const buildByDomainUsage = async (aiClientId: number) => {
+  const txs = await prisma.ledgerTransaction.findMany({
+    where: { aiClientId },
+    select: { domainId: true, totalMicros: true },
+  });
+
+  const totalsByDomain = new Map<number, { requests: number; spendMicros: number }>();
+  for (const tx of txs) {
+    const current = totalsByDomain.get(tx.domainId) || { requests: 0, spendMicros: 0 };
+    current.requests += 1;
+    current.spendMicros += tx.totalMicros || 0;
+    totalsByDomain.set(tx.domainId, current);
+  }
+
+  const domainIds = [...totalsByDomain.keys()];
+  const domains = domainIds.length ? await prisma.domain.findMany({ where: { id: { in: domainIds } } }) : [];
+
+  return domainIds
+    .map((domainId) => ({
+      domainId,
+      domain: domains.find((d) => d.id === domainId)?.name || 'Unknown',
+      requests: totalsByDomain.get(domainId)?.requests || 0,
+      spendMicros: totalsByDomain.get(domainId)?.spendMicros || 0,
+    }))
+    .sort((a, b) => b.spendMicros - a.spendMicros);
+};
+
 router.get('/me', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
   if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
@@ -85,16 +112,8 @@ router.post('/identity', async (req: AuthRequest, res) => {
 router.get('/usage/by-domain', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
   if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
-
-  const grouped = await prisma.ledgerTransaction.groupBy({
-    by: ['domainId'],
-    where: { aiClientId: aiClient.id },
-    _count: { _all: true },
-    _sum: { totalMicros: true },
-    orderBy: { _sum: { totalMicros: 'desc' } },
-  });
-  const domains = await prisma.domain.findMany({ where: { id: { in: grouped.map((g) => g.domainId) } } });
-  return res.json(grouped.map((g) => ({ domainId: g.domainId, domain: domains.find((d) => d.id === g.domainId)?.name || 'Unknown', requests: g._count._all, spendMicros: g._sum.totalMicros || 0 })));
+  const byDomain = await buildByDomainUsage(aiClient.id);
+  return res.json(byDomain);
 });
 
 router.get('/usage/by-day', async (req: AuthRequest, res) => {
@@ -178,7 +197,7 @@ router.get('/usage-spend', async (req: AuthRequest, res) => {
   const aiClient = await getAIClient(req.user!.id);
   if (!aiClient) return res.status(404).json({ error: 'AICLIENT_NOT_FOUND' });
   const [byDomain, byDay] = await Promise.all([
-    prisma.ledgerTransaction.groupBy({ by: ['domainId'], where: { aiClientId: aiClient.id }, _count: { _all: true }, _sum: { totalMicros: true } }),
+    buildByDomainUsage(aiClient.id),
     prisma.$queryRaw<Array<{ day: string; spend_micros: number }>>`
       SELECT DATE("createdAt")::text AS day, COALESCE(SUM("totalMicros"),0)::int as spend_micros
       FROM "LedgerTransaction"
@@ -188,8 +207,7 @@ router.get('/usage-spend', async (req: AuthRequest, res) => {
       LIMIT 30
     `,
   ]);
-  const domains = await prisma.domain.findMany({ where: { id: { in: byDomain.map((d) => d.domainId) } } });
-  return res.json({ byDomain: byDomain.map((row) => ({ domainId: row.domainId, domain: domains.find((d) => d.id === row.domainId)?.name || 'Unknown', requests: row._count._all, spendMicros: row._sum.totalMicros || 0 })), byDay });
+  return res.json({ byDomain, byDay });
 });
 
 router.get('/agents', async (req: AuthRequest, res) => {
