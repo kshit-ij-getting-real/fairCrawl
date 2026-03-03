@@ -2,14 +2,64 @@
 
 import { useEffect, useState } from 'react';
 import { Badge, Card, EmptyState, Table } from '@/components/dashboard/primitives';
-import { demoPublisherOverview } from '@/lib/demoData';
-import { publisherMockStore } from '@/lib/publisherMockStore';
+import { apiFetch } from '@/lib/api';
+import { canUseDemoFallback, demoPublisherOverview, demoPublisherTraffic } from '@/lib/demoData';
+import { toast } from '@/components/toast/ToastProvider';
+import { getErrorMessage } from '@/lib/errorMessage';
+
+type UserAgentTrafficRow = {
+  userAgent: string;
+  requests: number;
+  firstSeen: string;
+  lastSeen: string;
+};
 
 export default function PublisherOverviewPage() {
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<any>(demoPublisherOverview);
+  const [traffic, setTraffic] = useState<{ rows: UserAgentTrafficRow[]; summary: { totalLogs: number; uniqueUserAgents: number } }>(demoPublisherTraffic);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setData(publisherMockStore.getOverview() || demoPublisherOverview);
+    const load = async () => {
+      setLoading(true);
+      try {
+        const [overview, trafficResponse] = await Promise.all([
+          apiFetch('/api/publisher/overview'),
+          apiFetch('/api/publisher/traffic/user-agents?limit=10'),
+        ]);
+
+        setData({
+          ...demoPublisherOverview,
+          ...overview,
+          kpis: { ...demoPublisherOverview.kpis, ...(overview?.kpis || {}) },
+          recentTransactions: Array.isArray(overview?.recentTransactions)
+            ? overview.recentTransactions.map((tx: any) => ({
+                ...tx,
+                aiClient: tx.aiClient || `AI Client #${tx.aiClientId || 'Unknown'}`,
+              }))
+            : demoPublisherOverview.recentTransactions,
+        });
+
+        setTraffic({
+          rows: Array.isArray(trafficResponse?.rows) ? trafficResponse.rows : [],
+          summary: {
+            totalLogs: Number(trafficResponse?.summary?.totalLogs || 0),
+            uniqueUserAgents: Number(trafficResponse?.summary?.uniqueUserAgents || 0),
+          },
+        });
+      } catch (error) {
+        if (canUseDemoFallback) {
+          setData(demoPublisherOverview);
+          setTraffic(demoPublisherTraffic);
+        } else {
+          toast.error(getErrorMessage(error));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, []);
 
   const checklist = data?.checklist || [];
@@ -33,6 +83,46 @@ export default function PublisherOverviewPage() {
           </Card>
         ))}
       </div>
+
+      <Card>
+        <h2 className="text-lg font-semibold text-white">Traffic by user-agent</h2>
+        <p className="mt-1 text-xs text-faircrawl-textMuted">Top user agents seen in request logs for your domains.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+            <p className="text-xs text-faircrawl-textMuted">Total log entries</p>
+            <p className="mt-1 text-xl font-semibold text-white">{traffic.summary.totalLogs}</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+            <p className="text-xs text-faircrawl-textMuted">Unique user agents</p>
+            <p className="mt-1 text-xl font-semibold text-white">{traffic.summary.uniqueUserAgents}</p>
+          </div>
+        </div>
+        {loading ? (
+          <p className="mt-4 text-sm text-faircrawl-textMuted">Loading traffic...</p>
+        ) : traffic.rows.length === 0 ? (
+          <div className="mt-4">
+            <EmptyState title="No traffic logs yet" description="Log entries will appear after your site pushes user-agent data." />
+          </div>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <Table>
+              <thead className="text-left text-faircrawl-textMuted">
+                <tr><th>User agent</th><th>Requests</th><th>First seen</th><th>Last seen</th></tr>
+              </thead>
+              <tbody>
+                {traffic.rows.map((row, index) => (
+                  <tr key={`${row.userAgent}-${index}`} className="border-t border-white/10">
+                    <td className="py-2">{row.userAgent}</td>
+                    <td>{row.requests}</td>
+                    <td>{row.firstSeen ? new Date(row.firstSeen).toLocaleString() : '—'}</td>
+                    <td>{row.lastSeen ? new Date(row.lastSeen).toLocaleString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        )}
+      </Card>
 
       <Card>
         <h2 className="text-lg font-semibold text-white">Onboarding checklist</h2>

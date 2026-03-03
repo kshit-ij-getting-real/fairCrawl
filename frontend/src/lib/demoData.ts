@@ -35,6 +35,33 @@ export const demoPublisherOverview = {
   ],
 };
 
+export const demoPublisherTraffic = {
+  rows: [
+    {
+      userAgent: 'GPTBot/1.0',
+      requests: 121,
+      firstSeen: '2026-02-19T10:00:00.000Z',
+      lastSeen: '2026-02-20T16:10:00.000Z',
+    },
+    {
+      userAgent: 'ClaudeBot/1.0',
+      requests: 73,
+      firstSeen: '2026-02-19T09:30:00.000Z',
+      lastSeen: '2026-02-20T15:40:00.000Z',
+    },
+    {
+      userAgent: 'PerplexityBot/1.0',
+      requests: 44,
+      firstSeen: '2026-02-19T11:05:00.000Z',
+      lastSeen: '2026-02-20T14:55:00.000Z',
+    },
+  ],
+  summary: {
+    totalLogs: 312,
+    uniqueUserAgents: 3,
+  },
+};
+
 export const demoPublisherDomains = [
   {
     id: 101,
