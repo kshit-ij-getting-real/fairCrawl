@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '@/lib/http';
 import {
   clearSession,
+  getAccessToken,
   getOrgId,
-  getUserId,
   setSession,
   setSessionContext,
   type Role,
@@ -14,8 +14,7 @@ import { Button } from '@/components/ui/Button';
 
 type Organisation = {
   id: number;
-  name?: string;
-  orgName?: string;
+  organisationName?: string;
 };
 
 type Domain = {
@@ -53,9 +52,8 @@ const normalizeOrganisations = (input: any): Organisation[] => {
   const list = Array.isArray(input) ? input : Array.isArray(input?.organisations) ? input.organisations : [];
   return list
     .map((org: any) => ({
-      id: Number(org?.id || org?.orgId || 0),
-      name: String(org?.name || org?.orgName || '').trim(),
-      orgName: String(org?.orgName || org?.name || '').trim(),
+      id: Number(org?.id || 0),
+      organisationName: String(org?.organisationName || '').trim(),
     }))
     .filter((org: Organisation) => Number.isInteger(org.id) && org.id > 0);
 };
@@ -81,8 +79,6 @@ export default function LoginPage() {
   const [role, setRole] = useState<Role>('PUBLISHER');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState<number | null>(null);
-
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
   const [selectedOrgId, setSelectedOrgId] = useState<number | null>(null);
   const [orgName, setOrgName] = useState('');
@@ -95,17 +91,12 @@ export default function LoginPage() {
   );
 
   const loadDomains = async (orgId: number) => {
-    try {
-      const response = await apiFetch(`/api/domains?orgId=${orgId}`);
-      setDomains(normalizeDomains(response));
-    } catch {
-      const fallbackResponse = await apiFetch('/api/domains');
-      setDomains(normalizeDomains(fallbackResponse));
-    }
+    const response = await apiFetch(`/api/domains?orgId=${orgId}`);
+    setDomains(normalizeDomains(response));
   };
 
-  const handleOrganisations = async (resolvedUserId: number) => {
-    const response = await apiFetch(`/api/organisations?userId=${resolvedUserId}`);
+  const handleOrganisations = async () => {
+    const response = await apiFetch('/api/organisations');
     const orgs = normalizeOrganisations(response);
     setOrganisations(orgs);
 
@@ -161,13 +152,11 @@ export default function LoginPage() {
       setSession(accessToken, refreshToken, resolvedRole, email);
 
       const resolvedUserId = resolveUserIdFromAuth(data, accessToken);
-      if (!resolvedUserId) {
-        throw new Error('Unable to resolve user id from auth response');
-      }
-
-      setUserId(resolvedUserId);
-      setSessionContext({ userId: resolvedUserId });
-      await handleOrganisations(resolvedUserId);
+      setSessionContext({
+        userId: resolvedUserId,
+        orgId: null,
+      });
+      await handleOrganisations();
     } catch (err: any) {
       setError(err?.message || 'Authentication failed');
     } finally {
@@ -176,14 +165,9 @@ export default function LoginPage() {
   };
 
   const createOrg = async () => {
-    if (!userId) {
-      setError('Missing user context. Please log in again.');
-      return;
-    }
-
     const created = await apiFetch('/api/organisations', {
       method: 'POST',
-      body: JSON.stringify({ name: orgName.trim(), userId }),
+      body: JSON.stringify({ organisationName: orgName.trim() }),
     });
 
     const orgs = normalizeOrganisations(created);
@@ -191,8 +175,8 @@ export default function LoginPage() {
 
     if (!org) {
       org = {
-        id: Number(created?.id || created?.orgId || 0),
-        name: String(created?.name || created?.orgName || orgName.trim()),
+        id: Number(created?.id || 0),
+        organisationName: String(created?.organisationName || orgName.trim()),
       };
     }
 
@@ -239,11 +223,8 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    const cachedUserId = getUserId();
+    const cachedAccessToken = getAccessToken();
     const cachedOrgId = getOrgId();
-    if (!cachedUserId) return;
-
-    setUserId(cachedUserId);
     if (cachedOrgId) {
       setSelectedOrgId(cachedOrgId);
       setStep('domains');
@@ -253,7 +234,9 @@ export default function LoginPage() {
       return;
     }
 
-    handleOrganisations(cachedUserId).catch(() => {
+    if (!cachedAccessToken) return;
+
+    handleOrganisations().catch(() => {
       // ignore initial flow errors on refresh
     });
   }, []);
@@ -333,7 +316,7 @@ export default function LoginPage() {
               <option value="">Choose organisation</option>
               {organisations.map((org) => (
                 <option key={org.id} value={org.id}>
-                  {org.name || org.orgName || `Org ${org.id}`}
+                  {org.organisationName || `Org ${org.id}`}
                 </option>
               ))}
             </select>
@@ -360,7 +343,7 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">
-                Domains {selectedOrg ? `(${selectedOrg.name || selectedOrg.orgName || selectedOrg.id})` : ''}
+                Domains {selectedOrg ? `(${selectedOrg.organisationName || selectedOrg.id})` : ''}
               </h2>
               <Button
                 variant="ghost"
@@ -370,7 +353,6 @@ export default function LoginPage() {
                   setDomains([]);
                   setOrganisations([]);
                   setSelectedOrgId(null);
-                  setUserId(null);
                 }}
               >
                 Logout
