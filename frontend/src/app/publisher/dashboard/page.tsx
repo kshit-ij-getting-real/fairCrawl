@@ -6,6 +6,7 @@ import { apiFetch } from '@/lib/api';
 import { canUseDemoFallback, demoPublisherOverview, demoPublisherTraffic } from '@/lib/demoData';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
+import { getOrgId, setSessionContext } from '@/lib/session';
 
 type UserAgentTrafficRow = {
   userAgent: string;
@@ -14,18 +15,46 @@ type UserAgentTrafficRow = {
   lastSeen: string;
 };
 
+type DomainRow = {
+  id: number;
+  domain: string;
+  status?: string;
+  createdAt?: string;
+};
+
 export default function PublisherOverviewPage() {
   const [data, setData] = useState<any>(demoPublisherOverview);
   const [traffic, setTraffic] = useState<{ rows: UserAgentTrafficRow[]; summary: { totalLogs: number; uniqueUserAgents: number } }>(demoPublisherTraffic);
+  const [domains, setDomains] = useState<DomainRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [domainsLoading, setDomainsLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
+      setDomainsLoading(true);
       try {
-        const [overview, trafficResponse] = await Promise.all([
+        let resolvedOrgId = getOrgId();
+
+        if (!resolvedOrgId) {
+          const orgsResponse = await apiFetch('/api/organisations');
+          const orgs = Array.isArray(orgsResponse) ? orgsResponse : [];
+          if (orgs.length > 0) {
+            resolvedOrgId = Number(orgs[0]?.id || 0);
+            if (resolvedOrgId > 0) {
+              setSessionContext({ orgId: resolvedOrgId });
+            }
+          }
+        }
+
+        const domainsPromise = resolvedOrgId
+          ? apiFetch(`/api/domains?orgId=${resolvedOrgId}`)
+          : Promise.resolve([]);
+
+        const [overview, trafficResponse, domainsResponse] = await Promise.all([
           apiFetch('/api/publisher/overview'),
           apiFetch('/api/publisher/traffic/user-agents?limit=10'),
+          domainsPromise,
         ]);
 
         setData({
@@ -47,15 +76,29 @@ export default function PublisherOverviewPage() {
             uniqueUserAgents: Number(trafficResponse?.summary?.uniqueUserAgents || 0),
           },
         });
+
+        const normalizedDomains = Array.isArray(domainsResponse)
+          ? domainsResponse
+              .map((domain: any) => ({
+                id: Number(domain?.id || 0),
+                domain: String(domain?.domain || '').trim(),
+                status: domain?.status ? String(domain.status) : undefined,
+                createdAt: domain?.createdAt,
+              }))
+              .filter((domain: DomainRow) => domain.id > 0 && domain.domain)
+          : [];
+        setDomains(normalizedDomains);
       } catch (error) {
         if (canUseDemoFallback) {
           setData(demoPublisherOverview);
           setTraffic(demoPublisherTraffic);
+          setDomains([]);
         } else {
           toast.error(getErrorMessage(error));
         }
       } finally {
         setLoading(false);
+        setDomainsLoading(false);
       }
     };
 
@@ -74,7 +117,7 @@ export default function PublisherOverviewPage() {
         {[
           { label: 'Revenue (30d)', value: `$${((data?.kpis?.revenueMicros || 0) / 1_000_000).toFixed(2)}` },
           { label: 'Requests (30d)', value: data?.kpis?.requests30d || 0 },
-          { label: 'Active domains', value: data?.kpis?.activeDomains || 0 },
+          { label: 'Active domains', value: domains.length || data?.kpis?.activeDomains || 0 },
           { label: 'Top AI client', value: data?.kpis?.topAIClient || 'None yet' },
         ].map((kpi) => (
           <Card key={kpi.label}>
@@ -116,6 +159,35 @@ export default function PublisherOverviewPage() {
                     <td>{row.requests}</td>
                     <td>{row.firstSeen ? new Date(row.firstSeen).toLocaleString() : '—'}</td>
                     <td>{row.lastSeen ? new Date(row.lastSeen).toLocaleString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        )}
+      </Card>
+
+      <Card>
+        <h2 className="text-lg font-semibold text-white">Organisation domains</h2>
+        <p className="mt-1 text-xs text-faircrawl-textMuted">Domains are loaded from `/api/domains` for your selected organisation.</p>
+        {domainsLoading ? (
+          <p className="mt-4 text-sm text-faircrawl-textMuted">Loading domains...</p>
+        ) : domains.length === 0 ? (
+          <div className="mt-4">
+            <EmptyState title="No domains found" description="Add a domain from login flow or domains page." />
+          </div>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <Table>
+              <thead className="text-left text-faircrawl-textMuted">
+                <tr><th>Domain</th><th>Status</th><th>Created</th></tr>
+              </thead>
+              <tbody>
+                {domains.map((domain) => (
+                  <tr key={domain.id} className="border-t border-white/10">
+                    <td className="py-2">{domain.domain}</td>
+                    <td>{domain.status || '—'}</td>
+                    <td>{domain.createdAt ? new Date(domain.createdAt).toLocaleString() : '—'}</td>
                   </tr>
                 ))}
               </tbody>
