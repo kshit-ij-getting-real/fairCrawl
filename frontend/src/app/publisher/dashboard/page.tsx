@@ -6,7 +6,7 @@ import { apiFetch } from '@/lib/api';
 import { canUseDemoFallback, demoPublisherOverview, demoPublisherTraffic } from '@/lib/demoData';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
-import { getOrgId, setSessionContext } from '@/lib/session';
+import { getOrResolveOrgId } from '@/lib/orgContext';
 
 type UserAgentTrafficRow = {
   userAgent: string;
@@ -34,18 +34,7 @@ export default function PublisherOverviewPage() {
       setLoading(true);
       setDomainsLoading(true);
       try {
-        let resolvedOrgId = getOrgId();
-
-        if (!resolvedOrgId) {
-          const orgsResponse = await apiFetch('/api/organisations');
-          const orgs = Array.isArray(orgsResponse) ? orgsResponse : [];
-          if (orgs.length > 0) {
-            resolvedOrgId = Number(orgs[0]?.id || 0);
-            if (resolvedOrgId > 0) {
-              setSessionContext({ orgId: resolvedOrgId });
-            }
-          }
-        }
+        const resolvedOrgId = await getOrResolveOrgId();
 
         const domainsPromise = resolvedOrgId
           ? apiFetch(`/api/domains?orgId=${resolvedOrgId}`)

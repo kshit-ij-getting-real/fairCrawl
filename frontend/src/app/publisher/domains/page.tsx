@@ -1,34 +1,46 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Badge, Button, Card, Drawer, EmptyState, Input, Table } from '@/components/dashboard/primitives';
+import { Badge, Button, Card, EmptyState, Input, Table } from '@/components/dashboard/primitives';
 import { toast } from '@/components/toast/ToastProvider';
 import { apiFetch } from '@/lib/api';
 import { getErrorMessage } from '@/lib/errorMessage';
+import { getOrResolveOrgId } from '@/lib/orgContext';
 
 type PublisherDomain = {
   id: number;
-  name: string;
-  verified: boolean;
-  verifyToken?: string;
-  subdomainHost?: string | null;
-  subdomainCnameTarget?: string | null;
-  createdAt: string;
-  instructions?: string;
+  domain: string;
+  status?: string;
+  createdAt?: string;
 };
 
 export default function DomainsPage() {
   const [domains, setDomains] = useState<PublisherDomain[]>([]);
   const [domain, setDomain] = useState('');
-  const [selected, setSelected] = useState<PublisherDomain | null>(null);
+  const [orgId, setOrgId] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isChecking, setIsChecking] = useState(false);
 
   const load = async () => {
     setIsLoading(true);
     try {
-      const response = await apiFetch('/api/publisher/domains');
-      setDomains(Array.isArray(response) ? response : []);
+      const resolvedOrgId = await getOrResolveOrgId();
+      setOrgId(resolvedOrgId);
+      if (!resolvedOrgId) {
+        setDomains([]);
+        return;
+      }
+      const response = await apiFetch(`/api/domains?orgId=${resolvedOrgId}`);
+      const normalized = Array.isArray(response)
+        ? response
+            .map((item: any) => ({
+              id: Number(item?.id || 0),
+              domain: String(item?.domain || '').trim(),
+              status: item?.status ? String(item.status) : undefined,
+              createdAt: item?.createdAt,
+            }))
+            .filter((item: PublisherDomain) => item.id > 0 && item.domain)
+        : [];
+      setDomains(normalized);
     } catch (error) {
       toast.error(getErrorMessage(error));
       setDomains([]);
@@ -52,9 +64,14 @@ export default function DomainsPage() {
             onClick={async () => {
               setIsAdding(true);
               try {
-                await apiFetch('/api/publisher/domains', {
+                const resolvedOrgId = orgId || (await getOrResolveOrgId());
+                if (!resolvedOrgId) {
+                  throw new Error('No organisation found. Create an organisation first.');
+                }
+
+                await apiFetch('/api/domains', {
                   method: 'POST',
-                  body: JSON.stringify({ domain: domain.trim() }),
+                  body: JSON.stringify({ domain: domain.trim(), orgId: resolvedOrgId }),
                 });
                 setDomain('');
                 toast.success('Domain added');
@@ -78,39 +95,13 @@ export default function DomainsPage() {
         ) : domains.length === 0 ? <div className="mt-4"><EmptyState title="No domains yet" description="Add your first domain to begin onboarding." /></div> : (
           <div className="mt-4 overflow-x-auto">
             <Table>
-              <thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>DNS</th><th>Paid subdomain</th><th>Created</th><th>Actions</th></tr></thead>
+              <thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Status</th><th>Created</th></tr></thead>
               <tbody>
                 {domains.map((d) => (
                   <tr key={d.id} className="border-t border-white/10">
-                    <td className="py-2">{d.name}</td>
-                    <td><Badge tone={d.verified ? 'success' : 'warning'}>{d.verified ? 'Verified' : 'Pending'}</Badge></td>
-                    <td>
-                      <Badge tone={d.subdomainHost ? 'success' : 'warning'}>
-                        {d.subdomainHost ? 'Configured' : 'Pending'}
-                      </Badge>
-                    </td>
-                    <td>{new Date(d.createdAt).toLocaleDateString()}</td>
-                    <td className="space-x-2">
-                      <Button variant="secondary" onClick={() => setSelected(d)}>View setup</Button>
-                      <Button
-                        variant="ghost"
-                        disabled={isChecking}
-                        onClick={async () => {
-                          setIsChecking(true);
-                          try {
-                            await apiFetch(`/api/publisher/domains/${d.id}/verify-dns`, { method: 'POST' });
-                            toast.success('Re-check complete');
-                            await load();
-                          } catch (error) {
-                            toast.error(getErrorMessage(error));
-                          } finally {
-                            setIsChecking(false);
-                          }
-                        }}
-                      >
-                        {isChecking ? 'Checking...' : 'Re-check'}
-                      </Button>
-                    </td>
+                    <td className="py-2">{d.domain}</td>
+                    <td><Badge tone={d.status === 'VERIFIED' ? 'success' : 'warning'}>{d.status || 'PENDING_VERIFICATION'}</Badge></td>
+                    <td>{d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -118,36 +109,6 @@ export default function DomainsPage() {
           </div>
         )}
       </Card>
-
-      <Drawer open={Boolean(selected)} title="Domain setup instructions" onClose={() => setSelected(null)}>
-        {selected && (
-          <div className="space-y-3 text-sm">
-            <p>Add TXT record: <code>_fairfetch-verify.{selected.name}</code> with token <code>{selected.verifyToken || 'not available'}</code>.</p>
-            <p>Delegate paid subdomain <code>{selected.subdomainHost || `pay.${selected.name}`}</code> to <code>{selected.subdomainCnameTarget || 'edge.fairfetch.dev'}</code>.</p>
-            {selected.instructions ? <p className="text-faircrawl-textMuted">{selected.instructions}</p> : null}
-            <div className="flex gap-2">
-              <Button
-                disabled={isChecking}
-                onClick={async () => {
-                  setIsChecking(true);
-                  try {
-                    await apiFetch(`/api/publisher/domains/${selected.id}/verify-dns`, { method: 'POST' });
-                    toast.success('Verification checked');
-                    await load();
-                    setSelected(null);
-                  } catch (error) {
-                    toast.error(getErrorMessage(error));
-                  } finally {
-                    setIsChecking(false);
-                  }
-                }}
-              >
-                {isChecking ? 'Checking...' : 'Re-check verification'}
-              </Button>
-            </div>
-          </div>
-        )}
-      </Drawer>
     </div>
   );
 }
