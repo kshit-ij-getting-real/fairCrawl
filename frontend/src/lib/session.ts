@@ -6,12 +6,24 @@ export type Role = 'PUBLISHER' | 'AICLIENT';
 
 export type SessionSnapshot = {
   token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   role: Role | null;
   displayLabel: string | null;
+  userId: number | null;
+  orgId: number | null;
 };
 
 const SESSION_EVENT = 'fairfetch:session-change';
-const EMPTY_SNAPSHOT: SessionSnapshot = { token: null, role: null, displayLabel: null };
+const EMPTY_SNAPSHOT: SessionSnapshot = {
+  token: null,
+  accessToken: null,
+  refreshToken: null,
+  role: null,
+  displayLabel: null,
+  userId: null,
+  orgId: null,
+};
 let cachedSnapshot: SessionSnapshot = EMPTY_SNAPSHOT;
 
 const readRole = () => {
@@ -25,15 +37,23 @@ export const getSessionSnapshot = (): SessionSnapshot => {
   }
 
   const nextSnapshot: SessionSnapshot = {
-    token: safeLocalGet('token'),
+    accessToken: safeLocalGet('accessToken') || safeLocalGet('token'),
+    token: safeLocalGet('accessToken') || safeLocalGet('token'),
+    refreshToken: safeLocalGet('refreshToken'),
     role: readRole(),
     displayLabel: safeLocalGet('displayLabel'),
+    userId: safeLocalGet('userId') ? Number(safeLocalGet('userId')) : null,
+    orgId: safeLocalGet('orgId') ? Number(safeLocalGet('orgId')) : null,
   };
 
   if (
     cachedSnapshot.token === nextSnapshot.token &&
+    cachedSnapshot.accessToken === nextSnapshot.accessToken &&
+    cachedSnapshot.refreshToken === nextSnapshot.refreshToken &&
     cachedSnapshot.role === nextSnapshot.role &&
-    cachedSnapshot.displayLabel === nextSnapshot.displayLabel
+    cachedSnapshot.displayLabel === nextSnapshot.displayLabel &&
+    cachedSnapshot.userId === nextSnapshot.userId &&
+    cachedSnapshot.orgId === nextSnapshot.orgId
   ) {
     return cachedSnapshot;
   }
@@ -51,7 +71,7 @@ export const subscribeSession = (listener: () => void) => {
   if (!canUseDOM()) return () => {};
 
   const onStorage = (event: StorageEvent) => {
-    if (!event.key || ['token', 'role', 'displayLabel'].includes(event.key)) {
+    if (!event.key || ['token', 'accessToken', 'refreshToken', 'role', 'displayLabel', 'userId', 'orgId'].includes(event.key)) {
       listener();
     }
   };
@@ -66,12 +86,22 @@ export const subscribeSession = (listener: () => void) => {
 };
 
 export const getToken = () => getSessionSnapshot().token;
+export const getAccessToken = () => getSessionSnapshot().accessToken;
+export const getRefreshToken = () => getSessionSnapshot().refreshToken;
 export const getRole = () => getSessionSnapshot().role;
+export const getUserId = () => getSessionSnapshot().userId;
+export const getOrgId = () => getSessionSnapshot().orgId;
 
-export const setSession = (token: string, role: Role, displayLabel?: string) => {
+export const setSession = (accessToken: string, refreshToken: string | null, role: Role, displayLabel?: string) => {
   if (!canUseDOM()) return;
 
-  safeLocalSet('token', token);
+  safeLocalSet('accessToken', accessToken);
+  safeLocalSet('token', accessToken);
+  if (refreshToken && refreshToken.trim().length > 0) {
+    safeLocalSet('refreshToken', refreshToken);
+  } else {
+    safeLocalRemove('refreshToken');
+  }
   safeLocalSet('role', role);
 
   if (displayLabel && displayLabel.trim().length > 0) {
@@ -83,11 +113,54 @@ export const setSession = (token: string, role: Role, displayLabel?: string) => 
   emitSessionChange();
 };
 
+export const setSessionContext = (params: { userId?: number | null; orgId?: number | null }) => {
+  if (!canUseDOM()) return;
+
+  if (params.userId !== undefined) {
+    if (params.userId === null || Number.isNaN(params.userId)) {
+      safeLocalRemove('userId');
+    } else {
+      safeLocalSet('userId', String(params.userId));
+    }
+  }
+
+  if (params.orgId !== undefined) {
+    if (params.orgId === null || Number.isNaN(params.orgId)) {
+      safeLocalRemove('orgId');
+    } else {
+      safeLocalSet('orgId', String(params.orgId));
+    }
+  }
+
+  emitSessionChange();
+};
+
+export const updateSessionTokens = (accessToken: string, refreshToken?: string | null) => {
+  if (!canUseDOM()) return;
+
+  safeLocalSet('accessToken', accessToken);
+  safeLocalSet('token', accessToken);
+
+  if (refreshToken !== undefined) {
+    if (refreshToken && refreshToken.trim().length > 0) {
+      safeLocalSet('refreshToken', refreshToken);
+    } else {
+      safeLocalRemove('refreshToken');
+    }
+  }
+
+  emitSessionChange();
+};
+
 export const clearSession = () => {
   if (!canUseDOM()) return;
 
   safeLocalRemove('token');
+  safeLocalRemove('accessToken');
+  safeLocalRemove('refreshToken');
   safeLocalRemove('role');
   safeLocalRemove('displayLabel');
+  safeLocalRemove('userId');
+  safeLocalRemove('orgId');
   emitSessionChange();
 };
