@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { apiFetch } from '@/lib/http';
-import { setSession, Role } from '@/lib/session';
+import { setSession, setSessionContext, Role } from '@/lib/session';
 import { SectionActions } from '../../components/ui/SectionActions';
 import { Button } from '@/components/ui/Button';
 
@@ -26,6 +26,18 @@ function SignupContent() {
     if (roleParam === 'publisher') setRole('PUBLISHER');
   }, [params]);
 
+  const parseJwtPayload = (token: string) => {
+    try {
+      const parts = token.split('.');
+      if (parts.length < 2) return null;
+      const normalized = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+      return JSON.parse(atob(padded));
+    } catch {
+      return null;
+    }
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -35,8 +47,20 @@ function SignupContent() {
         method: 'POST',
         body: JSON.stringify({ email, password, role, name }),
       });
-      setSession(data.token, role, email);
-      router.push(role === 'PUBLISHER' ? '/publisher/dashboard' : '/aiclient/api-keys');
+      const accessToken = data?.accessToken || data?.token;
+      const refreshToken = data?.refreshToken || null;
+      if (!accessToken) {
+        throw new Error('Missing access token in signup response');
+      }
+      setSession(accessToken, refreshToken, role, email);
+
+      const payload = parseJwtPayload(accessToken);
+      const resolvedUserId = Number(data?.userId || data?.id || payload?.userId || payload?.sub || 0);
+      if (Number.isInteger(resolvedUserId) && resolvedUserId > 0) {
+        setSessionContext({ userId: resolvedUserId, orgId: null });
+      }
+
+      router.push('/login');
     } catch (err: any) {
       setError(err.message);
     } finally {
