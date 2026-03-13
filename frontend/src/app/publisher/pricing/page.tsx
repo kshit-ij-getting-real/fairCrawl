@@ -69,7 +69,7 @@ export default function PricingPage() {
         <p className="mt-2 text-sm text-faircrawl-textMuted">Database-backed license settings are temporarily disabled, so edits are saved locally.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {(['SUMMARY', 'DISPLAY'] as const).map((license) => (
-            <div key={license} className="rounded-lg border border-white/10 p-4">
+            <div key={license} className="rounded-lg border border-[rgba(126,135,212,0.12)] p-4">
               <p className="font-medium">{license === 'SUMMARY' ? 'Summarize / Grounding' : 'Full Display'}</p>
               <p className="mt-1 text-xs text-faircrawl-textMuted">{license === 'SUMMARY' ? 'Read + summarize/cite, no full text display.' : 'Display full content once.'}</p>
               <div className="mt-3 flex gap-2">
@@ -86,8 +86,8 @@ export default function PricingPage() {
         }}>Save license settings</Button>
         {savedLicenseSnapshot ? (
           <div className="mt-4 rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-3">
-            <p className="text-sm font-medium text-emerald-200">Saved license configuration</p>
-            <ul className="mt-2 space-y-1 text-xs text-emerald-100/90">
+            <p className="text-sm font-medium text-emerald-700">Saved license configuration</p>
+            <ul className="mt-2 space-y-1 text-xs text-emerald-700/90">
               {(['SUMMARY', 'DISPLAY'] as const).map((license) => (
                 <li key={`saved-${license}`}>
                   {license}: {savedLicenseSnapshot[license]?.enabled ? 'Enabled' : 'Disabled'} • Base price {savedLicenseSnapshot[license]?.basePriceMicros || 0} micros
@@ -125,10 +125,10 @@ export default function PricingPage() {
             toast.success('Pricing rule created');
           }}>Create</Button>
         </div>
-        {createError ? <p className="mt-2 text-sm text-red-300">{createError}</p> : null}
-        {createSuccess ? <p className="mt-2 text-sm text-emerald-300">{createSuccess}</p> : null}
+        {createError ? <p className="mt-2 text-sm text-rose-600">{createError}</p> : null}
+        {createSuccess ? <p className="mt-2 text-sm text-emerald-700">{createSuccess}</p> : null}
         {visibleRules.length === 0 ? <div className="mt-4"><EmptyState title="No pricing rules" description="Create and activate at least one pricing rule to allow paid access." /></div> : (
-          <div className="mt-4 overflow-x-auto"><Table><thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Path</th><th>License</th><th>Price</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{visibleRules.map((r) => <tr key={r.id} className="border-t border-white/10"><td className="py-2">{domains.find((d) => d.id === r.domainId)?.name || r.domainId}</td><td>{r.pathPrefix || '/'}</td><td>{r.licenseCode || r.licenseType}</td><td>{r.priceMicros}</td><td><Badge tone={r.isActive || r.active ? 'success' : 'warning'}>{r.isActive || r.active ? 'Active' : 'Inactive'}</Badge></td><td>{formatCreatedAt(r.createdAt)}</td><td><Button variant="ghost" onClick={() => {
+          <div className="mt-4 overflow-x-auto"><Table><thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Path</th><th>License</th><th>Price</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{visibleRules.map((r) => <tr key={r.id} className="border-t border-[rgba(126,135,212,0.12)]"><td className="py-2">{domains.find((d) => d.id === r.domainId)?.name || r.domainId}</td><td>{r.pathPrefix || '/'}</td><td>{r.licenseCode || r.licenseType}</td><td>{r.priceMicros}</td><td><Badge tone={r.isActive || r.active ? 'success' : 'warning'}>{r.isActive || r.active ? 'Active' : 'Inactive'}</Badge></td><td>{formatCreatedAt(r.createdAt)}</td><td><Button variant="ghost" onClick={() => {
             const nextRules = rules.filter((rule) => rule.id !== r.id);
             setRules(nextRules);
             publisherMockStore.setPricingRules(nextRules);

@@ -17,7 +17,7 @@ export default function PayoutsPage() {
       <Card>
         <h2 className="text-lg font-semibold">Payout history</h2>
         {data.history.length === 0 ? <div className="mt-4"><EmptyState title="No payouts yet" description="Payout entries appear when settlements run." /></div> : (
-          <Table className="mt-4"><thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>{data.history.map((p: any, idx: number) => <tr key={idx} className="border-t border-white/10"><td className="py-2">{p.date}</td><td>{p.amountMicros}</td><td>{p.status}</td></tr>)}</tbody></Table>
+          <Table className="mt-4"><thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>{data.history.map((p: any, idx: number) => <tr key={idx} className="border-t border-[rgba(126,135,212,0.12)]"><td className="py-2">{p.date}</td><td>{p.amountMicros}</td><td>{p.status}</td></tr>)}</tbody></Table>
         )}
       </Card>
     </div>

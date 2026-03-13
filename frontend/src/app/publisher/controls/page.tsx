@@ -25,7 +25,7 @@ export default function ControlsPage() {
         }}>Add</Button>
       </div>
       {items.length === 0 ? <div className="mt-4"><EmptyState title="No exclusions" description="Add paths that should never be returned." /></div> : (
-        <ul className="mt-4 space-y-2">{items.map((i) => <li key={i.id} className="flex items-center justify-between rounded-lg border border-white/10 p-3"><span>{i.pattern}</span><Button variant="ghost" onClick={() => {
+        <ul className="mt-4 space-y-2">{items.map((i) => <li key={i.id} className="flex items-center justify-between rounded-lg border border-[rgba(126,135,212,0.12)] p-3"><span>{i.pattern}</span><Button variant="ghost" onClick={() => {
           const nextItems = items.filter((item) => item.id !== i.id);
           publisherMockStore.setContentControls(nextItems);
           setItems(nextItems);
