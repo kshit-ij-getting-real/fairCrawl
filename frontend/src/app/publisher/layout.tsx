@@ -2,6 +2,7 @@ import { DashboardHeader, DashboardNav, DashboardShell } from '@/components/dash
 
 const publisherItems = [
   { href: '/publisher/dashboard', label: 'Overview' },
+  { href: '/publisher/bot-logs', label: 'Bot Logs' },
   { href: '/publisher/domains', label: 'Domains' },
   { href: '/publisher/pricing', label: 'Pricing' },
   { href: '/publisher/transactions', label: 'Transactions' },
