@@ -5,6 +5,7 @@ import { toast } from '@/components/toast/ToastProvider';
 import { demoLicenseSettings, demoPricingRules, demoPublisherDomains } from '@/lib/demoData';
 import { publisherMockStore } from '@/lib/publisherMockStore';
 import { apiFetch } from '@/lib/api';
+import { getOrResolveOrgId } from '@/lib/orgContext';
 
 const emptyForm = { pathPrefix: '/', licenseCode: 'SUMMARY', priceMicros: 100000, isActive: true };
 
@@ -33,9 +34,13 @@ export default function PricingPage() {
     const loadData = async () => {
       let loadedDomains = publisherMockStore.getDomains() || demoPublisherDomains;
       try {
-        const domainsFromApi = await apiFetch('/api/domains?orgId=1');
+        const orgId = await getOrResolveOrgId();
+        const domainsFromApi = orgId ? await apiFetch(`/api/domains?orgId=${orgId}`) : [];
         if (Array.isArray(domainsFromApi) && domainsFromApi.length > 0) {
-          loadedDomains = domainsFromApi;
+          loadedDomains = domainsFromApi.map((d: any) => ({
+            ...d,
+            name: d.name || d.domain,
+          }));
         }
       } catch {
         // Keep local fallback behavior for pricing page.

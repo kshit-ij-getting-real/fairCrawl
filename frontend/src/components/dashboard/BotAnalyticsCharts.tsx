@@ -6,6 +6,7 @@ import { Card, Table, EmptyState, Badge } from '@/components/dashboard/primitive
 import { apiFetch } from '@/lib/http';
 import { toast } from '@/components/toast/ToastProvider';
 import { getErrorMessage } from '@/lib/errorMessage';
+import { getOrResolveOrgId } from '@/lib/orgContext';
 
 // Common bots and their simplified icons (SVG paths)
 const BOT_ICONS: Record<string, { color: string; icon: React.ReactNode; label: string }> = {
@@ -96,7 +97,8 @@ export function BotAnalyticsCharts() {
   useEffect(() => {
     const fetchDomains = async () => {
       try {
-        const domainsRes = await apiFetch('/api/domains');
+        const orgId = await getOrResolveOrgId();
+        const domainsRes = orgId ? await apiFetch(`/api/domains?orgId=${orgId}`) : [];
         if (Array.isArray(domainsRes) && domainsRes.length > 0) {
           setDomains(domainsRes);
           setSelectedDomainId(domainsRes[0].id.toString());
