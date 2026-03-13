@@ -36,9 +36,7 @@ export default function PublisherOverviewPage() {
       try {
         const resolvedOrgId = await getOrResolveOrgId();
 
-        const domainsPromise = resolvedOrgId
-          ? apiFetch(`/api/domains?orgId=${resolvedOrgId}`)
-          : Promise.resolve([]);
+        const domainsPromise = apiFetch(`/api/domains?orgId=1`);
 
         const [overview, trafficResponse, domainsResponse] = await Promise.all([
           apiFetch('/api/publisher/overview'),

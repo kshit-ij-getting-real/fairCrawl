@@ -29,7 +29,7 @@ export default function DomainsPage() {
         setDomains([]);
         return;
       }
-      const response = await apiFetch(`/api/domains?orgId=${resolvedOrgId}`);
+      const response = await apiFetch(`/api/domains?orgId=1`);
       const normalized = Array.isArray(response)
         ? response
             .map((item: any) => ({
@@ -71,7 +71,7 @@ export default function DomainsPage() {
 
                 await apiFetch('/api/domains', {
                   method: 'POST',
-                  body: JSON.stringify({ domain: domain.trim(), orgId: resolvedOrgId }),
+                  body: JSON.stringify({ domain: domain.trim(), orgId: 1 }),
                 });
                 setDomain('');
                 toast.success('Domain added');

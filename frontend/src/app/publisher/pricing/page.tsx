@@ -33,7 +33,7 @@ export default function PricingPage() {
     const loadData = async () => {
       let loadedDomains = publisherMockStore.getDomains() || demoPublisherDomains;
       try {
-        const domainsFromApi = await apiFetch('/api/publisher/domains');
+        const domainsFromApi = await apiFetch('/api/domains?orgId=1');
         if (Array.isArray(domainsFromApi) && domainsFromApi.length > 0) {
           loadedDomains = domainsFromApi;
         }
