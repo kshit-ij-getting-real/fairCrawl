@@ -13,32 +13,32 @@ const CreatorsPage = () => {
         />
 
         <div className="grid items-stretch gap-6 md:grid-cols-3">
-          <MarketingCard className="flex min-h-[320px] flex-col text-white">
+          <MarketingCard className="flex min-h-[320px] flex-col bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))]">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-50">What you control</h3>
-              <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
+              <h3 className="text-lg font-semibold text-[#25306d]">What you control</h3>
+              <div className="space-y-2 rounded-2xl border border-[rgba(126,135,212,0.16)] bg-[rgba(112,124,232,0.08)] p-4 text-sm text-[#66709d]">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Visibility</span>
-                  <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-200">/blog/*</span>
+                  <span className="rounded-full bg-[rgba(86,109,245,0.12)] px-3 py-1 text-xs text-[#5165d7]">/blog/*</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Protected</span>
-                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">/drafts/*</span>
+                  <span className="rounded-full bg-[rgba(214,105,243,0.12)] px-3 py-1 text-xs font-semibold text-[#a152d4]">/drafts/*</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Speed</span>
-                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">5 req/sec</span>
+                  <span className="rounded-full bg-[rgba(86,109,245,0.12)] px-3 py-1 text-xs font-semibold text-[#5165d7]">5 req/sec</span>
                 </div>
               </div>
-              <p className="text-sm text-white/70">
+              <p className="text-sm leading-7 text-[#6e759b]">
                 Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AI can read and how fast each client can go.
               </p>
             </div>
           </MarketingCard>
 
-          <MarketingCard className="flex h-full flex-col justify-center text-white">
+          <MarketingCard className="flex h-full flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(246,243,255,0.84))]">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-50">Turn clients into paid feeds</h3>
+              <h3 className="text-lg font-semibold text-[#25306d]">Turn clients into paid feeds</h3>
               <ul className="space-y-3">
                 {[
                   'Stop AIs reading your work for free.',
@@ -47,16 +47,16 @@ const CreatorsPage = () => {
                 ].map((item) => (
                   <li key={item} className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
-                    <p className="text-sm text-slate-200">{item}</p>
+                    <p className="text-sm leading-7 text-[#6e759b]">{item}</p>
                   </li>
                 ))}
               </ul>
             </div>
           </MarketingCard>
 
-          <MarketingCard className="flex h-full flex-col justify-center text-white">
+          <MarketingCard className="flex h-full flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(243,246,255,0.84))]">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-50">See who’s reading you</h3>
+              <h3 className="text-lg font-semibold text-[#25306d]">See who’s reading you</h3>
               <ul className="space-y-3">
                 {[
                   'See which clients redeemed paid access, for which paths, and how often.',
@@ -65,7 +65,7 @@ const CreatorsPage = () => {
                 ].map((item) => (
                   <li key={item} className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
-                    <p className="text-sm text-slate-200">{item}</p>
+                    <p className="text-sm leading-7 text-[#6e759b]">{item}</p>
                   </li>
                 ))}
               </ul>

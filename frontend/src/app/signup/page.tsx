@@ -18,7 +18,7 @@ function SignupContent() {
   const [loading, setLoading] = useState(false);
 
   const fieldClasses =
-    'w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white shadow-sm outline-none ring-0 placeholder:text-white/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40';
+    'w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274] shadow-sm outline-none ring-0 placeholder:text-[#9096b8] focus:border-[#6873e5] focus:ring-2 focus:ring-[rgba(104,115,229,0.18)]';
 
   useEffect(() => {
     const roleParam = params.get('role');
@@ -70,14 +70,14 @@ function SignupContent() {
 
   return (
     <div className="px-4 py-16">
-      <div className="mx-auto max-w-md space-y-6 rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
+      <div className="mx-auto max-w-md space-y-6 rounded-[32px] border border-[rgba(126,135,212,0.18)] bg-[rgba(255,255,255,0.76)] p-8 shadow-[0_28px_70px_rgba(126,118,215,0.16)] backdrop-blur-xl">
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold text-white">Create your FairFetch account</h1>
-          <p className="text-sm text-white/70">FairFetch keeps AI access transparent.</p>
+          <h1 className="text-2xl font-semibold text-[#25306d]">Create your FairFetch account</h1>
+          <p className="text-sm text-[#7b82a8]">FairFetch keeps AI access transparent.</p>
         </div>
         {role === 'PUBLISHER' ? (
-          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
-            <p className="font-semibold text-white">You&apos;re signing up as a Publisher.</p>
+          <div className="space-y-2 rounded-2xl border border-[rgba(126,135,212,0.16)] bg-[rgba(112,124,232,0.08)] p-4 text-sm text-[#59618f]">
+            <p className="font-semibold text-[#25306d]">You&apos;re signing up as a Publisher.</p>
             <div className="space-y-1">
               <p className="font-medium">After you create an account, you&apos;ll:</p>
               <ul className="list-disc list-inside space-y-1">
@@ -88,8 +88,8 @@ function SignupContent() {
             </div>
           </div>
         ) : (
-          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
-            <p className="font-semibold text-white">You&apos;re signing up as an AI team.</p>
+          <div className="space-y-2 rounded-2xl border border-[rgba(126,135,212,0.16)] bg-[rgba(214,105,243,0.08)] p-4 text-sm text-[#59618f]">
+            <p className="font-semibold text-[#25306d]">You&apos;re signing up as an AI team.</p>
             <div className="space-y-1">
               <p className="font-medium">After you create an account, you&apos;ll:</p>
               <ul className="list-disc list-inside space-y-1">
@@ -102,33 +102,33 @@ function SignupContent() {
         )}
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-white">Name</label>
+            <label className="block text-sm font-medium text-[#33408a]">Name</label>
             <input className={fieldClasses} value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-white">Email</label>
+            <label className="block text-sm font-medium text-[#33408a]">Email</label>
             <input className={fieldClasses} value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-white">Password</label>
+            <label className="block text-sm font-medium text-[#33408a]">Password</label>
             <input type="password" className={fieldClasses} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-white">Role</label>
+            <label className="block text-sm font-medium text-[#33408a]">Role</label>
             <select
-              className={`${fieldClasses} appearance-none text-white`}
+              className={`${fieldClasses} appearance-none`}
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
             >
-              <option value="PUBLISHER" className="bg-[#101424] text-white">
+              <option value="PUBLISHER" className="bg-white text-[#2a3274]">
                 Publisher
               </option>
-              <option value="AICLIENT" className="bg-[#101424] text-white">
+              <option value="AICLIENT" className="bg-white text-[#2a3274]">
                 AI team
               </option>
             </select>
           </div>
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-rose-500">{error}</p>}
           <SectionActions>
             <Button
               type="submit"

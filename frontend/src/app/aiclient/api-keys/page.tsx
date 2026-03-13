@@ -51,7 +51,7 @@ export default function AIClientApiKeysPage() {
         {isCreating ? 'Creating...' : 'Create key'}
       </Button>
       {newKey && (
-        <div className="mt-2 rounded-lg border border-white/10 bg-black/20 p-3 text-sm">
+        <div className="mt-2 rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.58)] p-3 text-sm shadow-[0_10px_24px_rgba(126,120,210,0.08)]">
           <p className="text-faircrawl-textMuted">New key. Copy it now. You can only view it once.</p>
           <p className="mt-2 break-all">
             <code>{newKey}</code>
@@ -75,7 +75,7 @@ export default function AIClientApiKeysPage() {
       ) : (
         <ul className="mt-3 space-y-2">
           {apiKeys.map((k) => (
-            <li key={k.id} className="flex justify-between rounded-lg border border-white/10 p-3">
+            <li key={k.id} className="flex justify-between rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.42)] p-3">
               {k.maskedKey}
               <Button
                 variant="ghost"

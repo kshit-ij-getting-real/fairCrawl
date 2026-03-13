@@ -34,11 +34,11 @@ const VisionPage = () => {
                 'We start as a hosted gateway for AI traffic. The long-term goal is a common way for any site and any AI team to talk about access, licensing, and price, no matter who runs the infrastructure.',
             },
           ].map((card) => (
-            <MarketingCard key={card.label} className="flex min-h-[280px] flex-col justify-between text-white">
+            <MarketingCard key={card.label} className="flex min-h-[280px] flex-col justify-between bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))]">
               <div className="space-y-3">
-                <SectionEyebrow className="text-blue-200">{card.label}</SectionEyebrow>
-                <h3 className="text-lg font-semibold">{card.title}</h3>
-                <p className="text-sm leading-relaxed text-white/70">{card.body}</p>
+                <SectionEyebrow className="text-[#6871d8]">{card.label}</SectionEyebrow>
+                <h3 className="text-lg font-semibold text-[#25306d]">{card.title}</h3>
+                <p className="text-sm leading-7 text-[#6e759b]">{card.body}</p>
               </div>
             </MarketingCard>
           ))}

@@ -38,11 +38,11 @@ export default function AIClientTestPaidRequestPage() {
         <div className="space-y-1">
           <p className="text-xs text-faircrawl-textMuted">License type</p>
           <select
-          className="rounded-lg border border-white/10 bg-black/20 px-3 py-2"
-          value={testForm.license}
-          onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}
-        >
-          <option>SUMMARY</option>
+            className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-3 py-2 text-sm text-[#2a3274]"
+            value={testForm.license}
+            onChange={(e) => setTestForm({ ...testForm, license: e.target.value })}
+          >
+            <option>SUMMARY</option>
             <option>DISPLAY</option>
           </select>
         </div>
@@ -118,10 +118,10 @@ export default function AIClientTestPaidRequestPage() {
         </div>
       </div>
       {status ? <p className="mt-3 text-sm text-faircrawl-textMuted">{status}</p> : null}
-      {error ? <p className="mt-3 text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="mt-3 text-sm text-rose-500">{error}</p> : null}
       {receipt && (
-        <div className="mt-4 rounded-lg border border-blue-300/30 bg-blue-500/10 p-4">
-          <h3 className="text-sm font-semibold text-white">Receipt</h3>
+        <div className="mt-4 rounded-xl border border-[rgba(112,124,232,0.18)] bg-[rgba(112,124,232,0.08)] p-4">
+          <h3 className="text-sm font-semibold text-[#25306d]">Receipt</h3>
           <div className="mt-2 grid gap-1 text-xs text-faircrawl-textMuted">
             <p>txId: {receipt.txId}</p>
             <p>priceMicros: {receipt.priceMicros}</p>
