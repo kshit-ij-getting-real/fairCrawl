@@ -91,7 +91,7 @@ export default function LoginPage() {
   );
 
   const loadDomains = async (orgId: number) => {
-    const response = await apiFetch(`/api/domains?orgId=${orgId}`);
+    const response = await apiFetch(`/api/domains?orgId=1`);
     setDomains(normalizeDomains(response));
   };
 
