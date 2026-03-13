@@ -83,13 +83,13 @@ export default function AIClientUsageSpendPage() {
         <h2 className="text-lg font-semibold">Usage + spend</h2>
         <h3 className="mt-3 font-medium">Requests by day</h3>
         <p className="mt-1 text-xs text-faircrawl-textMuted">A visual daily trend to quickly spot spikes and drops in request volume.</p>
-        <div className="mt-3 overflow-hidden rounded-lg border border-white/10 bg-[#050815] p-3">
+        <div className="mt-3 overflow-hidden rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.58)] p-3 shadow-[0_10px_24px_rgba(126,120,210,0.08)]">
           {usage.byDay.length === 0 ? (
             <EmptyState title="No usage yet" description="Paid requests will appear here once your agent starts redeeming tokens." />
           ) : (
             <>
               <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-56 w-full">
-                <line x1="0" y1={CHART_HEIGHT} x2={CHART_WIDTH} y2={CHART_HEIGHT} className="stroke-white/20" strokeWidth="2" />
+                <line x1="0" y1={CHART_HEIGHT} x2={CHART_WIDTH} y2={CHART_HEIGHT} className="stroke-[rgba(126,135,212,0.28)]" strokeWidth="2" />
                 <polyline fill="none" stroke="#6b8dff" strokeWidth="4" points={chartPoints} strokeLinejoin="round" strokeLinecap="round" />
                 {usage.byDay.map((row, index) => {
                   const x = usage.byDay.length === 1 ? 0 : (index / (usage.byDay.length - 1)) * CHART_WIDTH;
@@ -118,7 +118,7 @@ export default function AIClientUsageSpendPage() {
           </thead>
           <tbody>
             {usage.byDomain?.map((d) => (
-              <tr key={d.domainId} className="border-t border-white/10">
+              <tr key={d.domainId} className="border-t border-[rgba(126,135,212,0.12)]">
                 <td className="py-2">{d.domain}</td>
                 <td className="text-right">{d.requests}</td>
                 <td className="text-right">{toDollars(d.spendMicros || 0)}</td>
@@ -139,7 +139,7 @@ export default function AIClientUsageSpendPage() {
           </thead>
           <tbody>
             {usage.byDay?.map((d) => (
-              <tr key={d.day} className="border-t border-white/10">
+              <tr key={d.day} className="border-t border-[rgba(126,135,212,0.12)]">
                 <td className="py-2">{d.day}</td>
                 <td className="text-right">{d.requests}</td>
                 <td className="text-right">{toDollars(d.spend_micros || 0)}</td>

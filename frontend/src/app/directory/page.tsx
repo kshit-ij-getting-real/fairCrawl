@@ -40,15 +40,15 @@ export default async function DirectoryPage() {
             return (
               <MarketingCard
                 key={domain.id ?? domainName}
-                className="flex flex-col gap-3 text-white md:flex-row md:items-center md:justify-between"
+                className="flex flex-col gap-3 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))] md:flex-row md:items-center md:justify-between"
               >
                 <div className="flex flex-col gap-1">
-                  <h3 className="text-lg font-semibold text-white">{domain.displayName ?? domainName}</h3>
-                  <p className="text-xs text-white/60">
+                  <h3 className="text-lg font-semibold text-[#25306d]">{domain.displayName ?? domainName}</h3>
+                  <p className="text-xs text-[#7b82a8]">
                     Verified by {publisherName ?? 'site owner'}. AI rules published through FairFetch.
                   </p>
                   {domain.pricingFromMicros !== undefined && (
-                    <p className="text-xs text-white/60">Pricing from {domain.pricingFromMicros} micros</p>
+                    <p className="text-xs text-[#7b82a8]">Pricing from {domain.pricingFromMicros} micros</p>
                   )}
                 </div>
                 <div className="flex justify-end">
@@ -60,11 +60,11 @@ export default async function DirectoryPage() {
             );
           })}
 
-          <MarketingCard className="text-white">
+          <MarketingCard className="bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(247,244,255,0.84))]">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 className="text-lg font-semibold">Your site here</h3>
-                <p className="text-sm text-white/70">
+                <h3 className="text-lg font-semibold text-[#25306d]">Your site here</h3>
+                <p className="text-sm leading-7 text-[#6e759b]">
                   Verified domains appear in the directory after ownership checks are complete.
                 </p>
               </div>

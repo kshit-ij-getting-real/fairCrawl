@@ -111,22 +111,22 @@ export default function PublisherOverviewPage() {
         ].map((kpi) => (
           <Card key={kpi.label}>
             <p className="text-xs text-faircrawl-textMuted">{kpi.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-white">{kpi.value}</p>
+            <p className="mt-2 text-2xl font-semibold text-[#25306d]">{kpi.value}</p>
           </Card>
         ))}
       </div>
 
       <Card>
-        <h2 className="text-lg font-semibold text-white">Traffic by user-agent</h2>
+        <h2 className="text-lg font-semibold text-[#25306d]">Traffic by user-agent</h2>
         <p className="mt-1 text-xs text-faircrawl-textMuted">Top user agents seen in request logs for your domains.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+          <div className="rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.46)] p-3">
             <p className="text-xs text-faircrawl-textMuted">Total log entries</p>
-            <p className="mt-1 text-xl font-semibold text-white">{traffic.summary.totalLogs}</p>
+            <p className="mt-1 text-xl font-semibold text-[#25306d]">{traffic.summary.totalLogs}</p>
           </div>
-          <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+          <div className="rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.46)] p-3">
             <p className="text-xs text-faircrawl-textMuted">Unique user agents</p>
-            <p className="mt-1 text-xl font-semibold text-white">{traffic.summary.uniqueUserAgents}</p>
+            <p className="mt-1 text-xl font-semibold text-[#25306d]">{traffic.summary.uniqueUserAgents}</p>
           </div>
         </div>
         {loading ? (
@@ -143,7 +143,7 @@ export default function PublisherOverviewPage() {
               </thead>
               <tbody>
                 {traffic.rows.map((row, index) => (
-                  <tr key={`${row.userAgent}-${index}`} className="border-t border-white/10">
+                  <tr key={`${row.userAgent}-${index}`} className="border-t border-[rgba(126,135,212,0.12)]">
                     <td className="py-2">{row.userAgent}</td>
                     <td>{row.requests}</td>
                     <td>{row.firstSeen ? new Date(row.firstSeen).toLocaleString() : '—'}</td>
@@ -157,7 +157,7 @@ export default function PublisherOverviewPage() {
       </Card>
 
       <Card>
-        <h2 className="text-lg font-semibold text-white">Organisation domains</h2>
+        <h2 className="text-lg font-semibold text-[#25306d]">Organisation domains</h2>
         <p className="mt-1 text-xs text-faircrawl-textMuted">Domains are loaded from `/api/domains` for your selected organisation.</p>
         {domainsLoading ? (
           <p className="mt-4 text-sm text-faircrawl-textMuted">Loading domains...</p>
@@ -173,7 +173,7 @@ export default function PublisherOverviewPage() {
               </thead>
               <tbody>
                 {domains.map((domain) => (
-                  <tr key={domain.id} className="border-t border-white/10">
+                  <tr key={domain.id} className="border-t border-[rgba(126,135,212,0.12)]">
                     <td className="py-2">{domain.domain}</td>
                     <td>{domain.status || '—'}</td>
                     <td>{domain.createdAt ? new Date(domain.createdAt).toLocaleString() : '—'}</td>
@@ -186,11 +186,11 @@ export default function PublisherOverviewPage() {
       </Card>
 
       <Card>
-        <h2 className="text-lg font-semibold text-white">Onboarding checklist</h2>
+        <h2 className="text-lg font-semibold text-[#25306d]">Onboarding checklist</h2>
         <p className="mt-1 text-xs text-faircrawl-textMuted">Complete all items to ensure AI requests can be priced, verified, and paid out.</p>
         <div className="mt-3 space-y-2">
           {checklist.map((item: any) => (
-            <div key={item.key} className="flex items-center justify-between rounded-lg border border-white/10 p-3">
+            <div key={item.key} className="flex items-center justify-between rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.34)] p-3">
               <span>{item.label}</span>
               <Badge tone={item.done ? 'success' : 'warning'}>{item.done ? 'Complete' : 'Pending'}</Badge>
             </div>
@@ -199,7 +199,7 @@ export default function PublisherOverviewPage() {
       </Card>
 
       <Card>
-        <h2 className="text-lg font-semibold text-white">Recent transactions</h2>
+        <h2 className="text-lg font-semibold text-[#25306d]">Recent transactions</h2>
         <p className="mt-1 text-xs text-faircrawl-textMuted">Each row is a successful paid redemption with your publisher share.</p>
         {transactions.length === 0 ? (
           <div className="mt-4">
@@ -213,7 +213,7 @@ export default function PublisherOverviewPage() {
               </thead>
               <tbody>
                 {transactions.map((tx: any) => (
-                  <tr key={tx.id} className="border-t border-white/10">
+                  <tr key={tx.id} className="border-t border-[rgba(126,135,212,0.12)]">
                     <td className="py-2">{new Date(tx.createdAt).toLocaleString()}</td>
                     <td>{tx.aiClient}</td>
                     <td>{tx.path}</td>

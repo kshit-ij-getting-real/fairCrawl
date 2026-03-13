@@ -98,8 +98,8 @@ export default function AIClientAgentIdentityPage() {
       </div>
 
       {savedIdentity?.agentId && (
-        <div className="mt-4 rounded-lg border border-white/10 bg-black/20 p-4 text-sm">
-          <h3 className="font-medium text-white">Registered credentials</h3>
+        <div className="mt-4 rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.58)] p-4 text-sm shadow-[0_10px_24px_rgba(126,120,210,0.08)]">
+          <h3 className="font-medium text-[#25306d]">Registered credentials</h3>
           <p className="mt-1 text-faircrawl-textMuted">Use this identity alongside your API key when minting tokens.</p>
           <div className="mt-3 space-y-2">
             <p>

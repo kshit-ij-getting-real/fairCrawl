@@ -9,9 +9,9 @@ const links = [
 
 export function HeaderNav() {
   return (
-    <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
+    <div className="flex flex-wrap items-center gap-4 text-sm text-[#6d739b]">
       {links.map(([label, href]) => (
-        <Link key={href} href={href} className="hover:text-white">
+        <Link key={href} href={href} className="transition hover:text-[#33408f]">
           {label}
         </Link>
       ))}

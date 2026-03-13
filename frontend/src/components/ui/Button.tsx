@@ -19,11 +19,11 @@ export type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'inline-flex items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 disabled:cursor-not-allowed disabled:opacity-60',
+    'inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#4f58da] via-[#676df0] to-[#a95ff2] text-sm font-semibold text-white transition duration-200 hover:translate-y-[-1px] hover:shadow-[0_18px_30px_rgba(103,109,240,0.28)] shadow-[0_14px_24px_rgba(86,92,220,0.24)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#777df1] disabled:cursor-not-allowed disabled:opacity-60',
   secondary:
-    'inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-sm font-semibold text-white/80 transition hover:border-white/40 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/30 disabled:cursor-not-allowed disabled:opacity-60',
+    'inline-flex items-center justify-center rounded-full border border-[rgba(104,116,214,0.32)] bg-[rgba(255,255,255,0.82)] text-sm font-semibold text-[#4c56cf] transition duration-200 hover:border-[rgba(104,116,214,0.52)] hover:bg-white hover:shadow-[0_12px_24px_rgba(145,139,239,0.18)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b36af4] disabled:cursor-not-allowed disabled:opacity-60',
   ghost:
-    'inline-flex items-center justify-center rounded-full text-sm font-semibold text-white/70 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/30 disabled:cursor-not-allowed disabled:opacity-60',
+    'inline-flex items-center justify-center rounded-full text-sm font-semibold text-[#5a63d8] transition duration-200 hover:bg-[rgba(112,124,232,0.1)] hover:text-[#323b9f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b8befd] disabled:cursor-not-allowed disabled:opacity-60',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

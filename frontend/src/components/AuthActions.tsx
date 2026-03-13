@@ -18,7 +18,7 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
     className || (variant === 'footer' ? 'flex items-center gap-4 text-sm' : 'flex items-center gap-4');
 
   if (!isAuthed) {
-    const loginClass = variant === 'footer' ? 'hover:text-white' : 'text-sm text-white/70 hover:text-white';
+    const loginClass = variant === 'footer' ? 'text-[#6d739b] hover:text-[#33408f]' : 'text-sm text-[#6d739b] hover:text-[#33408f]';
 
     return (
       <div className={containerClass}>
@@ -26,7 +26,7 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
           Log in
         </Link>
         {variant === 'footer' ? (
-          <Link href="/signup" className="hover:text-white">
+          <Link href="/signup" className="text-[#6d739b] hover:text-[#33408f]">
             Sign up
           </Link>
         ) : (
@@ -41,10 +41,10 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
   if (variant === 'footer') {
     return (
       <div className={containerClass}>
-        <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-medium text-white/90">
+        <span className="inline-flex items-center rounded-full border border-[rgba(122,131,209,0.22)] bg-[rgba(255,255,255,0.72)] px-3 py-1 text-sm font-medium text-[#414ba8] shadow-[0_8px_22px_rgba(127,121,216,0.12)]">
           {displayLabel}
         </span>
-        <Link href={dashboardHref} className="hover:text-white">
+        <Link href={dashboardHref} className="text-[#6d739b] hover:text-[#33408f]">
           Dashboard
         </Link>
         <button
@@ -52,7 +52,7 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
             logout();
             router.push('/');
           }}
-          className="hover:text-white"
+          className="text-[#6d739b] hover:text-[#33408f]"
         >
           Logout
         </button>
@@ -62,7 +62,7 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
 
   return (
     <div className={containerClass}>
-      <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">
+      <span className="inline-flex items-center rounded-full border border-[rgba(122,131,209,0.22)] bg-[rgba(255,255,255,0.72)] px-3 py-1 text-sm font-semibold text-[#414ba8] shadow-[0_8px_22px_rgba(127,121,216,0.12)]">
         {displayLabel}
       </span>
       <Button href={dashboardHref} variant="secondary" size="md">

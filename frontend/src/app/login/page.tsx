@@ -243,9 +243,9 @@ export default function LoginPage() {
 
   return (
     <div className="px-4 py-16">
-      <div className="mx-auto max-w-2xl rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 shadow-xl">
-        <h1 className="mb-2 text-2xl font-semibold text-white">FairFetch Access</h1>
-        <p className="mb-6 text-sm text-white/70">Authenticate, choose organisation, and manage domains.</p>
+      <div className="mx-auto max-w-2xl rounded-[32px] border border-[rgba(126,135,212,0.18)] bg-[rgba(255,255,255,0.76)] p-8 shadow-[0_28px_70px_rgba(126,118,215,0.16)] backdrop-blur-xl">
+        <h1 className="mb-2 text-2xl font-semibold text-[#25306d]">FairFetch Access</h1>
+        <p className="mb-6 text-sm text-[#7b82a8]">Authenticate, choose organisation, and manage domains.</p>
 
         {step === 'auth' && (
           <>
@@ -260,36 +260,36 @@ export default function LoginPage() {
             <form onSubmit={submitAuth} className="space-y-4">
               {mode === 'signup' && (
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-white">Name</label>
+                  <label className="block text-sm font-medium text-[#33408a]">Name</label>
                   <input
-                    className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+                    className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
               )}
               <div className="space-y-1.5">
-                <label className="block text-sm font-medium text-white">Email</label>
+                <label className="block text-sm font-medium text-[#33408a]">Email</label>
                 <input
-                  className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+                  className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="block text-sm font-medium text-white">Password</label>
+                <label className="block text-sm font-medium text-[#33408a]">Password</label>
                 <input
                   type="password"
-                  className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+                  className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               {mode === 'signup' && (
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-white">Role</label>
+                  <label className="block text-sm font-medium text-[#33408a]">Role</label>
                   <select
-                    className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+                    className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
                     value={role}
                     onChange={(e) => setRole(e.target.value as Role)}
                   >
@@ -307,9 +307,9 @@ export default function LoginPage() {
 
         {step === 'select-org' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-white">Select organisation</h2>
+            <h2 className="text-lg font-semibold text-[#25306d]">Select organisation</h2>
             <select
-              className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+              className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
               value={selectedOrgId || ''}
               onChange={(e) => setSelectedOrgId(Number(e.target.value))}
             >
@@ -326,9 +326,9 @@ export default function LoginPage() {
 
         {step === 'create-org' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-white">Create organisation</h2>
+            <h2 className="text-lg font-semibold text-[#25306d]">Create organisation</h2>
             <input
-              className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+              className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
               placeholder="Organisation name"
               value={orgName}
               onChange={(e) => setOrgName(e.target.value)}
@@ -342,7 +342,7 @@ export default function LoginPage() {
         {step === 'domains' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-[#25306d]">
                 Domains {selectedOrg ? `(${selectedOrg.organisationName || selectedOrg.id})` : ''}
               </h2>
               <Button
@@ -360,7 +360,7 @@ export default function LoginPage() {
             </div>
             <div className="flex gap-2">
               <input
-                className="w-full rounded-xl border border-white/15 bg-[#101424] px-4 py-2 text-sm text-white"
+                className="w-full rounded-xl border border-[rgba(125,133,211,0.24)] bg-[rgba(255,255,255,0.82)] px-4 py-2 text-sm text-[#2a3274]"
                 placeholder="example.com"
                 value={newDomain}
                 onChange={(e) => setNewDomain(e.target.value)}
@@ -369,9 +369,9 @@ export default function LoginPage() {
                 Add domain
               </Button>
             </div>
-            <div className="overflow-x-auto rounded-xl border border-white/10">
-              <table className="w-full text-left text-sm text-white">
-                <thead className="bg-white/5 text-white/60">
+            <div className="overflow-x-auto rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.48)]">
+              <table className="w-full text-left text-sm text-[#3d467f]">
+                <thead className="bg-[rgba(111,122,214,0.08)] text-[#7b82a8]">
                   <tr>
                     <th className="px-3 py-2">Domain</th>
                     <th className="px-3 py-2">Created</th>
@@ -380,13 +380,13 @@ export default function LoginPage() {
                 <tbody>
                   {domains.length === 0 ? (
                     <tr>
-                      <td colSpan={2} className="px-3 py-6 text-center text-white/60">
+                      <td colSpan={2} className="px-3 py-6 text-center text-[#7b82a8]">
                         No domains yet.
                       </td>
                     </tr>
                   ) : (
                     domains.map((domain) => (
-                      <tr key={domain.id} className="border-t border-white/10">
+                      <tr key={domain.id} className="border-t border-[rgba(126,135,212,0.12)]">
                         <td className="px-3 py-2">{domain.domain || domain.name}</td>
                         <td className="px-3 py-2">{domain.createdAt ? new Date(domain.createdAt).toLocaleString() : '—'}</td>
                       </tr>
@@ -398,7 +398,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-4 text-sm text-rose-500">{error}</p>}
       </div>
     </div>
   );

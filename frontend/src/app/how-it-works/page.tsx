@@ -20,7 +20,7 @@ const HowItWorksPage = () => {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <section className="text-white">
+      <section>
         <SubpageHero
           eyebrow="Product flow"
           title="How FairFetch works"
@@ -38,18 +38,18 @@ const HowItWorksPage = () => {
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {steps.map((step) => (
-            <MarketingCard key={step.title} className="flex min-h-[260px] flex-col justify-between text-white">
+            <MarketingCard key={step.title} className="flex min-h-[260px] flex-col justify-between bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))]">
               <div>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/70">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4 text-blue-200">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(101,113,236,0.12)]">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4 text-[#5b68e1]">
                       <path d="M12 3v18" />
                       <path d="M5 9l7 6 7-6" />
                     </svg>
                   </div>
-                  <h3 className="text-base font-semibold text-slate-50">{step.title}</h3>
+                  <h3 className="text-base font-semibold text-[#25306d]">{step.title}</h3>
                 </div>
-                <p className="mt-3 text-sm text-slate-200">{step.body}</p>
+                <p className="mt-3 text-sm leading-7 text-[#6e759b]">{step.body}</p>
               </div>
             </MarketingCard>
           ))}
