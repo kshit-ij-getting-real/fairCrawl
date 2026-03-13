@@ -70,7 +70,7 @@ export default function TransactionsPage() {
             </thead>
             <tbody>
               {filteredTransactions.map((tx) => (
-                <tr key={tx.txId} className="border-t border-white/10">
+                <tr key={tx.txId} className="border-t border-[rgba(126,135,212,0.12)]">
                   <td className="py-2">{tx.txId}</td>
                   <td>{new Date(tx.timestamp).toLocaleString()}</td>
                   <td>{tx.domain}</td>

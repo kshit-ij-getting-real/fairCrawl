@@ -98,7 +98,7 @@ export default function DomainsPage() {
               <thead className="text-left text-faircrawl-textMuted"><tr><th>Domain</th><th>Status</th><th>Created</th></tr></thead>
               <tbody>
                 {domains.map((d) => (
-                  <tr key={d.id} className="border-t border-white/10">
+                  <tr key={d.id} className="border-t border-[rgba(126,135,212,0.12)]">
                     <td className="py-2">{d.domain}</td>
                     <td><Badge tone={d.status === 'VERIFIED' ? 'success' : 'warning'}>{d.status || 'PENDING_VERIFICATION'}</Badge></td>
                     <td>{d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '—'}</td>

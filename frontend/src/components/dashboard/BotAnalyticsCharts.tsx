@@ -151,7 +151,7 @@ export function BotAnalyticsCharts() {
             <select
               value={selectedDomainId}
               onChange={(e) => setSelectedDomainId(e.target.value)}
-              className="rounded-md border border-white/10 bg-black px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+              className="rounded-xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.74)] px-3 py-2 text-sm text-[#25306d] shadow-[0_10px_24px_rgba(157,166,230,0.12)] focus:outline-none focus:ring-2 focus:ring-[rgba(110,122,228,0.2)]"
               disabled={domains.length === 0}
             >
               {domains.length === 0 ? (
@@ -173,8 +173,8 @@ export function BotAnalyticsCharts() {
                   onClick={() => setTimeRangeDays(days)}
                   className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
                     timeRangeDays === days
-                      ? 'bg-white text-black font-semibold'
-                      : 'border border-white/10 bg-black/50 text-white hover:bg-white/10'
+                      ? 'bg-gradient-to-r from-[#4f58da] to-[#9368f4] text-white font-semibold shadow-[0_10px_22px_rgba(95,100,222,0.24)]'
+                      : 'border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.68)] text-[#6670a2] hover:bg-[rgba(110,122,228,0.08)] hover:text-[#4953cb]'
                   }`}
                 >
                   {days === 1 ? '1 Day' : `${days} Days`}
@@ -200,13 +200,19 @@ export function BotAnalyticsCharts() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Chart Section */}
           <Card>
-            <h3 className="text-lg font-semibold text-white mb-4">Crawl Distribution</h3>
+            <h3 className="mb-4 text-lg font-semibold text-[#25306d]">Crawl Distribution</h3>
             <div className="h-64 sm:h-80 relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <RechartsTooltip 
-                    contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255,255,255,0.96)',
+                      borderColor: 'rgba(126,135,212,0.18)',
+                      borderRadius: '16px',
+                      color: '#25306d',
+                      boxShadow: '0 18px 40px rgba(109, 118, 199, 0.18)',
+                    }}
+                    itemStyle={{ color: '#25306d' }}
                   />
                   <Legend verticalAlign="bottom" height={36}/>
                   <Pie
@@ -228,7 +234,7 @@ export function BotAnalyticsCharts() {
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-8 text-center">
-                 <span className="text-2xl font-bold text-white">{totalHits}</span>
+                 <span className="text-2xl font-bold text-[#25306d]">{totalHits}</span>
                  <span className="text-xs text-faircrawl-textMuted">Total Hits</span>
               </div>
             </div>
@@ -236,7 +242,7 @@ export function BotAnalyticsCharts() {
 
           {/* Table Section */}
           <Card className="flex flex-col -space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Bot Breakdown</h3>
+            <h3 className="mb-4 text-lg font-semibold text-[#25306d]">Bot Breakdown</h3>
             <div className="overflow-auto flex-grow h-64 sm:h-80">
               <Table>
                 <thead className="text-left text-faircrawl-textMuted sticky top-0 bg-transparent backdrop-blur-md">
@@ -251,15 +257,15 @@ export function BotAnalyticsCharts() {
                     const info = getBotDisplayInfo(row.name);
                     const percentage = ((row.count / totalHits) * 100).toFixed(1);
                     return (
-                      <tr key={index} className="border-t border-white/10 hover:bg-white/5 transition-colors">
+                      <tr key={index} className="border-t border-[rgba(126,135,212,0.12)] transition-colors hover:bg-[rgba(255,255,255,0.34)]">
                         <td className="py-3 flex items-center space-x-3">
                             <span style={{ color: info.color }}>{info.icon}</span>
                             <div>
-                               <p className="font-medium text-white">{info.label}</p>
+                               <p className="font-medium text-[#25306d]">{info.label}</p>
                                <p className="text-xs text-faircrawl-textMuted">{row.name}</p>
                             </div>
                         </td>
-                        <td className="py-3 text-right text-white font-medium">{row.count.toLocaleString()}</td>
+                        <td className="py-3 text-right font-medium text-[#25306d]">{row.count.toLocaleString()}</td>
                         <td className="py-3 text-right">
                           <Badge tone="muted">{percentage}%</Badge>
                         </td>
