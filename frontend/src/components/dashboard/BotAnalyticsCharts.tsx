@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { Card, Table, EmptyState, Badge } from '@/components/dashboard/primitives';
 import { apiFetch } from '@/lib/http';
 import { toast } from '@/components/toast/ToastProvider';
@@ -57,7 +57,7 @@ const BOT_ICONS: Record<string, { color: string; icon: React.ReactNode; label: s
   },
   'others': {
     color: '#8884d8', // Fallback purple
-    label: 'Other Bots',
+    label: 'Human traffic',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
@@ -139,6 +139,7 @@ export function BotAnalyticsCharts() {
   }, [selectedDomainId, timeRangeDays]);
 
   const totalHits = data.reduce((acc, curr) => acc + curr.count, 0);
+  const topBot = data[0];
 
   return (
     <div className="space-y-6">
@@ -200,42 +201,106 @@ export function BotAnalyticsCharts() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Chart Section */}
           <Card>
-            <h3 className="mb-4 text-lg font-semibold text-[#25306d]">Crawl Distribution</h3>
-            <div className="h-64 sm:h-80 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <RechartsTooltip 
-                    contentStyle={{
-                      backgroundColor: 'rgba(255,255,255,0.96)',
-                      borderColor: 'rgba(126,135,212,0.18)',
-                      borderRadius: '16px',
-                      color: '#25306d',
-                      boxShadow: '0 18px 40px rgba(109, 118, 199, 0.18)',
-                    }}
-                    itemStyle={{ color: '#25306d' }}
-                  />
-                  <Legend verticalAlign="bottom" height={36}/>
-                  <Pie
-                    data={data}
-                    dataKey="count"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    innerRadius={50}
-                    paddingAngle={2}
-                  >
-                    {data.map((entry, index) => {
-                      const displayInfo = getBotDisplayInfo(entry.name);
-                      const color = BOT_ICONS[entry.name] ? displayInfo.color : COLORS[index % COLORS.length];
-                      return <Cell key={`cell-${index}`} fill={color} />;
-                    })}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-8 text-center">
-                 <span className="text-2xl font-bold text-[#25306d]">{totalHits}</span>
-                 <span className="text-xs text-faircrawl-textMuted">Total Hits</span>
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-semibold text-[#25306d]">Crawl Distribution</h3>
+                <p className="mt-1 text-xs text-faircrawl-textMuted">Traffic share by known AI agents for the selected domain.</p>
+              </div>
+              <div className="rounded-2xl border border-[rgba(126,135,212,0.14)] bg-[linear-gradient(135deg,rgba(111,120,230,0.12),rgba(201,140,255,0.08))] px-3 py-2 text-right shadow-[0_14px_34px_rgba(124,132,214,0.12)]">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-[#7c83b0]">Top Agent</p>
+                <p className="mt-1 text-sm font-semibold text-[#25306d]">{topBot ? getBotDisplayInfo(topBot.name).label : 'None yet'}</p>
+              </div>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(220px,0.9fr)]">
+              <div className="relative rounded-[28px] border border-[rgba(126,135,212,0.14)] bg-[radial-gradient(circle_at_top,rgba(165,173,244,0.18),rgba(255,255,255,0.72)_58%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+                <div className="h-72 sm:h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <RechartsTooltip 
+                        formatter={(value: number, _name, item: any) => {
+                          const percentage = totalHits > 0 ? ((Number(value) / totalHits) * 100).toFixed(1) : '0.0';
+                          return [`${Number(value).toLocaleString()} hits (${percentage}%)`, getBotDisplayInfo(item?.payload?.name || '').label];
+                        }}
+                        contentStyle={{
+                          backgroundColor: 'rgba(255,255,255,0.96)',
+                          borderColor: 'rgba(126,135,212,0.18)',
+                          borderRadius: '16px',
+                          color: '#25306d',
+                          boxShadow: '0 18px 40px rgba(109, 118, 199, 0.18)',
+                        }}
+                        itemStyle={{ color: '#25306d' }}
+                        labelStyle={{ color: '#6f76a5' }}
+                      />
+                      <Pie
+                        data={data}
+                        dataKey="count"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={92}
+                        innerRadius={62}
+                        paddingAngle={3}
+                        cornerRadius={8}
+                        stroke="rgba(255,255,255,0.9)"
+                        strokeWidth={4}
+                      >
+                        {data.map((entry, index) => {
+                          const displayInfo = getBotDisplayInfo(entry.name);
+                          const color = BOT_ICONS[entry.name] ? displayInfo.color : COLORS[index % COLORS.length];
+                          return <Cell key={`cell-${index}`} fill={color} />;
+                        })}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="rounded-full border border-[rgba(126,135,212,0.12)] bg-[rgba(255,255,255,0.9)] px-6 py-5 text-center shadow-[0_12px_30px_rgba(126,135,212,0.16)]">
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[#8a91b8]">Total Hits</p>
+                    <p className="mt-2 text-3xl font-semibold text-[#25306d]">{totalHits.toLocaleString()}</p>
+                    <p className="mt-1 text-xs text-faircrawl-textMuted">{data.length} tracked bots</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {data.map((row, index) => {
+                  const info = getBotDisplayInfo(row.name);
+                  const percentage = totalHits > 0 ? (row.count / totalHits) * 100 : 0;
+                  const color = BOT_ICONS[row.name] ? info.color : COLORS[index % COLORS.length];
+
+                  return (
+                    <div
+                      key={`${row.name}-${index}`}
+                      className="rounded-2xl border border-[rgba(126,135,212,0.14)] bg-[rgba(255,255,255,0.62)] p-3 shadow-[0_12px_32px_rgba(126,135,212,0.08)]"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="flex h-10 w-10 items-center justify-center rounded-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                            style={{ backgroundColor: `${color}1F`, color }}
+                          >
+                            {info.icon}
+                          </span>
+                          <div>
+                            <p className="font-medium text-[#25306d]">{info.label}</p>
+                            <p className="text-xs text-faircrawl-textMuted">{row.name}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-[#25306d]">{percentage.toFixed(1)}%</p>
+                          <p className="text-xs text-faircrawl-textMuted">{row.count.toLocaleString()} hits</p>
+                        </div>
+                      </div>
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-[rgba(126,135,212,0.12)]">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${Math.max(percentage, 6)}%`, backgroundColor: color }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Card>
