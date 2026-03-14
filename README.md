@@ -170,6 +170,8 @@ curl "https://fairfetch.onrender.com/api/content?url=https%3A%2F%2Fai-essays.ver
 - `/publisher/transactions`
 - `/aiclient/dashboard`
 
+Deploy
+
 ## Final demo script
 Use `DEMO_SCRIPT.md` for the latest outside-in walkthrough, role-based talk track, and close.
 
