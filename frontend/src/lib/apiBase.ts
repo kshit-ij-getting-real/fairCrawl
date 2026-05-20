@@ -11,8 +11,10 @@ const resolveBaseUrl = () => {
   const value = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!value) {
     if (typeof window !== 'undefined') {
-      console.warn('Missing NEXT_PUBLIC_API_BASE_URL. API requests will fail until this environment variable is set.');
-      return '';
+      const fallback = 'https://fairfetch.onrender.com';
+      console.warn(`Missing NEXT_PUBLIC_API_BASE_URL. Falling back to ${fallback}.`);
+      logBaseUrl(fallback);
+      return fallback;
     }
 
     return 'https://fairfetch.onrender.com';
