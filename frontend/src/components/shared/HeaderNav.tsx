@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const links = [
   ['How it works', '/how-it-works'],
-  ['Creators', '/creators'],
+  ['Research providers', '/creators'],
   ['AI teams', '/ai-teams'],
   ['Directory', '/directory'],
 ] as const;
