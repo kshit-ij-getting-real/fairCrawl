@@ -10,14 +10,12 @@ const logBaseUrl = (baseUrl: string) => {
 const resolveBaseUrl = () => {
   const value = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!value) {
+    const fallback = 'http://localhost:4000';
     if (typeof window !== 'undefined') {
-      const fallback = 'https://fairfetch.onrender.com';
       console.warn(`Missing NEXT_PUBLIC_API_BASE_URL. Falling back to ${fallback}.`);
-      logBaseUrl(fallback);
-      return fallback;
     }
-
-    return 'https://fairfetch.onrender.com';
+    logBaseUrl(fallback);
+    return fallback;
   }
   const normalized = value.replace(/\/+$/, '');
   logBaseUrl(normalized);
