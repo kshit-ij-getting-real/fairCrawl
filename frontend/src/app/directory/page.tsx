@@ -23,8 +23,8 @@ export default async function DirectoryPage() {
       <div className="space-y-8 lg:space-y-12">
         <SubpageHero
           eyebrow="Directory"
-          title="Verified AI-ready sites"
-          description="These domains have verified ownership and published AI access rules through FairFetch. They are good defaults when you want permissioned data with clear licensing terms."
+          title="AI-ready specialist research"
+          description="These sources have verified ownership and published FairFetch retrieval rules. Use them when you need specialist research with clear permissions, pricing, and license terms."
         />
 
         <div className="space-y-4">
@@ -45,7 +45,7 @@ export default async function DirectoryPage() {
                 <div className="flex flex-col gap-1">
                   <h3 className="text-lg font-semibold text-[#25306d]">{domain.displayName ?? domainName}</h3>
                   <p className="text-xs text-[#7b82a8]">
-                    Verified by {publisherName ?? 'site owner'}. AI rules published through FairFetch.
+                    Verified by {publisherName ?? 'site owner'}. Research access rules published through FairFetch.
                   </p>
                   {domain.pricingFromMicros !== undefined && (
                     <p className="text-xs text-[#7b82a8]">Pricing from {domain.pricingFromMicros} micros</p>
@@ -69,7 +69,7 @@ export default async function DirectoryPage() {
                 </p>
               </div>
               <div className="flex justify-end">
-                <SecondaryButton href="/signup?role=publisher">Become a launch publisher</SecondaryButton>
+                <SecondaryButton href="/signup?role=publisher">Become a launch research provider</SecondaryButton>
               </div>
             </div>
           </MarketingCard>

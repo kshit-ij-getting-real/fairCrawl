@@ -6,10 +6,10 @@ import { API_BASE_URL } from '../../lib/apiBase';
 
 const AiTeamsPage = () => {
   const benefits = [
-    'One API key for many publishers, with clear rules for each domain.',
-    'See which paths are free, metered, or not listed before you crawl.',
+    'One API key for many research providers, with clear rules for each domain.',
+    'Compare retrieval permissions, license types, and pricing before each query.',
     'Client identity and shared transaction logs make usage easy to verify.',
-    'Shared observability so you and the publisher see the same record of reads.',
+    'Shared observability so you and the research provider sees the same record of reads.',
   ];
   const statusBadges = [
     { label: 'Open', className: 'bg-[rgba(86,109,245,0.12)] text-[#5165d7]' },
@@ -21,9 +21,9 @@ const AiTeamsPage = () => {
     <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <div className="space-y-12 md:space-y-16">
         <SubpageHero
-          eyebrow="For AI teams"
+          eyebrow="For AI teams and research copilots"
           title="FairFetch for AI teams"
-          description="Get clean, permissioned access to creator content through a single API, with clear rules and audit logs on every crawl."
+          description="Get clean, permissioned access to specialist research through a single API, with clear rules and audit logs on every crawl."
         />
 
         <div className="grid gap-8 lg:grid-cols-2">

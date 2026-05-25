@@ -9,8 +9,8 @@ import { ToastProvider } from '@/components/toast/ToastProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'FairFetch – Paid access marketplace for AI and publishers',
-  description: 'FairFetch is an opt-in marketplace for paywalled content access with pricing, tokens, and transaction logs.',
+  title: 'FairFetch – Specialist research marketplace for AI agents',
+  description: 'FairFetch helps AI agents discover, license, and retrieve specialist research with clear pricing, permissions, and logs.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

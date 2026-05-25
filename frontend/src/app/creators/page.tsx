@@ -7,9 +7,9 @@ const CreatorsPage = () => {
     <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
       <div className="space-y-12 md:space-y-16">
         <SubpageHero
-          eyebrow="For creators & publishers"
-          title="FairFetch for creators & publishers"
-          description="Set rules per path, see which AI clients read your work, and turn AI access into income."
+          eyebrow="For research providers"
+          title="FairFetch for research providers"
+          description="List specialist research, define retrieval terms, and get paid when AI agents retrieve licensed content."
         />
 
         <div className="grid items-stretch gap-6 md:grid-cols-3">
@@ -38,7 +38,7 @@ const CreatorsPage = () => {
 
           <MarketingCard className="flex h-full flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(246,243,255,0.84))]">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#25306d]">Turn clients into paid feeds</h3>
+              <h3 className="text-lg font-semibold text-[#25306d]">Turn retrieval into paid access</h3>
               <ul className="space-y-3">
                 {[
                   'Stop AIs reading your work for free.',
@@ -56,7 +56,7 @@ const CreatorsPage = () => {
 
           <MarketingCard className="flex h-full flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(243,246,255,0.84))]">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#25306d]">See who’s reading you</h3>
+              <h3 className="text-lg font-semibold text-[#25306d]">See who retrieved your research</h3>
               <ul className="space-y-3">
                 {[
                   'See which clients redeemed paid access, for which paths, and how often.',
@@ -74,8 +74,8 @@ const CreatorsPage = () => {
         </div>
 
         <div className="flex flex-wrap justify-end gap-4 pt-4">
-          <PrimaryButton href="/signup?role=publisher">Get started as a creator</PrimaryButton>
-          <SecondaryButton href="/directory">Browse AI-ready sites</SecondaryButton>
+          <PrimaryButton href="/signup?role=publisher">List your research</PrimaryButton>
+          <SecondaryButton href="/directory">Browse AI-ready specialist research</SecondaryButton>
         </div>
       </div>
     </main>

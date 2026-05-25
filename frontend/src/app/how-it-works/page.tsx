@@ -5,16 +5,16 @@ import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
 const HowItWorksPage = () => {
   const steps = [
     {
-      title: 'Crawler hits your site',
+      title: 'Research providers list content and terms',
       body: 'An AI client tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairFetch gateway.',
     },
     {
-      title: 'Request goes through FairFetch',
-      body: 'The AI team signs up, gets an API key, and identifies itself on every request. FairFetch checks your rules to see what they can read, and whether the path is paid.',
+      title: 'FairFetch makes sources discoverable and agent-readable',
+      body: 'AI teams query FairFetch with identity and permissions context. FairFetch returns what can be licensed and retrieved, including pricing and allowed license types.',
     },
     {
-      title: 'You set the rules, and get paid',
-      body: 'You choose which paths are open, premium, or not listed, and what each client pays. FairFetch logs every access, returns content when allowed, and records the transaction so you can track earnings.',
+      title: 'Agents retrieve licensed research through tokens/API',
+      body: 'Both sides get logs, receipts, and pricing records so every retrieval is auditable for usage review and billing.',
     },
   ];
 
@@ -56,7 +56,7 @@ const HowItWorksPage = () => {
         </div>
 
         <div className="mt-8 flex flex-wrap justify-end gap-3">
-          <SecondaryButton href="/creators">See creator controls</SecondaryButton>
+          <SecondaryButton href="/creators">See research provider controls</SecondaryButton>
           <PrimaryButton href="/ai-teams">See AI API</PrimaryButton>
         </div>
       </section>

@@ -9,8 +9,8 @@ const VisionPage = () => {
       <div className="space-y-12 md:space-y-16">
         <SubpageHero
           eyebrow="Vision"
-          title="Our vision: a fair web for AI"
-          description="AI is becoming the web’s main reader. FairFetch turns that traffic into a transparent marketplace where AI companies pay creators directly for the human imagination that powers their models."
+          title="Our vision: licensed research infrastructure for AI agents"
+          description="AI is becoming the web’s main reader. FairFetch turns that traffic into a licensed research marketplace where AI agents can retrieve specialist analysis with clear permissions, pricing, and receipts."
         />
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -19,7 +19,7 @@ const VisionPage = () => {
               label: 'AI as a user',
               title: 'AI as a first-class web user',
               body:
-                'Most of the web was built for human browsers. FairFetch treats AI clients as first-class users so they can access content without breaking sites, and creators can set clear terms for that access.',
+                'Most of the web was built for human browsers. FairFetch treats AI clients as first-class users so they can access content without breaking sites, and research providers can set clear terms for retrieval.',
             },
             {
               label: 'Consent & speed',
@@ -31,7 +31,7 @@ const VisionPage = () => {
               label: 'Standard',
               title: 'From one product to a standard',
               body:
-                'We start as a hosted gateway for AI traffic. The long-term goal is a common way for any site and any AI team to talk about access, licensing, and price, no matter who runs the infrastructure.',
+                'We start as a working prototype for licensed retrieval. The long-term goal is a common way for any site and any AI team to talk about access, licensing, and price, no matter who runs the infrastructure.',
             },
           ].map((card) => (
             <MarketingCard key={card.label} className="flex min-h-[280px] flex-col justify-between bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))]">
