@@ -71,15 +71,15 @@ export default function HowItWorksPage() {
                 Run the product flow without an account or backend setup.
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#94a3b8]">
-                The homepage workspace uses illustrative Indian energy research and shows the buyer and provider record
+                The homepage transaction room uses illustrative Indian energy research and shows the buyer and provider record
                 created by one licensed retrieval.
               </p>
             </div>
             <Link
-              href="/#workspace"
+              href="/#transaction-room"
               className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#0f172a] hover:bg-[#e2e8f0]"
             >
-              Open research workspace
+              Open transaction room
             </Link>
           </div>
         </div>
