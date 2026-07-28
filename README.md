@@ -8,22 +8,21 @@ Enterprise AI agents can search public information, but they cannot efficiently 
 The initial wedge is Indian energy, infrastructure, mobility, and industrial research. The first proof is one paid, cited retrieval. The long-term goal is a standard rights and settlement network for machine-consumed knowledge.
 
 ## Current MVP surfaces
-- Public site: buyer-first positioning and a self-contained interactive transaction experience (`/`, `/how-it-works`, `/creators`, `/ai-teams`).
+- Public site: buyer-first positioning and a recordable transaction room (`/`, `/how-it-works`, `/creators`, `/ai-teams`).
+- Public pilot API: live Next.js route handlers for metadata search and bounded retrieval.
 - Research provider dashboard: domains, pricing, transactions, controls.
 - AI client dashboard: API keys, agent identity, usage/spend, test paid request flow.
 - Backend APIs: auth, directory, policy, token mint/redeem, provider and AI client endpoints.
 
 ## Recordable product walkthrough
-The homepage workspace is deterministic and does not depend on authentication or backend availability. It demonstrates:
+The homepage transaction room makes real calls to:
 
-1. An enterprise agent asking a research question.
-2. FairFetch returning `ALLOWED`, `PAID`, and `BLOCKED` source decisions.
-3. The agent purchasing a summary licence.
-4. Identity, policy, payment, and delivery checks.
-5. A cited answer and shared transaction receipt.
-6. An illustrative provider payout and FairFetch fee.
+- `POST /api/v1/pilot/search`
+- `POST /api/v1/pilot/retrieve`
 
-All sources, answer content, and economics in the homepage workspace are clearly labelled as illustrative.
+The flow starts with one licensed private document and an identified agent holding 100 credits. It searches metadata, authorises a five-credit answer-only retrieval, returns a bounded cited answer without exposing the raw PDF, reduces the visible balance to 95 credits, and records a four-credit provider settlement plus a one-credit FairFetch fee.
+
+The public pilot is deliberately honest: the document, provider, credits, and economics are illustrative, and the receipt uses an ephemeral in-memory pilot ledger. It does not claim persistent accounting, a real payment, or production document licensing. See [`docs/FUNDRAISING_MVP_GAP_ANALYSIS.md`](docs/FUNDRAISING_MVP_GAP_ANALYSIS.md) for the audited path to a first customer pilot.
 
 ## Tech stack
 - Frontend: Next.js + TypeScript + Tailwind.
@@ -81,10 +80,16 @@ Seeded marketplace demo data:
 - Vercel (frontend): set `NEXT_PUBLIC_API_BASE_URL` to your Render backend URL.
 - Keep secrets in platform env settings only; do not commit secrets.
 
-## Smoke test checklist
-1. Run backend seed and sign in with both demo accounts.
-2. Confirm `stack-research.demo` appears verified in provider dashboard.
-3. Confirm pricing rules for `/equity/iex`, `/market-intelligence`, `/pharma/glp-1` exist.
-4. Create/review AI client API key.
-5. Mint token and retrieve licensed content through API flow.
-6. Verify transactions/logs appear in both provider and AI client dashboards.
+## Public pilot smoke test
+1. Open `/` and scroll to the transaction room.
+2. Confirm the licensed supply and activate the agent.
+3. Search the illustrative IEX research question.
+4. Pay five credits and retrieve the bounded answer.
+5. Confirm the receipt shows 95 remaining credits, four provider credits, one FairFetch credit, one licensed citation, and no raw-source access.
+
+## Existing backend smoke test
+1. Run the backend seed and sign in with both demo accounts.
+2. Confirm `stack-research.demo` appears verified in the provider dashboard.
+3. Create or review an AI client API key.
+4. Mint a token and retrieve licensed content through the legacy API flow.
+5. Verify transactions and logs appear in both dashboards.

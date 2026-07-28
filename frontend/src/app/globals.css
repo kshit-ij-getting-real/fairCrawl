@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --ff-bg: #f6f6fc;
-  --ff-bg-soft: #ffffff;
-  --ff-surface: rgba(255, 255, 255, 0.74);
-  --ff-border: rgba(126, 135, 212, 0.18);
-  --ff-text: #25306d;
-  --ff-text-muted: #7b82a8;
+  --ff-bg: #f7f3f0;
+  --ff-bg-soft: #fbfaf9;
+  --ff-surface: rgba(251, 250, 249, 0.86);
+  --ff-border: rgba(117, 105, 97, 0.2);
+  --ff-text: #171717;
+  --ff-text-muted: #6c6662;
 }
 
 html {
@@ -18,11 +18,7 @@ html {
 body {
   min-height: 100vh;
   color: var(--ff-text);
-  background:
-    radial-gradient(circle at top center, rgba(175, 164, 255, 0.18) 0%, transparent 22%),
-    radial-gradient(circle at 18% 70%, rgba(214, 105, 243, 0.1) 0%, transparent 24%),
-    radial-gradient(circle at 82% 22%, rgba(118, 123, 238, 0.1) 0%, transparent 20%),
-    linear-gradient(180deg, #fcfcff 0%, #f7f7fc 48%, #f3f4fb 100%);
+  background: #f7f3f0;
   background-attachment: fixed;
 }
 
@@ -31,15 +27,13 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.52), transparent 24%),
-    radial-gradient(circle at top center, rgba(255, 255, 255, 0.78), transparent 42%);
-  opacity: 0.85;
+  background: radial-gradient(circle at top center, rgba(255, 79, 31, 0.05), transparent 38%);
+  opacity: 1;
 }
 
 ::selection {
-  background: rgba(125, 127, 242, 0.22);
-  color: #1f2665;
+  background: rgba(255, 79, 31, 0.2);
+  color: #171717;
 }
 
 @layer utilities {

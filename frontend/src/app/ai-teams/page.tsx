@@ -29,10 +29,10 @@ export default function AiTeamsPage() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/#workspace"
+                href="/#transaction-room"
                 className="inline-flex items-center justify-center rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white hover:bg-[#1e293b]"
               >
-                Open research workspace
+                Open transaction room
               </Link>
               <Link
                 href="/signup?role=aiclient"

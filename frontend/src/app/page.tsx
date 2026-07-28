@@ -1,181 +1,161 @@
 import Link from 'next/link';
 import { ResearchWorkspace } from '@/components/research/ResearchWorkspace';
 
-const workflow = [
+const proofPoints = [
   {
-    number: '01',
-    title: 'Discover',
-    body: 'The agent finds relevant specialist sources across providers, not only research already in its stack.',
+    label: 'Licensed supply',
+    title: 'One document with explicit machine-use terms.',
+    body: 'The transaction starts with ownership, access mode, quote limits, price and private-source status.',
   },
   {
-    number: '02',
-    title: 'Resolve rights',
-    body: 'FairFetch returns an explicit decision for each source: allowed, paid, or blocked.',
+    label: 'Agent access',
+    title: 'One external API contract.',
+    body: 'The public pilot endpoint authenticates an agent key, searches metadata and accepts an idempotent retrieval request.',
   },
   {
-    number: '03',
-    title: 'Retrieve',
-    body: 'The agent buys the permitted licence and receives only the approved research scope.',
+    label: 'Controlled answer',
+    title: 'Useful output without the raw file.',
+    body: 'The response is bounded, grounded and cited. The source PDF and unrestricted chunks are never returned.',
   },
   {
-    number: '04',
-    title: 'Settle',
-    body: 'Buyer and provider receive the same citation, usage record, payment, and receipt.',
+    label: 'Economic proof',
+    title: 'One shared receipt for both sides.',
+    body: 'The buyer sees credits charged; the provider sees gross earnings, the FairFetch fee and net earnings.',
   },
 ] as const;
 
 export default function Page() {
   return (
-    <div className="bg-[#f8fafc] text-[#0f172a]">
-      <section className="relative overflow-hidden border-b border-[#dbe3ee]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_6%,rgba(37,99,235,0.12),transparent_27%),radial-gradient(circle_at_12%_20%,rgba(16,185,129,0.07),transparent_24%)]" />
-          <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
-            <div className="max-w-4xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#cbd5e1] bg-white px-3 py-1.5 text-xs font-semibold text-[#475569] shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-[#10b981]" />
-                Licensed retrieval infrastructure for AI
-              </div>
-              <h1 className="mt-6 text-5xl font-semibold leading-[1.02] tracking-[-0.045em] text-[#0f172a] sm:text-6xl lg:text-7xl">
-                Enterprise AI agents can search the public web. FairFetch lets them retrieve paid specialist research.
-              </h1>
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-[#475569]">
-                One query at a time, with permission, citations, usage metering, and automatic payment.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#workspace"
-                  className="inline-flex items-center justify-center rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(15,23,42,0.2)] transition hover:-translate-y-0.5 hover:bg-[#1e293b]"
-                >
-                  Open the research workspace
-                </a>
-                <Link
-                  href="/how-it-works"
-                  className="inline-flex items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-6 py-3 text-sm font-semibold text-[#334155] transition hover:border-[#94a3b8] hover:bg-[#f8fafc]"
-                >
-                  How the transaction works
-                </Link>
-              </div>
-              <p className="mt-5 text-xs text-[#64748b]">
-                Starting with Indian energy and infrastructure research.
-              </p>
-            </div>
-
-            <div id="workspace" className="scroll-mt-24 pt-12 lg:pt-16">
-              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">FairFetch product</p>
-                  <h2 className="mt-2 text-2xl font-semibold tracking-[-0.025em] text-[#0f172a] sm:text-3xl">
-                    Run a licensed research retrieval.
-                  </h2>
-                </div>
-                <p className="max-w-md text-xs leading-5 text-[#64748b]">
-                  Illustrative sources and economics. The permission, payment, citation, and receipt flow is the product.
-                </p>
-              </div>
-              <ResearchWorkspace />
-            </div>
+    <div className="bg-[#f7f3f0] text-[#171717]">
+      <section className="relative overflow-hidden border-b border-[#ded8d3]">
+        <div className="pointer-events-none absolute left-1/2 top-[-260px] h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#ff4f1f]/10 blur-3xl" />
+        <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-16 text-center sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#d8d1cc] bg-[#eee9e5] px-3 py-1.5 text-xs font-semibold text-[#625d59]">
+            <span className="h-2 w-2 rounded-full bg-[#ff4f1f]" />
+            Paid access infrastructure for proprietary research
           </div>
+          <h1 className="mx-auto mt-6 max-w-5xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+            Make proprietary knowledge purchasable by AI agents.
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-[#625d59]">
+            FairFetch authenticates the agent, enforces the licence, returns a bounded cited answer, meters the use and
+            creates a shared transaction receipt.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <a
+              href="#transaction-room"
+              className="inline-flex items-center justify-center rounded-full bg-[#ff4f1f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#e63f14]"
+            >
+              Run the transaction
+            </a>
+            <Link
+              href="/how-it-works"
+              className="inline-flex items-center justify-center rounded-full border border-[#8f8781] bg-transparent px-6 py-3 text-sm font-semibold text-[#292624] transition hover:bg-white"
+            >
+              See the protocol
+            </Link>
+          </div>
+          <div className="mx-auto mt-10 grid max-w-4xl gap-px overflow-hidden rounded-2xl border border-[#ded8d3] bg-[#ded8d3] text-left sm:grid-cols-3">
+            {[
+              ['LIVE', 'Search and retrieval API'],
+              ['BOUNDED', 'No raw source access'],
+              ['AUDITABLE', 'Credits, earnings and receipt'],
+            ].map(([label, value]) => (
+              <div key={label} className="bg-[#fbfaf9] px-5 py-4">
+                <p className="text-[10px] font-black tracking-[0.14em] text-[#c83b16]">{label}</p>
+                <p className="mt-1 text-sm font-semibold text-[#292624]">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <section className="border-b border-[#e2e8f0] bg-white">
-          <div className="mx-auto grid max-w-6xl gap-4 px-4 py-6 text-center text-xs font-semibold uppercase tracking-[0.16em] text-[#64748b] sm:grid-cols-4 sm:px-6 lg:px-8">
-            <span>Discovery</span>
-            <span>Rights</span>
-            <span>Retrieval</span>
-            <span>Settlement</span>
+      <section id="transaction-room" className="scroll-mt-24 border-b border-[#ded8d3]">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+          <div className="mb-7 grid gap-4 lg:grid-cols-[1fr_0.7fr] lg:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#c83b16]">Fundraising transaction proof</p>
+              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+                Show the transaction while it happens.
+              </h2>
+            </div>
+            <p className="text-sm leading-7 text-[#6c6662]">
+              The API calls are live. The provider, document and credit economics are illustrative until the first
+              licensed supplier document is connected.
+            </p>
           </div>
+          <ResearchWorkspace />
+        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">The missing transaction</p>
-              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.035em] text-[#0f172a]">
-                Search finds information. FairFetch procures permissioned knowledge.
-              </h2>
-              <p className="mt-5 text-base leading-7 text-[#64748b]">
-                Valuable research sits behind separate subscriptions, contracts, and sales calls. AI agents cannot compare
-                it, buy the right licence, or prove what they used. FairFetch turns that procurement process into one
-                machine-readable transaction.
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {workflow.map((step) => (
-                <article key={step.number} className="rounded-2xl border border-[#dbe3ee] bg-white p-6">
-                  <p className="text-xs font-semibold text-[#94a3b8]">{step.number}</p>
-                  <h3 className="mt-8 text-xl font-semibold text-[#0f172a]">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[#64748b]">{step.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
+        <div className="max-w-3xl">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#c83b16]">What this iteration proves</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+            The smallest credible knowledge transaction.
+          </h2>
+        </div>
+        <div className="mt-10 grid gap-3 md:grid-cols-2">
+          {proofPoints.map((point, index) => (
+            <article key={point.label} className="rounded-2xl border border-[#d8d1cc] bg-[#fbfaf9] p-6">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#c83b16]">{point.label}</p>
+                <span className="font-mono text-xs text-[#aaa19b]">0{index + 1}</span>
+              </div>
+              <h3 className="mt-8 max-w-lg text-2xl font-semibold tracking-[-0.025em]">{point.title}</h3>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-[#6c6662]">{point.body}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
-      <section className="bg-[#0f172a] text-white">
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6ee7b7]">Initial market</p>
-              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.035em]">
-                Specialist Indian research that enterprise agents cannot reliably reach today.
-              </h2>
-              <p className="mt-5 text-base leading-7 text-[#94a3b8]">
-                FairFetch starts with energy, infrastructure, mobility, and industrial research from independent firms,
-                databases, and sector experts.
-              </p>
-            </div>
-            <div className="grid gap-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94a3b8]">For AI teams</p>
-                <h3 className="mt-3 text-xl font-semibold">One route to research outside your current stack.</h3>
-                <p className="mt-2 text-sm leading-6 text-[#94a3b8]">
-                  Search providers, resolve rights, retrieve through an API, and attach licensed citations to every answer.
-                </p>
-                <Link href="/ai-teams" className="mt-5 inline-flex text-sm font-semibold text-[#6ee7b7] hover:text-white">
-                  Explore the buyer product →
-                </Link>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94a3b8]">For research providers</p>
-                <h3 className="mt-3 text-xl font-semibold">Sell controlled retrievals without rebuilding distribution.</h3>
-                <p className="mt-2 text-sm leading-6 text-[#94a3b8]">
-                  Publish licences and prices, approve machine use, see who retrieved what, and receive usage-linked payouts.
-                </p>
-                <Link href="/creators" className="mt-5 inline-flex text-sm font-semibold text-[#6ee7b7] hover:text-white">
-                  Explore the provider product →
-                </Link>
-              </div>
-            </div>
+      <section className="bg-[#171717] text-white">
+        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-24">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ff7653]">From prototype to customer pilot</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+              Replace the illustrative source. Keep the transaction contract.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-white/55">
+              The next operational milestone is one real, owned PDF and one external buyer. That adds private storage,
+              document processing, grounded retrieval and a persistent ledger without changing the product story.
+            </p>
           </div>
+          <div className="grid gap-3">
+            {[
+              ['01', 'Store one licensed PDF privately'],
+              ['02', 'Extract pages, chunk and embed it'],
+              ['03', 'Connect the current endpoints to PostgreSQL'],
+              ['04', 'Run repeated paid retrievals with one buyer'],
+            ].map(([number, item]) => (
+              <div key={number} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
+                <span className="font-mono text-xs text-[#ff7653]">{number}</span>
+                <p className="text-sm font-semibold text-white/85">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-          <div className="rounded-[28px] border border-[#dbe3ee] bg-white p-8 sm:p-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">What FairFetch is</p>
-            <div className="mt-5 grid gap-8 lg:grid-cols-2">
-              <h2 className="text-4xl font-semibold tracking-[-0.035em] text-[#0f172a]">
-                The transaction and trust layer beneath AI research products.
-              </h2>
-              <div className="space-y-4 text-sm leading-7 text-[#64748b]">
-                <p>
-                  FairFetch does not produce reports and is not another market-intelligence interface. It connects AI
-                  systems to external specialist sources and handles discovery, rights, retrieval, attribution, metering,
-                  payments, and provider controls.
-                </p>
-                <p>
-                  The long-term goal is a standard rights and settlement network for machine-consumed knowledge. The first
-                  proof is simpler: complete one paid, cited retrieval that neither side could transact efficiently before.
-                </p>
-              </div>
-            </div>
-            <div className="mt-8">
-              <a
-                href="#workspace"
-                className="inline-flex items-center justify-center rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#1e293b]"
-              >
-                Run the transaction
-              </a>
+        <div className="rounded-[28px] border border-[#d8d1cc] bg-[#fbfaf9] p-8 sm:p-12">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#c83b16]">Initial wedge</p>
+          <div className="mt-5 grid gap-8 lg:grid-cols-2">
+            <h2 className="text-4xl font-semibold tracking-[-0.04em]">
+              Specialist research that is valuable, owned and hard for agents to procure.
+            </h2>
+            <div className="space-y-4 text-sm leading-7 text-[#6c6662]">
+              <p>
+                Start with independent energy, manufacturing, semiconductor and supply-chain research firms that already
+                sell to humans but lack machine distribution.
+              </p>
+              <p>
+                FairFetch is not another research database. It is the permission, retrieval and settlement layer between
+                an external agent and a knowledge owner.
+              </p>
             </div>
           </div>
+        </div>
       </section>
     </div>
   );

@@ -10,11 +10,11 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'FairFetch | Licensed research retrieval for AI agents',
+    default: 'FairFetch | Paid proprietary research for AI agents',
     template: '%s | FairFetch',
   },
   description:
-    'FairFetch lets enterprise AI agents discover and retrieve paid specialist research with permission, citations, usage metering, and automatic payment.',
+    'FairFetch authenticates AI agents, enforces research licences, returns bounded cited answers, meters usage, and creates shared transaction receipts.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -24,11 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthStateProvider>
           <ToastProvider>
             <div className="flex min-h-screen flex-col">
-              <header className="sticky top-0 z-40 w-full border-b border-[#e2e8f0] bg-white/90 backdrop-blur-xl">
+              <header className="sticky top-0 z-40 w-full border-b border-[#ded8d3] bg-[#fbfaf9]/90 backdrop-blur-xl">
                 <PageShell className="flex flex-wrap items-center justify-between gap-3 py-4 sm:flex-nowrap">
                   <Link href="/" aria-label="FairFetch home" className="flex items-center gap-2">
                     <Logo size={32} />
-                    <span className="text-[18px] font-semibold tracking-[-0.02em] text-[#0f172a]">
+                    <span className="text-[18px] font-semibold tracking-[-0.02em] text-[#171717]">
                       FairFetch
                     </span>
                   </Link>
@@ -37,9 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </PageShell>
               </header>
               <main className="flex-1">{children}</main>
-              <footer className="border-t border-[#e2e8f0] bg-white">
+              <footer className="border-t border-[#ded8d3] bg-[#fbfaf9]">
                 <PageShell className="flex flex-col gap-2 py-8 text-sm text-faircrawl-textMuted sm:flex-row sm:items-center sm:justify-between">
-                  <span>Licensed retrieval infrastructure for machine-consumed knowledge.</span>
+                  <span>Permission, retrieval and settlement infrastructure for machine-consumed knowledge.</span>
                   <AuthActions variant="footer" />
                 </PageShell>
               </footer>

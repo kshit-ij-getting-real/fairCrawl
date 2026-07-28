@@ -1,4 +1,4 @@
-# FairFetch two-minute demo
+# FairFetch two-minute transaction walkthrough
 
 ## 0:00 to 0:20 · Problem and product
 
@@ -10,34 +10,36 @@ FairFetch is the transaction and trust layer between enterprise AI agents and sp
 
 ## 0:20 to 0:35 · Initial wedge
 
-[Point to the product card and initial-market line.]
+[Point to the initial-market line.]
 
 We are starting with Indian energy and infrastructure research. The buyers are research-heavy enterprise teams and the AI products that serve them. The providers are independent research firms, databases, and sector experts.
 
-## 0:35 to 1:40 · Run one transaction
+## 0:35 to 1:45 · Run one transaction
 
-[Scroll to the research workspace on the homepage.]
+[Scroll to the transaction room on the homepage.]
 
-This is Aster Wealth Copilot. It asks what could change the earnings power and market position of Indian Energy Exchange over the next 12 months.
+The provider has made one private report available under an answer-only licence. FairFetch shows the active licence, ownership attestation, five-credit price, quote limit, and the fact that the raw PDF remains private.
 
-[Click **Find licensed research**.]
+[Click **Confirm licensed supply** and then **Activate agent**.]
 
-FairFetch finds three relevant sources and checks access before the agent reads anything. One source is public and allowed. One specialist report is available under a paid summary licence. One institutional report is blocked because no agent licence exists.
+This is Aster Strategy Agent. It has an API identity, 100 credits, and a ten-credit transaction cap. It asks what could change the earnings power and market position of Indian Energy Exchange over the next 12 months.
 
-[Click **License & retrieve · ₹120**.]
+[Click **Search licensed research**.]
 
-One request now resolves four things: the agent identity, the provider’s licence policy, payment authorisation, and controlled delivery of the research.
+The homepage calls the live FairFetch pilot search endpoint. Search returns metadata and a five-credit access offer, but not the source file.
 
-[Wait for the answer.]
+[Click **Pay 5 credits & retrieve** and let the checks run.]
 
-The agent receives a synthesis with a licensed citation and explicit usage terms. The right-hand ledger shows the same transaction record that the buyer and provider can audit. The provider sees the retrieval and payout. The buyer sees the cost, licence, citation, and receipt.
+The retrieval request authenticates the agent, checks the licence and balance, protects the source, and records the split. The agent receives a bounded answer with a licensed page citation and response hash. The raw PDF is never returned.
 
-The sources, answer, and economics shown here are illustrative data. The workflow maps to FairFetch’s existing policy, token, ledger, API, and dashboard surfaces.
+The proof ledger shows the shared receipt: the buyer balance moves from 100 to 95 credits, the provider receives four credits, and FairFetch receives one.
 
-## 1:40 to 2:00 · Close
+This fundraising pilot makes real API calls, but the provider, document, credits, and economics are illustrative and the receipt is ephemeral. No real payment is processed.
+
+## 1:45 to 2:00 · Close
 
 [Return to `/` or stay on the receipt.]
 
 FairFetch is not another research database and does not produce reports. It lets AI systems procure external specialist knowledge one query at a time.
 
-The first proof is one paid, cited retrieval that neither side could transact efficiently before. The long-term opportunity is to become the standard rights and settlement network for machine-consumed knowledge.
+The first proof is one permitted, metered, cited retrieval that neither side could transact efficiently before. The next customer milestone is to replace the illustrative report and ledger with one provider-owned document and persistent credit accounting.
