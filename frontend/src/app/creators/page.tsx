@@ -35,7 +35,7 @@ export default function CreatorsPage() {
                 List research
               </Link>
               <Link
-                href="/#workspace"
+                href="/#transaction-room"
                 className="inline-flex items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-6 py-3 text-sm font-semibold text-[#334155] hover:border-[#94a3b8]"
               >
                 See a paid retrieval
