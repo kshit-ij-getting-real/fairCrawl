@@ -18,7 +18,7 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
     className || (variant === 'footer' ? 'flex items-center gap-4 text-sm' : 'flex items-center gap-4');
 
   if (!isAuthed) {
-    const loginClass = variant === 'footer' ? 'text-[#6d739b] hover:text-[#33408f]' : 'text-sm text-[#6d739b] hover:text-[#33408f]';
+    const loginClass = variant === 'footer' ? 'text-[#64748b] hover:text-[#0f172a]' : 'text-sm text-[#64748b] hover:text-[#0f172a]';
 
     return (
       <div className={containerClass}>
@@ -26,12 +26,12 @@ export function AuthActions({ className, variant = 'header' }: AuthActionsProps)
           Log in
         </Link>
         {variant === 'footer' ? (
-          <Link href="/signup" className="text-[#6d739b] hover:text-[#33408f]">
-            Sign up
+          <Link href="/#workspace" className="text-[#64748b] hover:text-[#0f172a]">
+            Product
           </Link>
         ) : (
-          <Button href="/signup" variant="primary" size="md">
-            Get started
+          <Button href="/#workspace" variant="primary" size="md" className="bg-[#0f172a] shadow-none hover:bg-[#1e293b]">
+            Open workspace
           </Button>
         )}
       </div>
