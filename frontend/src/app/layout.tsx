@@ -9,8 +9,12 @@ import { ToastProvider } from '@/components/toast/ToastProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'FairFetch – Specialist research marketplace for AI agents',
-  description: 'FairFetch helps AI agents discover, license, and retrieve specialist research with clear pricing, permissions, and logs.',
+  title: {
+    default: 'FairFetch | Licensed research retrieval for AI agents',
+    template: '%s | FairFetch',
+  },
+  description:
+    'FairFetch lets enterprise AI agents discover and retrieve paid specialist research with permission, citations, usage metering, and automatic payment.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,11 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthStateProvider>
           <ToastProvider>
             <div className="flex min-h-screen flex-col">
-              <header className="sticky top-0 z-40 w-full border-b border-[rgba(126,135,212,0.12)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,247,255,0.88))] shadow-[0_10px_28px_rgba(126,120,210,0.08)] backdrop-blur-xl">
+              <header className="sticky top-0 z-40 w-full border-b border-[#e2e8f0] bg-white/90 backdrop-blur-xl">
                 <PageShell className="flex flex-wrap items-center justify-between gap-3 py-4 sm:flex-nowrap">
                   <Link href="/" aria-label="FairFetch home" className="flex items-center gap-2">
                     <Logo size={32} />
-                    <span className="bg-gradient-to-r from-[#4853d5] via-[#6e69eb] to-[#cc67f0] bg-clip-text text-[18px] font-semibold tracking-[0.08em] text-transparent">
+                    <span className="text-[18px] font-semibold tracking-[-0.02em] text-[#0f172a]">
                       FairFetch
                     </span>
                   </Link>
@@ -33,9 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </PageShell>
               </header>
               <main className="flex-1">{children}</main>
-              <footer className="border-t border-[rgba(126,135,212,0.12)] bg-[linear-gradient(180deg,rgba(255,255,255,0.84),rgba(247,246,255,0.8))] backdrop-blur-xl">
+              <footer className="border-t border-[#e2e8f0] bg-white">
                 <PageShell className="flex flex-col gap-2 py-8 text-sm text-faircrawl-textMuted sm:flex-row sm:items-center sm:justify-between">
-                  <span>FairFetch keeps paid access simple and transparent.</span>
+                  <span>Licensed retrieval infrastructure for machine-consumed knowledge.</span>
                   <AuthActions variant="footer" />
                 </PageShell>
               </footer>

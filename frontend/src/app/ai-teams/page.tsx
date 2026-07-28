@@ -1,69 +1,79 @@
-import { SubpageHero } from '../../components/marketing/SubpageHero';
-import { MarketingCard } from '../../components/ui/MarketingCard';
-import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
-import { SectionEyebrow } from '../../components/ui/SectionEyebrow';
-import { API_BASE_URL } from '../../lib/apiBase';
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-const AiTeamsPage = () => {
-  const benefits = [
-    'One API key for many research providers, with clear rules for each domain.',
-    'Compare retrieval permissions, license types, and pricing before each query.',
-    'Client identity and shared transaction logs make usage easy to verify.',
-    'Shared observability so you and the research provider sees the same record of reads.',
-  ];
-  const statusBadges = [
-    { label: 'Open', className: 'bg-[rgba(86,109,245,0.12)] text-[#5165d7]' },
-    { label: 'Paid', className: 'bg-[rgba(237,167,95,0.14)] text-[#a3641a]' },
-    { label: 'Not listed', className: 'bg-[rgba(214,105,243,0.12)] text-[#a152d4]' },
-  ];
-
-  return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <div className="space-y-12 md:space-y-16">
-        <SubpageHero
-          eyebrow="For AI teams and research copilots"
-          title="FairFetch for AI teams"
-          description="Get clean, permissioned access to specialist research through a single API, with clear rules and audit logs on every crawl."
-        />
-
-        <div className="grid gap-8 lg:grid-cols-2">
-          <MarketingCard className="flex min-h-[320px] flex-col gap-4 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(243,242,255,0.84))]">
-            <SectionEyebrow className="text-[#6871d8]">API preview</SectionEyebrow>
-            <p className="text-sm leading-7 text-[#6e759b]">
-              A single call tells you if a page is open, paid, or not listed for your client.
-            </p>
-            <div className="space-y-4 rounded-2xl border border-[rgba(126,135,212,0.16)] bg-[rgba(255,255,255,0.58)] p-4 text-xs font-mono text-[#5165d7] shadow-[0_10px_24px_rgba(126,120,210,0.08)]">
-              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#7b82a8]">
-                {statusBadges.map((badge) => (
-                  <span key={badge.label} className={`rounded-full px-3 py-1 ${badge.className}`}>
-                    {badge.label}
-                  </span>
-                ))}
-              </div>
-              <pre className="overflow-x-auto whitespace-pre rounded-xl bg-[rgba(84,87,217,0.08)] p-4 text-xs text-[#2f397f]">{`curl "${API_BASE_URL}/api/gateway/fetch?url=https://site.com/blog/ai" \\
-  -H "X-API-Key: YOUR_KEY"`}</pre>
-            </div>
-          </MarketingCard>
-
-          <MarketingCard className="flex min-h-[320px] flex-col justify-between gap-4 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(247,243,255,0.84))]">
-            <div className="space-y-3">
-              <h2 className="text-2xl font-semibold text-[#25306d]">Why AI teams use FairFetch</h2>
-              <ul className="list-disc space-y-2 pl-5 text-sm text-[#6e759b]">
-                {benefits.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </MarketingCard>
-        </div>
-
-        <div className="flex flex-wrap justify-end gap-4 pt-4">
-          <SecondaryButton href="/how-it-works">Read how it works</SecondaryButton>
-          <PrimaryButton href="/signup?role=aiclient">Get API access</PrimaryButton>
-        </div>
-      </div>
-    </main>
-  );
+export const metadata: Metadata = {
+  title: 'For AI teams',
+  description: 'Give enterprise agents licensed access to external specialist research through one API and receipt layer.',
 };
 
-export default AiTeamsPage;
+const outputs = [
+  ['Source match', 'Relevant specialist reports across providers'],
+  ['Access decision', 'Allowed, paid, or blocked before content is read'],
+  ['Permitted content', 'Only the licensed summary, extract, display, or dataset scope'],
+  ['Proof', 'Citation, usage log, cost allocation, and transaction receipt'],
+] as const;
+
+export default function AiTeamsPage() {
+  return (
+    <main className="bg-[#f8fafc]">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="grid gap-12 lg:grid-cols-[1fr_0.95fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">For enterprise AI teams</p>
+            <h1 className="mt-4 text-5xl font-semibold tracking-[-0.04em] text-[#0f172a] sm:text-6xl">
+              Give agents a legal way to buy knowledge.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#64748b]">
+              Use one discovery and retrieval layer for research outside your existing subscriptions. FairFetch checks
+              provider rights, enforces spend limits, returns approved content, and attaches a receipt to every answer.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/#workspace"
+                className="inline-flex items-center justify-center rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white hover:bg-[#1e293b]"
+              >
+                Open research workspace
+              </Link>
+              <Link
+                href="/signup?role=aiclient"
+                className="inline-flex items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-6 py-3 text-sm font-semibold text-[#334155] hover:border-[#94a3b8]"
+              >
+                Request API access
+              </Link>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-[28px] border border-[#dbe3ee] bg-[#0f172a] shadow-[0_30px_80px_rgba(15,23,42,0.16)]">
+            <div className="border-b border-white/10 px-5 py-4">
+              <p className="font-mono text-xs text-[#94a3b8]">POST /v1/research/retrieve</p>
+            </div>
+            <pre className="overflow-x-auto p-5 text-xs leading-6 text-[#d1fae5]">{`{
+  "query": "IEX earnings risks",
+  "agent_id": "aster_wealth_copilot",
+  "licence": "SUMMARY",
+  "budget_cap": 50000
+}
+
+→ access: "PAID"
+→ source: "GridLine Research"
+→ price: 12000
+→ citation_rights: 5
+→ receipt_id: "ff_tx_7F41A9"`}</pre>
+          </div>
+        </div>
+
+        <div className="mt-16 rounded-[28px] border border-[#dbe3ee] bg-white p-7 sm:p-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">One response, four guarantees</p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {outputs.map(([title, body]) => (
+              <div key={title} className="rounded-2xl bg-[#f8fafc] p-5">
+                <h2 className="text-base font-semibold text-[#0f172a]">{title}</h2>
+                <p className="mt-2 text-sm leading-6 text-[#64748b]">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

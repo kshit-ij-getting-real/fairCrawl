@@ -1,67 +1,89 @@
-import { SubpageHero } from '../../components/marketing/SubpageHero';
-import { MarketingCard } from '../../components/ui/MarketingCard';
-import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-const HowItWorksPage = () => {
-  const steps = [
-    {
-      title: 'Research providers list content and terms',
-      body: 'An AI client tries to read your content. Instead of working around your paywall or guessing your rules, it sends the request through the FairFetch gateway.',
-    },
-    {
-      title: 'FairFetch makes sources discoverable and agent-readable',
-      body: 'AI teams query FairFetch with identity and permissions context. FairFetch returns what can be licensed and retrieved, including pricing and allowed license types.',
-    },
-    {
-      title: 'Agents retrieve licensed research through tokens/API',
-      body: 'Both sides get logs, receipts, and pricing records so every retrieval is auditable for usage review and billing.',
-    },
-  ];
+export const metadata: Metadata = {
+  title: 'How it works',
+  description: 'How FairFetch turns a research query into a permissioned, paid, cited retrieval.',
+};
 
+const steps = [
+  {
+    number: '01',
+    title: 'The agent asks',
+    body: 'An enterprise agent sends a research query, its identity, permitted use, and spending limit to FairFetch.',
+    output: 'Query + buyer identity',
+  },
+  {
+    number: '02',
+    title: 'FairFetch finds eligible sources',
+    body: 'FairFetch searches specialist providers and returns source relevance, licence terms, pricing, and an explicit access decision.',
+    output: 'ALLOWED · PAID · BLOCKED',
+  },
+  {
+    number: '03',
+    title: 'The agent licenses one retrieval',
+    body: 'The selected provider policy is enforced, payment is authorised, and only the approved research scope is returned.',
+    output: 'Research + usage rights',
+  },
+  {
+    number: '04',
+    title: 'Both sides get proof',
+    body: 'The agent receives a cited answer. The provider receives a usage record and payout. Both share the same receipt.',
+    output: 'Citation + receipt + payout',
+  },
+] as const;
+
+export default function HowItWorksPage() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <section>
-        <SubpageHero
-          eyebrow="Product flow"
-          title="How FairFetch works"
-          description={
-            <>
-              <p>
-                FairFetch sits between AI clients and the sites they read. Clients authenticate, you set the rules, and FairFetch checks every request before content is returned.
-              </p>
-              <p>
-                AI clients go through FairFetch instead of requesting in the dark. You decide which paths are open, premium, or not listed, and paid requests are logged so both sides see the same record.
-              </p>
-            </>
-          }
-        />
+    <main className="bg-[#f8fafc]">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">Product flow</p>
+          <h1 className="mt-4 text-5xl font-semibold tracking-[-0.04em] text-[#0f172a] sm:text-6xl">
+            One query becomes one auditable research transaction.
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-[#64748b]">
+            FairFetch handles the steps that normal web search and RAG cannot: procurement, machine-readable rights,
+            controlled delivery, attribution, and settlement.
+          </p>
+        </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-14 grid gap-4 lg:grid-cols-2">
           {steps.map((step) => (
-            <MarketingCard key={step.title} className="flex min-h-[260px] flex-col justify-between bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))]">
-              <div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(101,113,236,0.12)]">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4 text-[#5b68e1]">
-                      <path d="M12 3v18" />
-                      <path d="M5 9l7 6 7-6" />
-                    </svg>
-                  </div>
-                  <h3 className="text-base font-semibold text-[#25306d]">{step.title}</h3>
-                </div>
-                <p className="mt-3 text-sm leading-7 text-[#6e759b]">{step.body}</p>
+            <article key={step.number} className="rounded-2xl border border-[#dbe3ee] bg-white p-6 sm:p-8">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-xs font-semibold text-[#94a3b8]">{step.number}</span>
+                <span className="rounded-full bg-[#f1f5f9] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-[#475569]">
+                  {step.output}
+                </span>
               </div>
-            </MarketingCard>
+              <h2 className="mt-10 text-2xl font-semibold text-[#0f172a]">{step.title}</h2>
+              <p className="mt-3 text-sm leading-7 text-[#64748b]">{step.body}</p>
+            </article>
           ))}
         </div>
 
-        <div className="mt-8 flex flex-wrap justify-end gap-3">
-          <SecondaryButton href="/creators">See research provider controls</SecondaryButton>
-          <PrimaryButton href="/ai-teams">See AI API</PrimaryButton>
+        <div className="mt-12 rounded-[28px] bg-[#0f172a] p-8 text-white sm:p-10">
+          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6ee7b7]">See the complete loop</p>
+              <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.03em]">
+                Run the product flow without an account or backend setup.
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#94a3b8]">
+                The homepage workspace uses illustrative Indian energy research and shows the buyer and provider record
+                created by one licensed retrieval.
+              </p>
+            </div>
+            <Link
+              href="/#workspace"
+              className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#0f172a] hover:bg-[#e2e8f0]"
+            >
+              Open research workspace
+            </Link>
+          </div>
         </div>
       </section>
     </main>
   );
-};
-
-export default HowItWorksPage;
+}

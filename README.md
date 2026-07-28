@@ -1,15 +1,29 @@
 # FairFetch
 
-FairFetch is an early marketplace infrastructure product for licensed specialist research retrieval by AI agents.
+FairFetch is the transaction and trust layer for AI agents retrieving paid specialist research.
 
 ## Product thesis
-FairFetch is “AlphaSense for AI agents”: research providers list content, set license terms + retrieval pricing, and AI agents discover and retrieve high-quality external research with usage logs and receipts.
+Enterprise AI agents can search public information, but they cannot efficiently procure research outside their existing subscriptions. FairFetch lets agents discover specialist sources, resolve machine-use rights, pay for a permitted retrieval, return a cited answer, and create a shared buyer/provider receipt.
+
+The initial wedge is Indian energy, infrastructure, mobility, and industrial research. The first proof is one paid, cited retrieval. The long-term goal is a standard rights and settlement network for machine-consumed knowledge.
 
 ## Current MVP surfaces
-- Public site: positioning, flow, and directory (`/`, `/how-it-works`, `/creators`, `/ai-teams`, `/directory`).
+- Public site: buyer-first positioning and a self-contained interactive transaction experience (`/`, `/how-it-works`, `/creators`, `/ai-teams`).
 - Research provider dashboard: domains, pricing, transactions, controls.
 - AI client dashboard: API keys, agent identity, usage/spend, test paid request flow.
 - Backend APIs: auth, directory, policy, token mint/redeem, provider and AI client endpoints.
+
+## Recordable product walkthrough
+The homepage workspace is deterministic and does not depend on authentication or backend availability. It demonstrates:
+
+1. An enterprise agent asking a research question.
+2. FairFetch returning `ALLOWED`, `PAID`, and `BLOCKED` source decisions.
+3. The agent purchasing a summary licence.
+4. Identity, policy, payment, and delivery checks.
+5. A cited answer and shared transaction receipt.
+6. An illustrative provider payout and FairFetch fee.
+
+All sources, answer content, and economics in the homepage workspace are clearly labelled as illustrative.
 
 ## Tech stack
 - Frontend: Next.js + TypeScript + Tailwind.

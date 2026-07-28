@@ -1,85 +1,89 @@
-import { SubpageHero } from '../../components/marketing/SubpageHero';
-import { PrimaryButton, SecondaryButton } from '../../components/ui/Buttons';
-import { MarketingCard } from '../../components/ui/MarketingCard';
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-const CreatorsPage = () => {
-  return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-8 lg:py-16">
-      <div className="space-y-12 md:space-y-16">
-        <SubpageHero
-          eyebrow="For research providers"
-          title="FairFetch for research providers"
-          description="List specialist research, define retrieval terms, and get paid when AI agents retrieve licensed content."
-        />
-
-        <div className="grid items-stretch gap-6 md:grid-cols-3">
-          <MarketingCard className="flex min-h-[320px] flex-col bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(244,242,255,0.84))]">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#25306d]">What you control</h3>
-              <div className="space-y-2 rounded-2xl border border-[rgba(126,135,212,0.16)] bg-[rgba(112,124,232,0.08)] p-4 text-sm text-[#66709d]">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold">Visibility</span>
-                  <span className="rounded-full bg-[rgba(86,109,245,0.12)] px-3 py-1 text-xs text-[#5165d7]">/blog/*</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold">Protected</span>
-                  <span className="rounded-full bg-[rgba(214,105,243,0.12)] px-3 py-1 text-xs font-semibold text-[#a152d4]">/drafts/*</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold">Speed</span>
-                  <span className="rounded-full bg-[rgba(86,109,245,0.12)] px-3 py-1 text-xs font-semibold text-[#5165d7]">5 req/sec</span>
-                </div>
-              </div>
-              <p className="text-sm leading-7 text-[#6e759b]">
-                Set rules per path so /blog/* is open, /drafts/* stay private, and /premium/* is paid only. Decide exactly what AI can read and how fast each client can go.
-              </p>
-            </div>
-          </MarketingCard>
-
-          <MarketingCard className="flex h-full flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(246,243,255,0.84))]">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#25306d]">Turn retrieval into paid access</h3>
-              <ul className="space-y-3">
-                {[
-                  'Stop AIs reading your work for free.',
-                  'Use one rule set to decide what’s open, what’s premium, and what each AI team pays.',
-                  'When clients use FairFetch, they get a controlled, logged feed instead of requesting around your site.',
-                ].map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
-                    <p className="text-sm leading-7 text-[#6e759b]">{item}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </MarketingCard>
-
-          <MarketingCard className="flex h-full flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(243,246,255,0.84))]">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#25306d]">See who retrieved your research</h3>
-              <ul className="space-y-3">
-                {[
-                  'See which clients redeemed paid access, for which paths, and how often.',
-                  'Use a shared log as the source of truth for audits, payouts, and disputes.',
-                  'Give AI teams and publishers the same record of how your work was used.',
-                ].map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
-                    <p className="text-sm leading-7 text-[#6e759b]">{item}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </MarketingCard>
-        </div>
-
-        <div className="flex flex-wrap justify-end gap-4 pt-4">
-          <PrimaryButton href="/signup?role=publisher">List your research</PrimaryButton>
-          <SecondaryButton href="/directory">Browse AI-ready specialist research</SecondaryButton>
-        </div>
-      </div>
-    </main>
-  );
+export const metadata: Metadata = {
+  title: 'For research providers',
+  description: 'List specialist research, set machine-use rights and prices, and earn from licensed AI retrievals.',
 };
 
-export default CreatorsPage;
+const controls = [
+  ['Discovery', 'Choose which reports, datasets, and expert research AI systems can find.'],
+  ['Licence', 'Define permitted use such as summary, display, citation count, retention, and client type.'],
+  ['Price', 'Set a per-retrieval price by report, collection, provider, or licence class.'],
+  ['Evidence', 'See the buyer, query scope, source used, price, receipt, and payout for every retrieval.'],
+] as const;
+
+export default function CreatorsPage() {
+  return (
+    <main className="bg-[#f8fafc]">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="grid gap-12 lg:grid-cols-[1fr_0.9fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">For research providers</p>
+            <h1 className="mt-4 text-5xl font-semibold tracking-[-0.04em] text-[#0f172a] sm:text-6xl">
+              Sell research to AI systems without giving up control.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#64748b]">
+              FairFetch gives independent research firms, databases, and sector experts a machine-readable storefront.
+              List what agents can discover, define the exact licence, and get paid for each approved retrieval.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/signup?role=publisher"
+                className="inline-flex items-center justify-center rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white hover:bg-[#1e293b]"
+              >
+                List research
+              </Link>
+              <Link
+                href="/#workspace"
+                className="inline-flex items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-6 py-3 text-sm font-semibold text-[#334155] hover:border-[#94a3b8]"
+              >
+                See a paid retrieval
+              </Link>
+            </div>
+          </div>
+          <div className="rounded-[28px] bg-[#0f172a] p-7 text-white">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">Provider receipt</p>
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-[#94a3b8]">Research retrieved</p>
+                  <p className="mt-1 text-sm font-semibold">India Power Exchanges</p>
+                </div>
+                <span className="rounded-full bg-[#064e3b] px-2.5 py-1 text-[10px] font-bold text-[#6ee7b7]">PAID</span>
+              </div>
+              <div className="mt-5 grid grid-cols-2 gap-4 border-t border-white/10 pt-5 text-sm">
+                <div>
+                  <p className="text-xs text-[#64748b]">Buyer</p>
+                  <p className="mt-1 font-medium">Aster Wealth</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#64748b]">Licence</p>
+                  <p className="mt-1 font-medium">Summary</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#64748b]">Gross price</p>
+                  <p className="mt-1 font-medium">₹120</p>
+                </div>
+                <div>
+                  <p className="text-xs text-[#64748b]">Provider payout</p>
+                  <p className="mt-1 font-medium text-[#6ee7b7]">₹102</p>
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-5 text-[#94a3b8]">Illustrative transaction economics.</p>
+          </div>
+        </div>
+
+        <div className="mt-16 grid gap-4 sm:grid-cols-2">
+          {controls.map(([title, body]) => (
+            <article key={title} className="rounded-2xl border border-[#dbe3ee] bg-white p-6">
+              <h2 className="text-xl font-semibold text-[#0f172a]">{title}</h2>
+              <p className="mt-2 text-sm leading-7 text-[#64748b]">{body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
